@@ -70,7 +70,7 @@ function end(){stopT();
  const p=Math.round(score/MAX*100);
  {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));const bk="best_"+mode;if(score>LS(bk,0))LW(bk,score)}
  app.innerHTML=`<h1>${wrong>=MAXW?"Game Over 💀":"Round khatam!"}</h1><div class="big">${score}/${MAX}</div>
- <div class="c">${right}/20 sahi · ${p}% marks<br><br>${p>=80?"Excellent! 🏆":p>=50?"Great Work! 👍":"Practice more 💪"}</div><br>
+ <div class="c">${right}/20 sahi · ${p}% marks<br><br>${p<=20?"Don't give up, keep practicing! 💪":p<50?"Not bad, you can do better! 🙂":p<=70?"Good job, nice effort! 👍":p<=90?"Great work, almost there! 🔥":p<100?"Excellent! So close to perfect! 🏆":"PERFECT 100! You are a legend! 👑"}</div><br>
  <button class="btn" id="again">New Round (New questions)</button><button class="btn" id="hm">Home</button>`;
  $("#again").onclick=()=>start(mode);$("#hm").onclick=home;
 }
