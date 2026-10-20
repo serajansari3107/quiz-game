@@ -23,6 +23,14 @@ const SFX={
  win(){[523,659,784,1047].forEach((f,j)=>beep(f,.2,"sine",.15,j*140))},
  over(){[400,330,260,180].forEach((f,j)=>beep(f,.25,"sawtooth",.1,j*200));vib([200,100,200])}
 };
+function openMenu(){
+ const ov=document.createElement("div");ov.className="ov";
+ ov.innerHTML='<div class="panel"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="btn" id="m1">📊 Stats (Best Score & History)</button><button class="btn" id="m2">⚙️ Settings</button></div>';
+ document.body.appendChild(ov);
+ ov.querySelector(".x").onclick=()=>ov.remove();
+ ov.querySelector("#m1").onclick=()=>{ov.remove();stats()};
+ ov.querySelector("#m2").onclick=()=>{ov.remove();settings()};
+}
 function settings(){
  const row=(k,ic,t)=>`<div class="card hrow"><span>${ic} ${t}</span><button class="btn" data-k="${k}" style="width:auto;margin:0 0 0 auto;padding:8px 20px;font-size:15px;opacity:${SET[k]?1:.55}">${SET[k]?"ON":"OFF"}</button></div>`;
  app.innerHTML=`<div class="top"><button class="x" id="sb">← Home</button><span>⚙️ Settings</span><span></span></div>`+row("snd","🔊","Sound")+row("vib","📳","Vibration");
@@ -43,10 +51,10 @@ function build(m){
  return shuf(out);
 }
 function home(){stopT();
- app.innerHTML=`<button id="wn" class="wn">🆕 What’s New${VER?" · v"+VER:""}</button><h1>🎯 Quiz Arena</h1><div class="sub">Each round: 20 questions · 7 Easy (2) · 7 Medium (5) · 6 Hard (8.5) = 100 marks</div>`+
- Object.keys(BANK).map(k=>`<button class="btn" data-m="${k}">${BANK[k].name}<div style="font-size:13px;font-weight:400;color:#9fb8f0;margin-top:4px">${BANK[k].q.length} questions in bank</div></button>`).join("")+`<button class="btn" id="st" style="font-size:17px;padding:16px">📊 Stats (Best Score & History)</button><button class="btn" id="se" style="font-size:17px;padding:16px">⚙️ Settings</button>`;
+ app.innerHTML=`<button id="mn" class="wn" style="right:auto;left:14px">☰ Menu</button><button id="wn" class="wn">🆕 What’s New${VER?" · v"+VER:""}</button><h1>🎯 Quiz Arena</h1><div class="sub">Each round: 20 questions · 7 Easy (2) · 7 Medium (5) · 6 Hard (8.5) = 100 marks</div>`+
+ Object.keys(BANK).map(k=>`<button class="btn" data-m="${k}">${BANK[k].name}<div style="font-size:13px;font-weight:400;color:#9fb8f0;margin-top:4px">${BANK[k].q.length} questions in bank</div></button>`).join("");
  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>start(b.dataset.m));
- $("#wn").onclick=openWN;$("#st").onclick=()=>stats();$("#se").onclick=()=>settings();
+ $("#wn").onclick=openWN;$("#mn").onclick=openMenu;
  app.insertAdjacentHTML("beforeend",`<div class="ver">${VER?"Version "+VER:""}</div>`);
 }
 function start(m){unlockA();mode=m;qs=build(m);i=0;score=0;right=0;skipped=0;wrong=0;ll={f:1,s:1};show()}

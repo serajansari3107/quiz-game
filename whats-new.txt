@@ -12,6 +12,7 @@ New:
 Improved:
 + You choose when to update: a popup shows “New version available” or “New features added” and the app updates only when you tap Update now
 + New result messages for every score range, up to a special message for a perfect 100
++ New Menu button on Home (top-left) with Stats and Settings inside
 + Home screen subtitle is now in English
 
 ## v1.3 | 20 Oct 2026
