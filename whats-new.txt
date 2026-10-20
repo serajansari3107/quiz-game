@@ -5,6 +5,7 @@ New:
 + Works fully offline after the first install
 + In-app banner when a new update is downloaded
 + App icon and full-screen mode
++ WWE Quiz now has 100 questions (30 Easy, 35 Medium, 35 Hard)
 + 20-second timer on every question, unanswered questions are marked wrong
 + Lifelines: one 50-50 and one Skip per round
 + New Stats screen with separate Best Score and History tabs
