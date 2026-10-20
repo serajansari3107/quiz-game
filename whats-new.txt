@@ -2,6 +2,8 @@ window.WN_TXT=(function(){/*
 ## v1.5 | 20 Oct 2026
 New:
 + New Select Mode screen with 5, 10 or 20 questions and a Play button
++ New Summary tab in Stats: rounds, questions, correct, wrong, points and accuracy
++ Filter Summary by quiz (Cricket or WWE) and by mode (5, 10 or 20 questions)
 + New home tagline: Challenge Your Mind. Prove Your Knowledge.
 + Stats now show Best Score and History for each mode separately
 

@@ -46,6 +46,7 @@ body{position:relative}
 .tmt{margin-right:auto;font-weight:700;color:#8fd0ff}
 .tmt.low{color:#ff6b7d}
 .tabs{display:flex;gap:8px;margin-bottom:14px}
+#t1,#t2,#t3{font-size:13px;padding:11px 4px}
 .tabs button{flex:1;padding:11px;border-radius:12px;border:1px solid #3a5bb8;background:rgba(40,80,170,.25);color:#cfe0ff;font-size:15px}
 .tabs button.on{background:#1f6bff;color:#fff;border-color:#4d9bff}
 .hrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:10px 14px}
