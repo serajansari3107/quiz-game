@@ -39,7 +39,7 @@ function show(){
  <div class="q">${d[0]}</div>`+`<div class="ll"><span class="tmt" id="tmt">⏱ ${TIME}s</span><button id="l5" ${ll.f?"":"disabled"}>50-50</button><button id="ls" ${ll.s?"":"disabled"}>Skip</button></div>`+
  opts.map(o=>`<button class="opt">${o}</button>`).join("")+
  `<div class="info hide" id="info"></div><button class="btn hide" id="nx" style="font-size:17px;padding:15px">Next →</button>`;
- $("#qt").onclick=()=>{if(confirm("Quit karna hai? Is round ka score save nahi hoga."))home()};
+ $("#qt").onclick=()=>{if(confirm("Want to quit? Scores will not be saved."))home()};
  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pick(b,d));
  tm=setInterval(()=>{tl--;const t=$("#tmt");if(t){t.textContent="⏱ "+tl+"s";if(tl<=5)t.classList.add("low")}if(tl<=0){stopT();timeUp(d)}},1000);
  $("#l5").onclick=()=>{if(locked||!ll.f)return;ll.f=0;$("#l5").disabled=true;shuf([...app.querySelectorAll(".opt")].filter(o=>o.textContent!==d[1])).slice(0,2).forEach(o=>{o.style.display="none"})};
@@ -49,7 +49,7 @@ function timeUp(d){
  if(locked)return;locked=true;
  app.querySelectorAll(".opt").forEach(o=>{if(o.textContent===d[1])o.classList.add("ok")});
  const inf=$("#info");inf.classList.remove("hide");
- inf.innerHTML="⏰ Time up! Sahi jawab: <b>"+d[1]+"</b><br>"+d[3];
+ inf.innerHTML="⏰ Time up! Correct answer: <b>"+d[1]+"</b><br>"+d[3];
  const nx=$("#nx");nx.classList.remove("hide");
  nx.textContent=i+1<qs.length?"Next →":"Result dekho";
  nx.onclick=()=>{i++;i<qs.length?show():end()};
@@ -60,7 +60,7 @@ function pick(b,d){stopT();
  if(ok){score+=MK[d[4]];right++}
  app.querySelectorAll(".opt").forEach(o=>{if(o.textContent===d[1])o.classList.add("ok");else if(o===b)o.classList.add("bad")});
  const inf=$("#info");inf.classList.remove("hide");
- inf.innerHTML=(ok?"✅ Sahi! +"+MK[d[4]]+" marks":"❌ Galat. Sahi jawab: <b>"+d[1]+"</b>")+"<br>"+d[3];
+ inf.innerHTML=(ok?"✅ Correct! +"+MK[d[4]]+" marks":"❌ Incorrect. Correct answer: <b>"+d[1]+"</b>")+"<br>"+d[3];
  const nx=$("#nx");nx.classList.remove("hide");
  nx.textContent=i+1<qs.length?"Next →":"Result dekho";
  nx.onclick=()=>{i++;i<qs.length?show():end()};
@@ -70,8 +70,8 @@ function end(){stopT();
  const p=Math.round(score/MAX*100);
  {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));const bk="best_"+mode;if(score>LS(bk,0))LW(bk,score)}
  app.innerHTML=`<h1>Round khatam!</h1><div class="big">${score}/${MAX}</div>
- <div class="c">${right}/20 sahi · ${p}% marks<br><br>${p>=80?"Zabardast! 🏆":p>=50?"Achha khela! 👍":"Aur practice karo 💪"}</div><br>
- <button class="btn" id="again">Naya round (naye sawal)</button><button class="btn" id="hm">Home</button>`;
+ <div class="c">${right}/20 sahi · ${p}% marks<br><br>${p>=80?"Excellent! 🏆":p>=50?"Great Work! 👍":"Practice more 💪"}</div><br>
+ <button class="btn" id="again">New Round (New questions)</button><button class="btn" id="hm">Home</button>`;
  $("#again").onclick=()=>start(mode);$("#hm").onclick=home;
 }
 
@@ -159,7 +159,7 @@ if("serviceWorker"in navigator){
  navigator.serviceWorker.register("sw.js").then(r=>{
   r.addEventListener("updatefound",()=>{const w=r.installing;
    w.addEventListener("statechange",()=>{if(false){
-    const b=document.createElement("button");b.className="inst";b.textContent="🔄 Naya update aaya — tap karo";
+    const b=document.createElement("button");b.className="inst";b.textContent="🔄 New update available — tap to update";
     b.onclick=()=>location.reload();document.body.appendChild(b)}})})}).catch(()=>{});
 }
 loadWN().then(t=>{const m=t.match(/^## v([\d.]+)/m);if(m){VER=m[1];checkUp2(t);const b=$("#wn");if(b)b.textContent="🆕 What’s New · v"+VER;const v=document.querySelector(".ver");if(v)v.textContent="Version "+VER}}).catch(()=>{});
