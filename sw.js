@@ -1,12 +1,35 @@
 // CACHE sirf cache folder ka naam hai, ise badalne ki zaroorat nahi. App version whats-new.txt ke sabse upar wale block se aata hai.
 const CACHE="quiz-v1.3";
-const FILES=["./","index.html","style.css","app.js","cricket.js","wwe.js","whats-new.txt","manifest.json","icon-192.png","icon-512.png"];
+const CORE=["./","index.html","style.css","app.js","cricket.js","wwe.js","whats-new.txt","manifest.json","icon-192.png","icon-512.png"];
 self.addEventListener("install",e=>{
- e.waitUntil(caches.open(CACHE).then(async c=>{if((await c.keys()).length)return;const t=await (await fetch("index.html",{cache:"reload"})).text();const u=[...t.matchAll(/(?:src|href)="([^":#]+)"/g)].map(m=>m[1]);await Promise.all([...new Set(["./","index.html","whats-new.txt","icon-192.png","icon-512.png",...u])].map(f=>c.add(new Request(f,{cache:"reload"}))))}).then(()=>self.skipWaiting()));
+ e.waitUntil((async()=>{
+  const c=await caches.open(CACHE);
+  try{
+   let r=await c.match("index.html");
+   if(!r){await c.add(new Request("index.html",{cache:"reload"}));r=await c.match("index.html")}
+   const t=await r.text(),u=[...t.matchAll(/(?:src|href)="([^":#]+)"/g)].map(m=>m[1]);
+   for(const f of new Set([...CORE,...u])){
+    if(!(await c.match(f,{ignoreSearch:true})))await c.add(new Request(f,{cache:"reload"})).catch(()=>{});
+   }
+  }catch(err){}
+  self.skipWaiting();
+ })());
 });
 self.addEventListener("activate",e=>{
  e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
 });
 self.addEventListener("fetch",e=>{
- if(e.request.method!=="GET"||new URL(e.request.url).searchParams.has("chk"))return;
- e.respondWith(caches.match(e.request,{ignoreSearch:true}).then(r=>r||fetch(e.request).then(res=>{if(res.ok){const c=res.clone();caches.open(CACHE).then(ch=>ch.put(e.request,c))}return res}).catch(()=>caches.match("index.html"))));
+ const u=new URL(e.request.url);
+ if(e.request.method!=="GET"||u.searchParams.has("chk")||u.origin!==location.origin)return;
+ e.respondWith((async()=>{
+  const c=await caches.open(CACHE);
+  let r=await c.match(e.request,{ignoreSearch:true});
+  if(!r&&e.request.mode==="navigate")r=await c.match("index.html");
+  if(r){
+   if(r.redirected)r=new Response(await r.blob(),{status:200,headers:{"Content-Type":"text/html"}});
+   return r;
+  }
+  try{const n=await fetch(e.request);if(n.ok)c.put(e.request,n.clone());return n}
+  catch(err){return new Response("Offline",{status:503})}
+ })());
+});
