@@ -111,6 +111,21 @@ function openWN(){
   });
  }).catch(()=>{box.innerHTML='<iframe src="whats-new.txt"></iframe>'});
 }
+function checkUpd(t){
+ const L=t.split(/\r?\n/),s=L.findIndex(l=>l.startsWith("## ")),e=L.findIndex((l,j)=>j>s&&l.startsWith("## "));
+ if(s<0)return;
+ const blk=L.slice(s,e<0?L.length:e),ver=blk[0].slice(3).split("|")[0].trim();
+ const h=String(blk.join("\n").split("").reduce((a,c)=>(a*31+c.charCodeAt(0))|0,0));
+ const old=LS("wn_sig",null);
+ if(!old){LW("wn_sig",{v:ver,h});return}
+ if(old.v===ver&&old.h===h)return;
+ const items=blk.filter(l=>l.startsWith("+ ")).slice(0,5).map(l=>"<li>"+l.slice(2).replace(/</g,"&lt;")+"</li>").join("");
+ const ov=document.createElement("div");ov.className="ov upd";
+ ov.innerHTML='<div class="ucard"><div class="uic">🚀</div><h2>'+(old.v!==ver?"New version available":"New features added")+'</h2><div class="uv">'+ver+'</div><ul>'+items+'</ul><button class="btn" id="ub">Update now</button><button class="later" id="ulat">Later</button></div>';
+ document.body.appendChild(ov);
+ $("#ub").onclick=()=>{LW("wn_sig",{v:ver,h});location.reload()};
+ $("#ulat").onclick=()=>ov.remove();
+}
 // ---- PWA: install button + offline + update banner ----
 let ip=null;
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();ip=e;
@@ -124,5 +139,5 @@ if("serviceWorker"in navigator){
     const b=document.createElement("button");b.className="inst";b.textContent="🔄 Naya update aaya — tap karo";
     b.onclick=()=>location.reload();document.body.appendChild(b)}})})}).catch(()=>{});
 }
-loadWN().then(t=>{const m=t.match(/^## v([\d.]+)/m);if(m){VER=m[1];const b=$("#wn");if(b)b.textContent="🆕 What’s New · v"+VER;const v=document.querySelector(".ver");if(v)v.textContent="Version "+VER}}).catch(()=>{});
+loadWN().then(t=>{const m=t.match(/^## v([\d.]+)/m);if(m){VER=m[1];checkUpd(t);const b=$("#wn");if(b)b.textContent="🆕 What’s New · v"+VER;const v=document.querySelector(".ver");if(v)v.textContent="Version "+VER}}).catch(()=>{});
 home();

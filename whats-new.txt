@@ -9,6 +9,7 @@ New:
 + 20-second timer on every question, unanswered questions are marked wrong
 + Lifelines: one 50-50 and one Skip per round
 + New Stats screen with separate Best Score and History tabs
++ Update popup: shows “New version available” or “New features added” when you open the app online
 Improved:
 + Updates download automatically in the background when you are online
 Fixed:
