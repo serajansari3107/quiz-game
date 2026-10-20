@@ -2,7 +2,12 @@
 let VER="";
 const BANK=window.QUIZ_DATA;
 Object.keys(BANK).forEach(k=>{const s=new Set();BANK[k].q=BANK[k].q.filter(x=>{const n=x[0].toLowerCase().replace(/[^a-z0-9]/g,"");if(s.has(n))return false;s.add(n);return true})});
-const MK={e:2,m:5,h:8.5},NN={e:7,m:7,h:6},LB={e:"Easy",m:"Medium",h:"Hard"},MAX=100;
+const MODES={5:{n:{e:2,m:2,h:1},mk:{e:2,m:4,h:8},max:20},10:{n:{e:3,m:4,h:3},mk:{e:2,m:5,h:8},max:50},20:{n:{e:7,m:7,h:6},mk:{e:2,m:5,h:8.5},max:100}};
+let QN=20,MK=MODES[20].mk,NN=MODES[20].n,MAX=100;
+const LB={e:"Easy",m:"Medium",h:"Hard"};
+const setQN=n=>{QN=MODES[n]?n:20;MK=MODES[QN].mk;NN=MODES[QN].n;MAX=MODES[QN].max};
+const modeInfo=()=>`${QN} questions · ${NN.e} Easy (${MK.e}) · ${NN.m} Medium (${MK.m}) · ${NN.h} Hard (${MK.h}) = ${MAX} marks`;
+const bestKey=(k,n)=>"best_"+k+(n===20?"":"_"+n);
 const $=s=>document.querySelector(s),app=$("#app");
 const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 let qs,i,score,right,mode,locked,tm,tl,ll,skipped,wrong;
@@ -12,6 +17,7 @@ const LW=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const stopT=()=>{clearInterval(tm)};
 const SET=Object.assign({snd:1,vib:1},LS("settings",{}));
 const saveSet=()=>LW("settings",SET);
+setQN(LS("qn",20));
 let AC=null;
 const unlockA=()=>{try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume()}catch(e){}};
 const vib=p=>{if(SET.vib&&navigator.vibrate)try{navigator.vibrate(p)}catch(e){}};
@@ -51,10 +57,11 @@ function build(m){
  return shuf(out);
 }
 function home(){stopT();
- app.innerHTML=`<button id="mn" class="wn" style="right:auto;left:14px">☰ Menu</button><button id="wn" class="wn">🆕 What’s New${VER?" · v"+VER:""}</button><h1>🎯 Quiz Arena</h1><div class="sub">Each round: 20 questions · 7 Easy (2) · 7 Medium (5) · 6 Hard (8.5) = 100 marks</div>`+
+ app.innerHTML=`<button id="mn" class="wn" style="right:auto;left:14px">☰ Menu</button><button id="wn" class="wn">🆕 What’s New${VER?" · v"+VER:""}</button><h1>🎯 Quiz Arena</h1><div class="tabs">${[5,10,20].map(n=>`<button data-n="${n}" class="${n===QN?"on":""}">${n} Questions</button>`).join("")}</div><div class="sub">${modeInfo()}</div>`+
  Object.keys(BANK).map(k=>`<button class="btn" data-m="${k}">${BANK[k].name}<div style="font-size:13px;font-weight:400;color:#9fb8f0;margin-top:4px">${BANK[k].q.length} questions in bank</div></button>`).join("");
  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>start(b.dataset.m));
  $("#wn").onclick=openWN;$("#mn").onclick=openMenu;
+ app.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{setQN(+b.dataset.n);LW("qn",QN);home()});
  app.insertAdjacentHTML("beforeend",`<div class="ver">${VER?"Version "+VER:""}</div>`);
 }
 function start(m){unlockA();mode=m;qs=build(m);i=0;score=0;right=0;skipped=0;wrong=0;ll={f:1,s:1,c:1};show()}
@@ -97,9 +104,9 @@ function pick(b,d){stopT();
 }
 function end(){stopT();wrong>=MAXW?SFX.over():SFX.win();
  const p=Math.round(score/MAX*100);
- {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));const bk="best_"+mode;if(score>LS(bk,0))LW(bk,score)}
+ {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,n:QN,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));const bk=bestKey(mode,QN);if(score>LS(bk,0))LW(bk,score)}
  app.innerHTML=`<h1>${wrong>=MAXW?"Game Over 💀":"Round Over!"}</h1><div class="big">${score}/${MAX}</div>
- <div class="c">${right}/20 sahi · ${p}% marks<br><br>${p<=20?"Don't give up, keep practicing! 💪":p<50?"Not bad, you can do better! 🙂":p<=70?"Good job, nice effort! 👍":p<=90?"Great work, almost there! 🔥":p<100?"Excellent! So close to perfect! 🏆":"PERFECT 100! You are a legend! 👑"}</div><br>
+ <div class="c">${right}/${QN} Correct · ${p}% marks<br><br>${p<=20?"Don't give up, keep practicing! 💪":p<50?"Not bad, you can do better! 🙂":p<=70?"Good job, nice effort! 👍":p<=90?"Great work, almost there! 🔥":p<100?"Excellent! So close to perfect! 🏆":"PERFECT 100! You are a legend! 👑"}</div><br>
  <button class="btn" id="again">New Round (New questions)</button><button class="btn" id="hm">Home</button>`;
  $("#again").onclick=()=>start(mode);$("#hm").onclick=home;
 }
@@ -109,9 +116,9 @@ function stats(tab){
  const H=LS("hist",[]);
  let body="";
  if(tab==="best"){
-  body=Object.keys(BANK).map(k=>`<div class="card"><div class="ch"><b>${BANK[k].name}</b></div><div class="big" style="font-size:40px;margin:6px 0">${LS("best_"+k,0)}<small style="font-size:16px"> / ${MAX}</small></div></div>`).join("");
+  body=Object.keys(BANK).map(k=>`<div class="card"><div class="ch"><b>${BANK[k].name}</b></div>${[5,10,20].map(n=>`<div class="hrow"><span>${n} Questions</span><b>${LS(bestKey(k,n),0)} / ${MODES[n].max}</b></div>`).join("")}</div>`).join("");
  }else{
-  body=H.length?H.map(x=>`<div class="card hrow"><span>${BANK[x.m]?BANK[x.m].name:x.m}</span><b>${x.s}/${MAX}</b><small>${x.r}/20 sahi · ${x.d}</small></div>`).join(""):'<div class="c" style="color:#8fa8e0;margin-top:30px">Now Round has been played</div>';
+  body=H.length?H.map(x=>`<div class="card hrow"><span>${BANK[x.m]?BANK[x.m].name:x.m}</span><b>${x.s}/${MODES[x.n||20].max}</b><small>${x.r}/${x.n||20} Correct · ${x.d}</small></div>`).join(""):'<div class="c" style="color:#8fa8e0;margin-top:30px">Now Round has been played</div>';
  }
  app.innerHTML=`<div class="top"><button class="x" id="sb">← Home</button><span>📊 Stats</span><span></span></div><div class="tabs"><button class="${tab==="best"?"on":""}" id="t1">🏆 Best Score</button><button class="${tab==="hist"?"on":""}" id="t2">🕘 History (last 10)</button></div>`+body;
  $("#sb").onclick=home;$("#t1").onclick=()=>stats("best");$("#t2").onclick=()=>stats("hist");

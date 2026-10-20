@@ -1,4 +1,9 @@
 window.WN_TXT=(function(){/*
+## v1.5 | 20 Oct 2026
+New:
++ Select Mode: play 5, 10 or 20 question rounds (20, 50 or 100 marks)
++ Stats now show Best Score and History for each mode separately
+
 ## v1.4 | 20 Oct 2026
 New:
 + 100 new questions added (50 Cricket + 50 WWE), 150 per quiz now
