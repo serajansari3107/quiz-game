@@ -2,6 +2,7 @@ window.WN_TXT=(function(){/*
 ## v1.4 | 20 Oct 2026
 New:
 + 100 new questions added (50 Cricket + 50 WWE), 150 per quiz now
++ New lifeline 🔄 Change Question: swap the current question once per round (same difficulty)
 + 3 lives system: 3 incorrect answers and the game is over
 + Lives (❤️) shown at the top during the quiz one heart is lost for every wrong answer
 + Duplicate question protection, the same question never repeats in a round

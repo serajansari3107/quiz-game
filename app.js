@@ -57,19 +57,20 @@ function home(){stopT();
  $("#wn").onclick=openWN;$("#mn").onclick=openMenu;
  app.insertAdjacentHTML("beforeend",`<div class="ver">${VER?"Version "+VER:""}</div>`);
 }
-function start(m){unlockA();mode=m;qs=build(m);i=0;score=0;right=0;skipped=0;wrong=0;ll={f:1,s:1};show()}
+function start(m){unlockA();mode=m;qs=build(m);i=0;score=0;right=0;skipped=0;wrong=0;ll={f:1,s:1,c:1};show()}
 function show(){
  const d=qs[i];locked=false;stopT();tl=TIME;
  const opts=shuf([d[1],...d[2]]);
  app.innerHTML=`<div class="top"><span>${BANK[mode].name}</span><span>Marks ${score} · ${"❤️".repeat(MAXW-wrong)}${"🖤".repeat(wrong)}</span><button id="qt" style="background:#7a1f33;color:#fff;border:0;border-radius:8px;padding:5px 12px">Quit</button></div>
  <div class="bar"><i style="width:${i/qs.length*100}%"></i></div>
  <div class="top"><span>Question ${i+1}/${qs.length}</span><span class="badge">${LB[d[4]]} · ${MK[d[4]]} mark${MK[d[4]]>1?"s":""}</span></div>
- <div class="q">${d[0]}</div>`+`<div class="ll"><span class="tmt" id="tmt">⏱ ${TIME}s</span><button id="l5" ${ll.f?"":"disabled"}>50-50</button><button id="ls" ${ll.s?"":"disabled"}>Skip</button></div>`+
+ <div class="q">${d[0]}</div>`+`<div class="ll"><span class="tmt" id="tmt">⏱ ${TIME}s</span><button id="lc" ${ll.c?"":"disabled"} style="padding:7px 10px">🔄</button><button id="l5" ${ll.f?"":"disabled"}>50-50</button><button id="ls" ${ll.s?"":"disabled"}>Skip</button></div>`+
  opts.map(o=>`<button class="opt">${o}</button>`).join("")+
  `<div class="info hide" id="info"></div><button class="btn hide" id="nx" style="font-size:17px;padding:15px">Next →</button>`;
  $("#qt").onclick=()=>{if(confirm("Want to quit? Scores will not be saved."))home()};
  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pick(b,d));
  tm=setInterval(()=>{tl--;const t=$("#tmt");if(t){t.textContent="⏱ "+tl+"s";if(tl<=5){t.classList.add("low");if(tl>0)SFX.tick()}}if(tl<=0){stopT();timeUp(d)}},1000);
+ $("#lc").onclick=()=>{if(locked||!ll.c)return;const used=gs(mode),cand=BANK[mode].q.filter(x=>x[4]===d[4]&&!qs.includes(x));let p=cand.filter(x=>!used.includes(x[0]));if(!p.length)p=cand;if(!p.length)return;ll.c=0;const n=p[Math.floor(Math.random()*p.length)];qs[i]=n;ss(mode,used.concat(n[0]));show()};
  $("#l5").onclick=()=>{if(locked||!ll.f)return;ll.f=0;$("#l5").disabled=true;shuf([...app.querySelectorAll(".opt")].filter(o=>o.textContent!==d[1])).slice(0,2).forEach(o=>{o.style.display="none"})};
  $("#ls").onclick=()=>{if(locked||!ll.s)return;ll.s=0;skipped++;stopT();i++;i<qs.length?show():end()};
 }
@@ -97,7 +98,7 @@ function pick(b,d){stopT();
 function end(){stopT();wrong>=MAXW?SFX.over():SFX.win();
  const p=Math.round(score/MAX*100);
  {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));const bk="best_"+mode;if(score>LS(bk,0))LW(bk,score)}
- app.innerHTML=`<h1>${wrong>=MAXW?"Game Over 💀":"Round khatam!"}</h1><div class="big">${score}/${MAX}</div>
+ app.innerHTML=`<h1>${wrong>=MAXW?"Game Over 💀":"Round Over!"}</h1><div class="big">${score}/${MAX}</div>
  <div class="c">${right}/20 sahi · ${p}% marks<br><br>${p<=20?"Don't give up, keep practicing! 💪":p<50?"Not bad, you can do better! 🙂":p<=70?"Good job, nice effort! 👍":p<=90?"Great work, almost there! 🔥":p<100?"Excellent! So close to perfect! 🏆":"PERFECT 100! You are a legend! 👑"}</div><br>
  <button class="btn" id="again">New Round (New questions)</button><button class="btn" id="hm">Home</button>`;
  $("#again").onclick=()=>start(mode);$("#hm").onclick=home;
