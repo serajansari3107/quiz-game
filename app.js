@@ -33,7 +33,7 @@ function start(m){mode=m;qs=build(m);i=0;score=0;right=0;skipped=0;wrong=0;ll={f
 function show(){
  const d=qs[i];locked=false;stopT();tl=TIME;
  const opts=shuf([d[1],...d[2]]);
- app.innerHTML=`<div class="top"><span>${BANK[mode].name}</span><span>Marks ${score} · ❤️ ${MAXW-wrong}</span><button id="qt" style="background:#7a1f33;color:#fff;border:0;border-radius:8px;padding:5px 12px">Quit</button></div>
+ app.innerHTML=`<div class="top"><span>${BANK[mode].name}</span><span>Marks ${score} · ${"❤️".repeat(MAXW-wrong)}${"🖤".repeat(wrong)}</span><button id="qt" style="background:#7a1f33;color:#fff;border:0;border-radius:8px;padding:5px 12px">Quit</button></div>
  <div class="bar"><i style="width:${i/qs.length*100}%"></i></div>
  <div class="top"><span>Question ${i+1}/${qs.length}</span><span class="badge">${LB[d[4]]} · ${MK[d[4]]} mark${MK[d[4]]>1?"s":""}</span></div>
  <div class="q">${d[0]}</div>`+`<div class="ll"><span class="tmt" id="tmt">⏱ ${TIME}s</span><button id="l5" ${ll.f?"":"disabled"}>50-50</button><button id="ls" ${ll.s?"":"disabled"}>Skip</button></div>`+
