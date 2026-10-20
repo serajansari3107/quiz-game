@@ -122,14 +122,15 @@ function end(){stopT();wrong>=MAXW?SFX.over():SFX.win();
 
 let sumQ="all",sumN="all";
 const RATINGS=[["👑 Quiz Legend",95,200],["🏆 Master",85,100],["🎖️ Expert",75,50],["⭐ Advanced",60,30],["⚔️ Challenger",40,20],["🌱 Rookie",0,10]];
-const getRating=(ac,r)=>{const x=RATINGS.find(t=>ac>=t[1]&&r>=t[2]);return x?x[0]:"Unranked · min 10 rounds"};
+const getRating=(ac,r)=>{const a=RATINGS.find(t=>ac>=t[1]&&r>=t[2]),n=RATINGS.find(t=>ac>=t[1]);return[a?a[0]:"🔒 Unranked",a===n?"":(n[2]-r)+" more rounds needed for "+n[0].replace(/^\S+\s/,"")]};
+const rateRow=(ac,r)=>{const g=getRating(ac,r);return `<div class="card hrow"><span>Quiz Arena Rating</span><b>${g[0]}</b>${g[1]?`<small>${g[1]}</small>`:""}</div>`};
 function sumHTML(){
  const S=LS("sum",{}),t={r:0,q:0,c:0,w:0,p:0,f:0};
  Object.keys(S).forEach(k=>{const j=k.lastIndexOf("_"),m=k.slice(0,j),n=k.slice(j+1);if((sumQ==="all"||sumQ===m)&&(sumN==="all"||sumN===n))for(const f in t)t[f]+=S[k][f]||0});
  const rd=x=>Math.round(x*10)/10,acc=t.q?rd(t.c/t.q*100):0,st="flex:1;padding:11px;border-radius:12px;border:1px solid #3a5bb8;background:#10265f;color:#fff;font-size:15px";
  const row=(a,b)=>`<div class="card hrow"><span>${a}</span><b>${b}</b></div>`;
  const sel=(id,v,o,w)=>`<select id="${id}" style="${st};flex:${w}">${o.map(x=>`<option value="${x[0]}"${x[0]===v?" selected":""}>${x[1]}</option>`).join("")}</select>`;
- return '<div style="display:flex;gap:8px;margin-bottom:14px">'+sel("sq",sumQ,[["all","All time"]].concat(Object.keys(BANK).map(k=>[k,BANK[k].name])),1.6)+sel("sn",sumN,[["all","All"],["5","5"],["10","10"],["20","20"]],1)+'</div>'+row("Total Rounds Played",t.r)+row("Questions Played",t.q)+row("Correct Answers",t.c)+row("Wrong Answers",t.w)+row("Points Secured",rd(t.p))+row("Accuracy Rate",acc+"%")+row("Perfect Rounds",t.f)+row("Quiz Arena Rating",getRating(t.q?t.c/t.q*100:0,t.r));
+ return '<div style="display:flex;gap:8px;margin-bottom:14px">'+sel("sq",sumQ,[["all","All time"]].concat(Object.keys(BANK).map(k=>[k,BANK[k].name])),1.6)+sel("sn",sumN,[["all","All"],["5","5"],["10","10"],["20","20"]],1)+'</div>'+row("Total Rounds Played",t.r)+row("Questions Played",t.q)+row("Correct Answers",t.c)+row("Wrong Answers",t.w)+row("Points Secured",rd(t.p))+row("Accuracy Rate",acc+"%")+row("Perfect Rounds",t.f)+rateRow(t.q?t.c/t.q*100:0,t.r);
 }
 function stats(tab){
  tab=tab||"best";
