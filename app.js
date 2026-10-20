@@ -1,0 +1,98 @@
+// Quiz Arena — game logic. Question banks: cricket.js, wwe.js. Release notes: whats-new.txt
+const VER="1.3";
+const BANK=window.QUIZ_DATA;
+const MK={e:2,m:5,h:8.5},NN={e:7,m:7,h:6},LB={e:"Easy",m:"Medium",h:"Hard"},MAX=100;
+const $=s=>document.querySelector(s),app=$("#app");
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let qs,i,score,right,mode,locked;
+const gs=k=>{try{return JSON.parse(localStorage.getItem("seen_"+k))||[]}catch(e){return[]}};
+const ss=(k,a)=>{try{localStorage.setItem("seen_"+k,JSON.stringify(a))}catch(e){}};
+function build(m){
+ let seen=gs(m),out=[];
+ for(const t of "emh"){
+  const all=BANK[m].q.filter(x=>x[4]==t),n=NN[t];
+  let p=shuf(all.filter(x=>!seen.includes(x[0]))).slice(0,n);
+  if(p.length<n){p=p.concat(shuf(all.filter(x=>!p.includes(x))).slice(0,n-p.length));seen=seen.filter(id=>!all.some(x=>x[0]==id))}
+  out=out.concat(p);
+ }
+ ss(m,seen.concat(out.map(x=>x[0])));
+ return shuf(out);
+}
+function home(){
+ app.innerHTML=`<button id="wn" class="wn">🆕 What’s New · v${VER}</button><h1>🎯 Quiz Arena</h1><div class="sub">Har round: 20 sawal · 7 Easy (2) · 7 Medium (5) · 6 Hard (8.5) = 100 marks</div>`+
+ Object.keys(BANK).map(k=>`<button class="btn" data-m="${k}">${BANK[k].name}<div style="font-size:13px;font-weight:400;color:#9fb8f0;margin-top:4px">${BANK[k].q.length} questions in bank</div></button>`).join("");
+ app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>start(b.dataset.m));
+ $("#wn").onclick=openWN;
+ app.insertAdjacentHTML("beforeend",`<div class="ver">Version ${VER}</div>`);
+}
+function start(m){mode=m;qs=build(m);i=0;score=0;right=0;show()}
+function show(){
+ const d=qs[i];locked=false;
+ const opts=shuf([d[1],...d[2]]);
+ app.innerHTML=`<div class="top"><span>${BANK[mode].name}</span><span>Marks ${score}</span><button id="qt" style="background:#7a1f33;color:#fff;border:0;border-radius:8px;padding:5px 12px">Quit</button></div>
+ <div class="bar"><i style="width:${i/qs.length*100}%"></i></div>
+ <div class="top"><span>Question ${i+1}/${qs.length}</span><span class="badge">${LB[d[4]]} · ${MK[d[4]]} mark${MK[d[4]]>1?"s":""}</span></div>
+ <div class="q">${d[0]}</div>`+
+ opts.map(o=>`<button class="opt">${o}</button>`).join("")+
+ `<div class="info hide" id="info"></div><button class="btn hide" id="nx" style="font-size:17px;padding:15px">Next →</button>`;
+ $("#qt").onclick=()=>{if(confirm("Quit karna hai? Is round ka score save nahi hoga."))home()};
+ app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pick(b,d));
+}
+function pick(b,d){
+ if(locked)return;locked=true;
+ const ok=b.textContent===d[1];
+ if(ok){score+=MK[d[4]];right++}
+ app.querySelectorAll(".opt").forEach(o=>{if(o.textContent===d[1])o.classList.add("ok");else if(o===b)o.classList.add("bad")});
+ const inf=$("#info");inf.classList.remove("hide");
+ inf.innerHTML=(ok?"✅ Sahi! +"+MK[d[4]]+" marks":"❌ Galat. Sahi jawab: <b>"+d[1]+"</b>")+"<br>"+d[3];
+ const nx=$("#nx");nx.classList.remove("hide");
+ nx.textContent=i+1<qs.length?"Next →":"Result dekho";
+ nx.onclick=()=>{i++;i<qs.length?show():end()};
+ nx.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function end(){
+ const p=Math.round(score/MAX*100);
+ app.innerHTML=`<h1>Round khatam!</h1><div class="big">${score}/${MAX}</div>
+ <div class="c">${right}/20 sahi · ${p}% marks<br><br>${p>=80?"Zabardast! 🏆":p>=50?"Achha khela! 👍":"Aur practice karo 💪"}</div><br>
+ <button class="btn" id="again">Naya round (naye sawal)</button><button class="btn" id="hm">Home</button>`;
+ $("#again").onclick=()=>start(mode);$("#hm").onclick=home;
+}
+
+// ---- What's New screen: reads whats-new.txt (newest version first) ----
+const loadWN=()=>fetch("whats-new.txt").then(r=>{if(!r.ok)throw 0;return r.text()}).catch(()=>new Promise((ok,no)=>{const s=document.createElement("script");s.src="whats-new.txt";s.onload=()=>window.WN_TXT?ok(window.WN_TXT):no();s.onerror=no;document.head.appendChild(s)}));
+function openWN(){
+ const ov=document.createElement("div");ov.className="ov";
+ ov.innerHTML='<div class="panel"><div class="ph"><h2>🆕 What’s New</h2><button class="x">Close</button></div><div id="wl">Loading…</div></div>';
+ document.body.appendChild(ov);
+ ov.querySelector(".x").onclick=()=>ov.remove();
+ const box=ov.querySelector("#wl");
+ loadWN().then(t=>{
+  box.innerHTML="";let card=null,ul=null,first=true;
+  t.split(/\r?\n/).forEach(l=>{
+   if(l.startsWith("## ")){
+    const [v,d]=l.slice(3).split("|").map(x=>x.trim());
+    card=document.createElement("div");card.className="card"+(first?" new":"");
+    const h=document.createElement("div");h.className="ch";
+    const b=document.createElement("b");b.textContent=v;h.appendChild(b);
+    if(first){const g=document.createElement("span");g.className="tag";g.textContent="LATEST";h.appendChild(g)}
+    const sm=document.createElement("small");sm.textContent=d||"";h.appendChild(sm);
+    card.append(h);box.appendChild(card);ul=null;first=false;
+   }else if(/^(New|Improved|Fixed):\s*$/.test(l)&&card){const n=l.replace(":","").trim(),k=n.toLowerCase();const sc=document.createElement("div");sc.className="sec s-"+k;sc.textContent=n;ul=document.createElement("ul");ul.className="u-"+k;card.append(sc,ul);
+   }else if(l.startsWith("+ ")&&ul){const li=document.createElement("li");li.textContent=l.slice(2);ul.appendChild(li)}
+  });
+ }).catch(()=>{box.innerHTML='<iframe src="whats-new.txt"></iframe>'});
+}
+// ---- PWA: install button + offline + update banner ----
+let ip=null;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();ip=e;
+ const b=document.createElement("button");b.className="inst";b.textContent="📲 Install App";
+ b.onclick=async()=>{b.remove();ip.prompt();await ip.userChoice;ip=null};document.body.appendChild(b)});
+window.addEventListener("appinstalled",()=>{const b=document.querySelector(".inst");if(b)b.remove()});
+if("serviceWorker"in navigator){
+ navigator.serviceWorker.register("sw.js").then(r=>{
+  r.addEventListener("updatefound",()=>{const w=r.installing;
+   w.addEventListener("statechange",()=>{if(w.state==="installed"&&navigator.serviceWorker.controller){
+    const b=document.createElement("button");b.className="inst";b.textContent="🔄 Naya update aaya — tap karo";
+    b.onclick=()=>location.reload();document.body.appendChild(b)}})})}).catch(()=>{});
+}
+home();

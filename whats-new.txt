@@ -1,0 +1,44 @@
+window.WN_TXT=(function(){/*
+## v1.3 | 20 Oct 2026
+New:
++ Install the game on your phone straight from the browser (Install App button)
++ Works fully offline after the first install
++ In-app banner when a new update is downloaded
++ App icon and full-screen mode
+Improved:
++ Updates download automatically in the background when you are online
+Fixed:
++ The game can now be opened from a link, so there is no need to open local files in Chrome
+
+## v1.2 | 20 Oct 2026
+New:
++ What's New screen, opened from the button on the home page
++ Version number shown on the home page
++ Cricket Quiz now has 100 questions (31 Easy, 36 Medium, 33 Hard)
+Improved:
++ A full round now adds up to exactly 100 marks: Easy 2, Medium 5, Hard 8.5
++ Result screen shows your score out of 100
++ Project split into separate files: HTML, CSS, JavaScript and question banks
+Fixed:
++ Corrected a wrong answer option in the Kapil Dev question
++ Corrected the description of the Eddie Guerrero question
+
+## v1.1 | 20 Oct 2026
+New:
++ Rounds of 20 questions: 7 Easy, 7 Medium and 6 Hard
++ Marks by difficulty: Easy 1, Medium 3, Hard 6
++ Difficulty and marks badge on every question
++ Quit button with confirmation
++ Questions you have already seen do not repeat until the pool runs out
+Improved:
++ Questions and answer options are shuffled every round
++ 34 questions in each mode
+
+## v1.0 | 20 Oct 2026
+New:
++ Cricket Quiz and WWE Quiz modes
++ 4 options per question
++ Instant correct/wrong colors with a short explanation after each answer
++ Dark blue theme designed for mobile
++ Plays offline
+*/}).toString();
