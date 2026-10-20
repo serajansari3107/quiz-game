@@ -82,7 +82,7 @@ function stats(tab){
  if(tab==="best"){
   body=Object.keys(BANK).map(k=>`<div class="card"><div class="ch"><b>${BANK[k].name}</b></div><div class="big" style="font-size:40px;margin:6px 0">${LS("best_"+k,0)}<small style="font-size:16px"> / ${MAX}</small></div></div>`).join("");
  }else{
-  body=H.length?H.map(x=>`<div class="card hrow"><span>${BANK[x.m]?BANK[x.m].name:x.m}</span><b>${x.s}/${MAX}</b><small>${x.r}/20 sahi · ${x.d}</small></div>`).join(""):'<div class="c" style="color:#8fa8e0;margin-top:30px">Abhi koi round nahi khela</div>';
+  body=H.length?H.map(x=>`<div class="card hrow"><span>${BANK[x.m]?BANK[x.m].name:x.m}</span><b>${x.s}/${MAX}</b><small>${x.r}/20 sahi · ${x.d}</small></div>`).join(""):'<div class="c" style="color:#8fa8e0;margin-top:30px">Now Round has been played</div>';
  }
  app.innerHTML=`<div class="top"><button class="x" id="sb">← Home</button><span>📊 Stats</span><span></span></div><div class="tabs"><button class="${tab==="best"?"on":""}" id="t1">🏆 Best Score</button><button class="${tab==="hist"?"on":""}" id="t2">🕘 History (last 10)</button></div>`+body;
  $("#sb").onclick=home;$("#t1").onclick=()=>stats("best");$("#t2").onclick=()=>stats("hist");
