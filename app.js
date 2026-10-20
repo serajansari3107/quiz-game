@@ -1,5 +1,5 @@
 // Quiz Arena — game logic. Question banks: cricket.js, wwe.js. Release notes: whats-new.txt
-const VER="1.3";
+let VER="";
 const BANK=window.QUIZ_DATA;
 const MK={e:2,m:5,h:8.5},NN={e:7,m:7,h:6},LB={e:"Easy",m:"Medium",h:"Hard"},MAX=100;
 const $=s=>document.querySelector(s),app=$("#app");
@@ -19,11 +19,11 @@ function build(m){
  return shuf(out);
 }
 function home(){
- app.innerHTML=`<button id="wn" class="wn">🆕 What’s New · v${VER}</button><h1>🎯 Quiz Arena</h1><div class="sub">Har round: 20 sawal · 7 Easy (2) · 7 Medium (5) · 6 Hard (8.5) = 100 marks</div>`+
+ app.innerHTML=`<button id="wn" class="wn">🆕 What’s New${VER?" · v"+VER:""}</button><h1>🎯 Quiz Arena</h1><div class="sub">Har round: 20 sawal · 7 Easy (2) · 7 Medium (5) · 6 Hard (8.5) = 100 marks</div>`+
  Object.keys(BANK).map(k=>`<button class="btn" data-m="${k}">${BANK[k].name}<div style="font-size:13px;font-weight:400;color:#9fb8f0;margin-top:4px">${BANK[k].q.length} questions in bank</div></button>`).join("");
  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>start(b.dataset.m));
  $("#wn").onclick=openWN;
- app.insertAdjacentHTML("beforeend",`<div class="ver">Version ${VER}</div>`);
+ app.insertAdjacentHTML("beforeend",`<div class="ver">${VER?"Version "+VER:""}</div>`);
 }
 function start(m){mode=m;qs=build(m);i=0;score=0;right=0;show()}
 function show(){
@@ -95,4 +95,5 @@ if("serviceWorker"in navigator){
     const b=document.createElement("button");b.className="inst";b.textContent="🔄 Naya update aaya — tap karo";
     b.onclick=()=>location.reload();document.body.appendChild(b)}})})}).catch(()=>{});
 }
+loadWN().then(t=>{const m=t.match(/^## v([\d.]+)/m);if(m){VER=m[1];const b=$("#wn");if(b)b.textContent="🆕 What’s New · v"+VER;const v=document.querySelector(".ver");if(v)v.textContent="Version "+VER}}).catch(()=>{});
 home();
