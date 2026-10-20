@@ -57,12 +57,21 @@ function build(m){
  return shuf(out);
 }
 function home(){stopT();
- app.innerHTML=`<button id="mn" class="wn" style="right:auto;left:14px">☰ Menu</button><button id="wn" class="wn">🆕 What’s New${VER?" · v"+VER:""}</button><h1>🎯 Quiz Arena</h1><div class="tabs">${[5,10,20].map(n=>`<button data-n="${n}" class="${n===QN?"on":""}">${n} Questions</button>`).join("")}</div><div class="sub">${modeInfo()}</div>`+
+ app.innerHTML=`<button id="mn" class="wn" style="right:auto;left:14px">☰ Menu</button><button id="wn" class="wn">🆕 What’s New${VER?" · v"+VER:""}</button><h1>🎯 Quiz Arena</h1><div class="sub">Challenge Your Mind. Prove Your Knowledge.</div>`+
  Object.keys(BANK).map(k=>`<button class="btn" data-m="${k}">${BANK[k].name}<div style="font-size:13px;font-weight:400;color:#9fb8f0;margin-top:4px">${BANK[k].q.length} questions in bank</div></button>`).join("");
- app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>start(b.dataset.m));
+ app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>selMode(b.dataset.m));
  $("#wn").onclick=openWN;$("#mn").onclick=openMenu;
  app.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{setQN(+b.dataset.n);LW("qn",QN);home()});
  app.insertAdjacentHTML("beforeend",`<div class="ver">${VER?"Version "+VER:""}</div>`);
+}
+function selMode(m){
+ const draw=()=>{
+  app.innerHTML=`<div class="top"><button class="x" id="sb">← Home</button><span>${BANK[m].name}</span><span></span></div><h1 style="margin-top:20px">Select Mode</h1><div class="tabs">${[5,10,20].map(n=>`<button data-n="${n}" class="${n===QN?"on":""}">${n} Questions</button>`).join("")}</div><div class="sub" style="margin-bottom:20px">${modeInfo()}</div><button class="btn" id="pl">▶ Play</button>`;
+  $("#sb").onclick=home;
+  $("#pl").onclick=()=>start(m);
+  app.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{setQN(+b.dataset.n);LW("qn",QN);draw()});
+ };
+ draw();
 }
 function start(m){unlockA();mode=m;qs=build(m);i=0;score=0;right=0;skipped=0;wrong=0;ll={f:1,s:1,c:1};show()}
 function show(){
