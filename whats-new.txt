@@ -5,6 +5,9 @@ New:
 + 3 lives system: 3 incorrect answers and the game is over
 + Lives (❤️) shown at the top during the quiz one heart is lost for every wrong answer
 + Duplicate question protection, the same question never repeats in a round
++ Sound effects: correct, wrong, last 5 seconds tick, win and game over tunes
++ Vibration on correct and wrong answers
++ Settings section on Home to turn Sound and Vibration ON or OFF
 
 Improved:
 + You choose when to update: a popup shows “New version available” or “New features added” and the app updates only when you tap Update now

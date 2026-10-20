@@ -10,6 +10,25 @@ const TIME=20,MAXW=3;
 const LS=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
 const LW=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const stopT=()=>{clearInterval(tm)};
+const SET=Object.assign({snd:1,vib:1},LS("settings",{}));
+const saveSet=()=>LW("settings",SET);
+let AC=null;
+const unlockA=()=>{try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume()}catch(e){}};
+const vib=p=>{if(SET.vib&&navigator.vibrate)try{navigator.vibrate(p)}catch(e){}};
+function beep(f,d,t,v,w){if(!SET.snd)return;setTimeout(()=>{try{unlockA();const o=AC.createOscillator(),g=AC.createGain(),n=AC.currentTime;o.type=t||"sine";o.frequency.value=f;g.gain.setValueAtTime(v||.15,n);g.gain.exponentialRampToValueAtTime(.001,n+d);o.connect(g);g.connect(AC.destination);o.start(n);o.stop(n+d)}catch(e){}},w||0)}
+const SFX={
+ ok(){beep(660,.12);beep(880,.2,"sine",.15,110);vib(40)},
+ bad(){beep(200,.35,"sawtooth",.1);vib(250)},
+ tick(){beep(1000,.05,"square",.05)},
+ win(){[523,659,784,1047].forEach((f,j)=>beep(f,.2,"sine",.15,j*140))},
+ over(){[400,330,260,180].forEach((f,j)=>beep(f,.25,"sawtooth",.1,j*200));vib([200,100,200])}
+};
+function settings(){
+ const row=(k,ic,t)=>`<div class="card hrow"><span>${ic} ${t}</span><button class="btn" data-k="${k}" style="width:auto;margin:0 0 0 auto;padding:8px 20px;font-size:15px;opacity:${SET[k]?1:.55}">${SET[k]?"ON":"OFF"}</button></div>`;
+ app.innerHTML=`<div class="top"><button class="x" id="sb">← Home</button><span>⚙️ Settings</span><span></span></div>`+row("snd","🔊","Sound")+row("vib","📳","Vibration");
+ $("#sb").onclick=home;
+ app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{const k=b.dataset.k;SET[k]=SET[k]?0:1;saveSet();unlockA();if(k==="snd"&&SET.snd)SFX.ok();if(k==="vib")vib(60);b.textContent=SET[k]?"ON":"OFF";b.style.opacity=SET[k]?1:.55});
+}
 const gs=k=>{try{return JSON.parse(localStorage.getItem("seen_"+k))||[]}catch(e){return[]}};
 const ss=(k,a)=>{try{localStorage.setItem("seen_"+k,JSON.stringify(a))}catch(e){}};
 function build(m){
@@ -25,12 +44,12 @@ function build(m){
 }
 function home(){stopT();
  app.innerHTML=`<button id="wn" class="wn">🆕 What’s New${VER?" · v"+VER:""}</button><h1>🎯 Quiz Arena</h1><div class="sub">Each round: 20 questions · 7 Easy (2) · 7 Medium (5) · 6 Hard (8.5) = 100 marks</div>`+
- Object.keys(BANK).map(k=>`<button class="btn" data-m="${k}">${BANK[k].name}<div style="font-size:13px;font-weight:400;color:#9fb8f0;margin-top:4px">${BANK[k].q.length} questions in bank</div></button>`).join("")+`<button class="btn" id="st" style="font-size:17px;padding:16px">📊 Stats (Best Score & History)</button>`;
+ Object.keys(BANK).map(k=>`<button class="btn" data-m="${k}">${BANK[k].name}<div style="font-size:13px;font-weight:400;color:#9fb8f0;margin-top:4px">${BANK[k].q.length} questions in bank</div></button>`).join("")+`<button class="btn" id="st" style="font-size:17px;padding:16px">📊 Stats (Best Score & History)</button><button class="btn" id="se" style="font-size:17px;padding:16px">⚙️ Settings</button>`;
  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>start(b.dataset.m));
- $("#wn").onclick=openWN;$("#st").onclick=()=>stats();
+ $("#wn").onclick=openWN;$("#st").onclick=()=>stats();$("#se").onclick=()=>settings();
  app.insertAdjacentHTML("beforeend",`<div class="ver">${VER?"Version "+VER:""}</div>`);
 }
-function start(m){mode=m;qs=build(m);i=0;score=0;right=0;skipped=0;wrong=0;ll={f:1,s:1};show()}
+function start(m){unlockA();mode=m;qs=build(m);i=0;score=0;right=0;skipped=0;wrong=0;ll={f:1,s:1};show()}
 function show(){
  const d=qs[i];locked=false;stopT();tl=TIME;
  const opts=shuf([d[1],...d[2]]);
@@ -42,11 +61,11 @@ function show(){
  `<div class="info hide" id="info"></div><button class="btn hide" id="nx" style="font-size:17px;padding:15px">Next →</button>`;
  $("#qt").onclick=()=>{if(confirm("Want to quit? Scores will not be saved."))home()};
  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pick(b,d));
- tm=setInterval(()=>{tl--;const t=$("#tmt");if(t){t.textContent="⏱ "+tl+"s";if(tl<=5)t.classList.add("low")}if(tl<=0){stopT();timeUp(d)}},1000);
+ tm=setInterval(()=>{tl--;const t=$("#tmt");if(t){t.textContent="⏱ "+tl+"s";if(tl<=5){t.classList.add("low");if(tl>0)SFX.tick()}}if(tl<=0){stopT();timeUp(d)}},1000);
  $("#l5").onclick=()=>{if(locked||!ll.f)return;ll.f=0;$("#l5").disabled=true;shuf([...app.querySelectorAll(".opt")].filter(o=>o.textContent!==d[1])).slice(0,2).forEach(o=>{o.style.display="none"})};
  $("#ls").onclick=()=>{if(locked||!ll.s)return;ll.s=0;skipped++;stopT();i++;i<qs.length?show():end()};
 }
-function timeUp(d){if(!locked)wrong++;
+function timeUp(d){if(!locked){wrong++;SFX.bad()}
  if(locked)return;locked=true;
  app.querySelectorAll(".opt").forEach(o=>{if(o.textContent===d[1])o.classList.add("ok")});
  const inf=$("#info");inf.classList.remove("hide");
@@ -58,7 +77,7 @@ function timeUp(d){if(!locked)wrong++;
 function pick(b,d){stopT();
  if(locked)return;locked=true;
  const ok=b.textContent===d[1];
- if(ok){score+=MK[d[4]];right++}else wrong++;
+ if(ok){score+=MK[d[4]];right++}else wrong++;ok?SFX.ok():SFX.bad();
  app.querySelectorAll(".opt").forEach(o=>{if(o.textContent===d[1])o.classList.add("ok");else if(o===b)o.classList.add("bad")});
  const inf=$("#info");inf.classList.remove("hide");
  inf.innerHTML=(ok?"✅ Correct! +"+MK[d[4]]+" marks":"❌ Incorrect. Correct answer: <b>"+d[1]+"</b>")+"<br>"+d[3];
@@ -67,7 +86,7 @@ function pick(b,d){stopT();
  nx.onclick=()=>{i++;(wrong>=MAXW||i>=qs.length)?end():show()};
  nx.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
-function end(){stopT();
+function end(){stopT();wrong>=MAXW?SFX.over():SFX.win();
  const p=Math.round(score/MAX*100);
  {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));const bk="best_"+mode;if(score>LS(bk,0))LW(bk,score)}
  app.innerHTML=`<h1>${wrong>=MAXW?"Game Over 💀":"Round khatam!"}</h1><div class="big">${score}/${MAX}</div>
