@@ -1,6 +1,7 @@
 // Quiz Arena — game logic. Question banks: cricket.js, wwe.js. Release notes: whats-new.txt
 let VER="";
 const BANK=window.QUIZ_DATA;
+Object.keys(BANK).forEach(k=>{const s=new Set();BANK[k].q=BANK[k].q.filter(x=>{const n=x[0].toLowerCase().replace(/[^a-z0-9]/g,"");if(s.has(n))return false;s.add(n);return true})});
 const MK={e:2,m:5,h:8.5},NN={e:7,m:7,h:6},LB={e:"Easy",m:"Medium",h:"Hard"},MAX=100;
 const $=s=>document.querySelector(s),app=$("#app");
 const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
