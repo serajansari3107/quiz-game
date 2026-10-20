@@ -113,7 +113,7 @@ function pick(b,d){stopT();
 }
 function end(){stopT();wrong>=MAXW?SFX.over():SFX.win();
  const p=Math.round(score/MAX*100);
- {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,n:QN,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));{const S=LS("sum",{}),sk=mode+"_"+QN,a=S[sk]||{r:0,q:0,c:0,w:0,p:0};a.r++;a.q+=right+wrong;a.c+=right;a.w+=wrong;a.p+=score;S[sk]=a;LW("sum",S)}const bk=bestKey(mode,QN);if(score>LS(bk,0))LW(bk,score)}
+ {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,n:QN,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));{const S=LS("sum",{}),sk=mode+"_"+QN,a=S[sk]||{r:0,q:0,c:0,w:0,p:0};a.r++;a.q+=right+wrong;a.c+=right;a.w+=wrong;a.p+=score;a.f=(a.f||0)+(right===QN?1:0);S[sk]=a;LW("sum",S)}const bk=bestKey(mode,QN);if(score>LS(bk,0))LW(bk,score)}
  app.innerHTML=`<h1>${wrong>=MAXW?"Game Over 💀":"Round Over!"}</h1><div class="big">${score}/${MAX}</div>
  <div class="c">${right}/${QN} Correct · ${p}% marks<br><br>${p<=20?"Don't give up, keep practicing! 💪":p<50?"Not bad, you can do better! 🙂":p<=70?"Good job, nice effort! 👍":p<=90?"Great work, almost there! 🔥":p<100?"Excellent! So close to perfect! 🏆":"PERFECT 100! You are a legend! 👑"}</div><br>
  <button class="btn" id="again">New Round (New questions)</button><button class="btn" id="hm">Home</button>`;
@@ -121,13 +121,15 @@ function end(){stopT();wrong>=MAXW?SFX.over():SFX.win();
 }
 
 let sumQ="all",sumN="all";
+const RATINGS=[["👑 Quiz Legend",95,200],["🏆 Master",85,100],["🎖️ Expert",75,50],["⭐ Advanced",60,30],["⚔️ Challenger",40,20],["🌱 Rookie",0,10]];
+const getRating=(ac,r)=>{const x=RATINGS.find(t=>ac>=t[1]&&r>=t[2]);return x?x[0]:"Unranked · min 10 rounds"};
 function sumHTML(){
- const S=LS("sum",{}),t={r:0,q:0,c:0,w:0,p:0};
+ const S=LS("sum",{}),t={r:0,q:0,c:0,w:0,p:0,f:0};
  Object.keys(S).forEach(k=>{const j=k.lastIndexOf("_"),m=k.slice(0,j),n=k.slice(j+1);if((sumQ==="all"||sumQ===m)&&(sumN==="all"||sumN===n))for(const f in t)t[f]+=S[k][f]||0});
  const rd=x=>Math.round(x*10)/10,acc=t.q?rd(t.c/t.q*100):0,st="flex:1;padding:11px;border-radius:12px;border:1px solid #3a5bb8;background:#10265f;color:#fff;font-size:15px";
  const row=(a,b)=>`<div class="card hrow"><span>${a}</span><b>${b}</b></div>`;
  const sel=(id,v,o,w)=>`<select id="${id}" style="${st};flex:${w}">${o.map(x=>`<option value="${x[0]}"${x[0]===v?" selected":""}>${x[1]}</option>`).join("")}</select>`;
- return '<div style="display:flex;gap:8px;margin-bottom:14px">'+sel("sq",sumQ,[["all","All time"]].concat(Object.keys(BANK).map(k=>[k,BANK[k].name])),1.6)+sel("sn",sumN,[["all","All"],["5","5"],["10","10"],["20","20"]],1)+'</div>'+row("Total Rounds Played",t.r)+row("Questions Played",t.q)+row("Correct Answers",t.c)+row("Wrong Answers",t.w)+row("Points Secured",rd(t.p))+row("Accuracy Rate",acc+"%");
+ return '<div style="display:flex;gap:8px;margin-bottom:14px">'+sel("sq",sumQ,[["all","All time"]].concat(Object.keys(BANK).map(k=>[k,BANK[k].name])),1.6)+sel("sn",sumN,[["all","All"],["5","5"],["10","10"],["20","20"]],1)+'</div>'+row("Total Rounds Played",t.r)+row("Questions Played",t.q)+row("Correct Answers",t.c)+row("Wrong Answers",t.w)+row("Points Secured",rd(t.p))+row("Accuracy Rate",acc+"%")+row("Perfect Rounds",t.f)+row("Quiz Arena Rating",getRating(t.q?t.c/t.q*100:0,t.r));
 }
 function stats(tab){
  tab=tab||"best";

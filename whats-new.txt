@@ -4,6 +4,8 @@ New:
 + New Select Mode screen with 5, 10 or 20 questions and a Play button
 + New Summary tab in Stats: rounds, questions, correct, wrong, points and accuracy
 + Filter Summary by quiz (Cricket or WWE) and by mode (5, 10 or 20 questions)
++ Summary now shows Perfect Rounds (rounds with every answer correct)
++ Quiz Arena Rating: Rookie to Quiz Legend based on accuracy and rounds played, filterable by quiz and mode
 + New home tagline: Challenge Your Mind. Prove Your Knowledge.
 + Stats now show Best Score and History for each mode separately
 
