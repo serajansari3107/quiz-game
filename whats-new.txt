@@ -1,4 +1,8 @@
 window.WN_TXT=(function(){/*
+## v1.4 | 20 Oct 2026
+Improved:
++ You choose when to update: a popup shows “New version available” or “New features added” and the app updates only when you tap Update now
+
 ## v1.3 | 20 Oct 2026
 New:
 + Install the game on your phone straight from the browser (Install App button)
@@ -9,9 +13,8 @@ New:
 + 20-second timer on every question, unanswered questions are marked wrong
 + Lifelines: one 50-50 and one Skip per round
 + New Stats screen with separate Best Score and History tabs
-+ Update popup: shows “New version available” or “New features added” when you open the app online
 Improved:
-+ Updates download automatically in the background when you are online
++ Update popup: shows “New version available” or “New features added” when you open the app online
 Fixed:
 + The game can now be opened from a link, so there is no need to open local files in Chrome
 

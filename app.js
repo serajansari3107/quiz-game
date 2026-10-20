@@ -126,6 +126,29 @@ function checkUpd(t){
  $("#ub").onclick=()=>{LW("wn_sig",{v:ver,h});location.reload()};
  $("#ulat").onclick=()=>ov.remove();
 }
+const topB=t=>{const L=t.split(/\r?\n/),s=L.findIndex(l=>l.startsWith("## ")),e=L.findIndex((l,j)=>j>s&&l.startsWith("## "));return s<0?null:L.slice(s,e<0?L.length:e)};
+function checkUp2(inst){
+ if(!navigator.onLine)return;
+ fetch("whats-new.txt?chk="+Date.now(),{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(rt=>{
+  const a=topB(inst),b=topB(rt);if(!a||!b)return;
+  if(a.join("\n")===b.join("\n"))return;
+  const va=a[0].slice(3).split("|")[0].trim(),vb=b[0].slice(3).split("|")[0].trim();
+  const items=b.filter(l=>l.startsWith("+ ")).slice(0,5).map(l=>"<li>"+l.slice(2).replace(/</g,"&lt;")+"</li>").join("");
+  const ov=document.createElement("div");ov.className="ov upd";
+  ov.innerHTML='<div class="ucard"><div class="uic">🚀</div><h2>'+(va!==vb?"New version available":"New features added")+'</h2><div class="uv">'+vb+'</div><ul>'+items+'</ul><button class="btn" id="ub">Update now</button><button class="later" id="ulat">Not now</button></div>';
+  document.body.appendChild(ov);
+  $("#ulat").onclick=()=>ov.remove();
+  $("#ub").onclick=async()=>{$("#ub").textContent="Updating…";try{await applyUpd()}catch(e){}location.reload()};
+ }).catch(()=>{});
+}
+async function applyUpd(){
+ if(!window.caches)return;
+ const ks=await caches.keys();if(!ks.length)return;
+ const c=await caches.open(ks[0]),q=f=>f+(f.includes("?")?"&":"?")+"chk="+Date.now();
+ const h=await (await fetch(q("index.html"),{cache:"reload"})).text();
+ const u=[...h.matchAll(/(?:src|href)="([^":#]+)"/g)].map(m=>m[1]);
+ await Promise.all([...new Set(["./","index.html","whats-new.txt","manifest.json","icon-192.png","icon-512.png",...u])].map(f=>fetch(q(f),{cache:"reload"}).then(r=>{if(r.ok)return c.put(f,r)})));
+}
 // ---- PWA: install button + offline + update banner ----
 let ip=null;
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();ip=e;
@@ -135,9 +158,9 @@ window.addEventListener("appinstalled",()=>{const b=document.querySelector(".ins
 if("serviceWorker"in navigator){
  navigator.serviceWorker.register("sw.js").then(r=>{
   r.addEventListener("updatefound",()=>{const w=r.installing;
-   w.addEventListener("statechange",()=>{if(w.state==="installed"&&navigator.serviceWorker.controller){
+   w.addEventListener("statechange",()=>{if(false){
     const b=document.createElement("button");b.className="inst";b.textContent="🔄 Naya update aaya — tap karo";
     b.onclick=()=>location.reload();document.body.appendChild(b)}})})}).catch(()=>{});
 }
-loadWN().then(t=>{const m=t.match(/^## v([\d.]+)/m);if(m){VER=m[1];checkUpd(t);const b=$("#wn");if(b)b.textContent="🆕 What’s New · v"+VER;const v=document.querySelector(".ver");if(v)v.textContent="Version "+VER}}).catch(()=>{});
+loadWN().then(t=>{const m=t.match(/^## v([\d.]+)/m);if(m){VER=m[1];checkUp2(t);const b=$("#wn");if(b)b.textContent="🆕 What’s New · v"+VER;const v=document.querySelector(".ver");if(v)v.textContent="Version "+VER}}).catch(()=>{});
 home();
