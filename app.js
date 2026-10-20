@@ -4,7 +4,11 @@ const BANK=window.QUIZ_DATA;
 const MK={e:2,m:5,h:8.5},NN={e:7,m:7,h:6},LB={e:"Easy",m:"Medium",h:"Hard"},MAX=100;
 const $=s=>document.querySelector(s),app=$("#app");
 const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-let qs,i,score,right,mode,locked;
+let qs,i,score,right,mode,locked,tm,tl,ll,skipped;
+const TIME=20;
+const LS=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+const LW=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const stopT=()=>{clearInterval(tm)};
 const gs=k=>{try{return JSON.parse(localStorage.getItem("seen_"+k))||[]}catch(e){return[]}};
 const ss=(k,a)=>{try{localStorage.setItem("seen_"+k,JSON.stringify(a))}catch(e){}};
 function build(m){
@@ -18,27 +22,39 @@ function build(m){
  ss(m,seen.concat(out.map(x=>x[0])));
  return shuf(out);
 }
-function home(){
+function home(){stopT();
  app.innerHTML=`<button id="wn" class="wn">🆕 What’s New${VER?" · v"+VER:""}</button><h1>🎯 Quiz Arena</h1><div class="sub">Har round: 20 sawal · 7 Easy (2) · 7 Medium (5) · 6 Hard (8.5) = 100 marks</div>`+
- Object.keys(BANK).map(k=>`<button class="btn" data-m="${k}">${BANK[k].name}<div style="font-size:13px;font-weight:400;color:#9fb8f0;margin-top:4px">${BANK[k].q.length} questions in bank</div></button>`).join("");
+ Object.keys(BANK).map(k=>`<button class="btn" data-m="${k}">${BANK[k].name}<div style="font-size:13px;font-weight:400;color:#9fb8f0;margin-top:4px">${BANK[k].q.length} questions in bank</div></button>`).join("")+`<button class="btn" id="st" style="font-size:17px;padding:16px">📊 Stats (Best Score & History)</button>`;
  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>start(b.dataset.m));
- $("#wn").onclick=openWN;
+ $("#wn").onclick=openWN;$("#st").onclick=()=>stats();
  app.insertAdjacentHTML("beforeend",`<div class="ver">${VER?"Version "+VER:""}</div>`);
 }
-function start(m){mode=m;qs=build(m);i=0;score=0;right=0;show()}
+function start(m){mode=m;qs=build(m);i=0;score=0;right=0;skipped=0;ll={f:1,s:1};show()}
 function show(){
- const d=qs[i];locked=false;
+ const d=qs[i];locked=false;stopT();tl=TIME;
  const opts=shuf([d[1],...d[2]]);
  app.innerHTML=`<div class="top"><span>${BANK[mode].name}</span><span>Marks ${score}</span><button id="qt" style="background:#7a1f33;color:#fff;border:0;border-radius:8px;padding:5px 12px">Quit</button></div>
  <div class="bar"><i style="width:${i/qs.length*100}%"></i></div>
  <div class="top"><span>Question ${i+1}/${qs.length}</span><span class="badge">${LB[d[4]]} · ${MK[d[4]]} mark${MK[d[4]]>1?"s":""}</span></div>
- <div class="q">${d[0]}</div>`+
+ <div class="q">${d[0]}</div>`+`<div class="ll"><span class="tmt" id="tmt">⏱ ${TIME}s</span><button id="l5" ${ll.f?"":"disabled"}>50-50</button><button id="ls" ${ll.s?"":"disabled"}>Skip</button></div>`+
  opts.map(o=>`<button class="opt">${o}</button>`).join("")+
  `<div class="info hide" id="info"></div><button class="btn hide" id="nx" style="font-size:17px;padding:15px">Next →</button>`;
  $("#qt").onclick=()=>{if(confirm("Quit karna hai? Is round ka score save nahi hoga."))home()};
  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pick(b,d));
+ tm=setInterval(()=>{tl--;const t=$("#tmt");if(t){t.textContent="⏱ "+tl+"s";if(tl<=5)t.classList.add("low")}if(tl<=0){stopT();timeUp(d)}},1000);
+ $("#l5").onclick=()=>{if(locked||!ll.f)return;ll.f=0;$("#l5").disabled=true;shuf([...app.querySelectorAll(".opt")].filter(o=>o.textContent!==d[1])).slice(0,2).forEach(o=>{o.style.display="none"})};
+ $("#ls").onclick=()=>{if(locked||!ll.s)return;ll.s=0;skipped++;stopT();i++;i<qs.length?show():end()};
 }
-function pick(b,d){
+function timeUp(d){
+ if(locked)return;locked=true;
+ app.querySelectorAll(".opt").forEach(o=>{if(o.textContent===d[1])o.classList.add("ok")});
+ const inf=$("#info");inf.classList.remove("hide");
+ inf.innerHTML="⏰ Time up! Sahi jawab: <b>"+d[1]+"</b><br>"+d[3];
+ const nx=$("#nx");nx.classList.remove("hide");
+ nx.textContent=i+1<qs.length?"Next →":"Result dekho";
+ nx.onclick=()=>{i++;i<qs.length?show():end()};
+}
+function pick(b,d){stopT();
  if(locked)return;locked=true;
  const ok=b.textContent===d[1];
  if(ok){score+=MK[d[4]];right++}
@@ -50,14 +66,27 @@ function pick(b,d){
  nx.onclick=()=>{i++;i<qs.length?show():end()};
  nx.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
-function end(){
+function end(){stopT();
  const p=Math.round(score/MAX*100);
+ {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));const bk="best_"+mode;if(score>LS(bk,0))LW(bk,score)}
  app.innerHTML=`<h1>Round khatam!</h1><div class="big">${score}/${MAX}</div>
  <div class="c">${right}/20 sahi · ${p}% marks<br><br>${p>=80?"Zabardast! 🏆":p>=50?"Achha khela! 👍":"Aur practice karo 💪"}</div><br>
  <button class="btn" id="again">Naya round (naye sawal)</button><button class="btn" id="hm">Home</button>`;
  $("#again").onclick=()=>start(mode);$("#hm").onclick=home;
 }
 
+function stats(tab){
+ tab=tab||"best";
+ const H=LS("hist",[]);
+ let body="";
+ if(tab==="best"){
+  body=Object.keys(BANK).map(k=>`<div class="card"><div class="ch"><b>${BANK[k].name}</b></div><div class="big" style="font-size:40px;margin:6px 0">${LS("best_"+k,0)}<small style="font-size:16px"> / ${MAX}</small></div></div>`).join("");
+ }else{
+  body=H.length?H.map(x=>`<div class="card hrow"><span>${BANK[x.m]?BANK[x.m].name:x.m}</span><b>${x.s}/${MAX}</b><small>${x.r}/20 sahi · ${x.d}</small></div>`).join(""):'<div class="c" style="color:#8fa8e0;margin-top:30px">Abhi koi round nahi khela</div>';
+ }
+ app.innerHTML=`<div class="top"><button class="x" id="sb">← Home</button><span>📊 Stats</span><span></span></div><div class="tabs"><button class="${tab==="best"?"on":""}" id="t1">🏆 Best Score</button><button class="${tab==="hist"?"on":""}" id="t2">🕘 History (last 10)</button></div>`+body;
+ $("#sb").onclick=home;$("#t1").onclick=()=>stats("best");$("#t2").onclick=()=>stats("hist");
+}
 // ---- What's New screen: reads whats-new.txt (newest version first) ----
 const loadWN=()=>fetch("whats-new.txt").then(r=>{if(!r.ok)throw 0;return r.text()}).catch(()=>new Promise((ok,no)=>{const s=document.createElement("script");s.src="whats-new.txt";s.onload=()=>window.WN_TXT?ok(window.WN_TXT):no();s.onerror=no;document.head.appendChild(s)}));
 function openWN(){
