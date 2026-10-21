@@ -169,3 +169,60 @@ body{position:relative}
 .rs-b2:active{border-color:#8b5cf6;background:rgba(139,92,246,.12)}
 @media (max-width:360px){.rs-score{font-size:54px}.rs-c{padding:14px}.rs-c b{font-size:22px}.rs h1{font-size:26px}}
 @media (min-width:640px){.rs-grid{grid-template-columns:repeat(4,1fr)}.rs-score{font-size:72px}}
+/* ===== Stats, What's New, Update popup ===== */
+.st{position:fixed;inset:0;z-index:2;overflow-y:auto;-webkit-overflow-scrolling:touch;background:radial-gradient(120% 55% at 50% 0,rgba(139,92,246,.18),transparent 62%),#0e0e11;padding:calc(14px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Inter,system-ui,sans-serif;color:#f2f2f7}
+.st-in{max-width:640px;margin:0 auto}
+.st-bar{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.st .tabs{margin:22px 0 16px;padding:4px;gap:4px;background:#17171c;border:1px solid #2a2a33;border-radius:16px}
+.st .tabs button{flex:1 1 0;min-width:0;background:transparent;border:0;border-radius:12px;color:#9a9aa8;font-family:inherit;font-weight:700;line-height:1.25;min-height:44px;cursor:pointer;transition:background .2s,color .2s}
+.st .tabs button.on{background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;box-shadow:0 6px 18px rgba(139,92,246,.35)}
+.st .card{background:#17171c;border:1px solid #2a2a33;border-radius:20px;padding:16px 18px;margin-bottom:12px}
+.st .ch{display:flex;align-items:center;gap:10px;border-bottom:1px solid #2a2a33;padding-bottom:10px;margin-bottom:2px}
+.st .ch b{font-size:17px;font-weight:700}
+.st .card>.hrow{display:flex;align-items:center;gap:10px;padding:13px 0;border-bottom:1px solid #23232b}
+.st .card>.hrow:last-child{border-bottom:0;padding-bottom:2px}
+.st .card>.hrow span{color:#cfcfe0;font-size:15px;font-weight:600}
+.st .hrow b{margin-left:auto;font-size:19px;font-weight:800;color:#f2f2f7}
+.st .hrow b em{font-style:normal;font-size:13px;font-weight:600;color:#7c7c8a}
+.st .hrow.z b{color:#5f5f6e}
+.st .card.hrow{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:14px 18px}
+.st .card.hrow span{font-weight:700;font-size:15px}
+.st .card.hrow b{color:#c4b5fd}
+.st .card.hrow small{width:100%;color:#9a9aa8;font-size:13px}
+.st .card.st-rate{margin-top:0;background:linear-gradient(160deg,rgba(139,92,246,.22),#17171c 72%);border-color:rgba(139,92,246,.45);box-shadow:0 10px 32px rgba(139,92,246,.16)}
+.st .card.st-rate span{color:#9a9aa8;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.st .card.st-rate b{width:100%;margin:2px 0 0;font-size:22px;color:#fff}
+.st .card.st-rate small{color:#c4b5fd;font-weight:600}
+.st select{color-scheme:dark;min-width:0}
+.st-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:12px}
+.st-c{display:flex;flex-direction:column;background:#17171c;border:1px solid #2a2a33;border-radius:18px;padding:16px}
+.st-c small{display:block;color:#9a9aa8;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.st-c b{display:block;margin-top:auto;padding-top:6px;font-size:24px;font-weight:800;color:#f2f2f7}
+.st-c b.z{color:#5f5f6e}
+.st-grid .st-c:last-child{grid-column:1/-1}
+.st-empty{text-align:center;padding:40px 20px;background:#17171c;border:1px dashed #2a2a33;border-radius:20px;margin-top:6px}
+.st-empty div{font-size:34px;margin-bottom:10px}
+.st-empty b{display:block;font-size:17px;color:#f2f2f7}
+.st-empty small{display:block;margin-top:6px;color:#9a9aa8;font-size:14px}
+@media (min-width:640px){.st-grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:360px){.st-c{padding:14px}.st-c b{font-size:21px}.st .card{padding:14px}.st select{padding:12px 6px!important;font-size:13px!important}}
+.panel.wnp{position:fixed;inset:0;z-index:1;max-width:none;margin:0;overflow-y:auto;-webkit-overflow-scrolling:touch;background:radial-gradient(120% 55% at 50% 0,rgba(139,92,246,.18),transparent 62%),#0e0e11;padding:calc(14px + env(safe-area-inset-top)) max(20px,calc((100% - 640px)/2)) calc(24px + env(safe-area-inset-bottom));font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Inter,system-ui,sans-serif;color:#f2f2f7}
+.wnp .ph{margin-bottom:18px}
+.wnp .ph h2{font-size:24px;font-weight:800;letter-spacing:-.01em;color:#ede9fe}
+.wnp .x{background:#17171c;border:1px solid #2a2a33;color:#cfcfe0;border-radius:999px;padding:9px 16px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer}
+.wnp .card{background:#17171c;border:1px solid #2a2a33;border-radius:20px;padding:16px 18px;margin-bottom:14px}
+.wnp .card.new{border-color:rgba(139,92,246,.55);background:linear-gradient(160deg,rgba(139,92,246,.16),#17171c 70%);box-shadow:0 8px 30px rgba(139,92,246,.16)}
+.wnp .ch{border-bottom:1px solid #2a2a33}
+.wnp .ch b{font-size:19px;color:#f2f2f7}
+.wnp .ch small{color:#7c7c8a}
+.wnp .tag{background:rgba(139,92,246,.2);color:#c4b5fd;border:1px solid rgba(139,92,246,.4);border-radius:999px;padding:2px 9px;font-size:10.5px;letter-spacing:.06em}
+.wnp .card ul{color:#d6d6e4;font-size:14.5px}
+.wnp #wl{color:#9a9aa8}
+.ov.upd{background:radial-gradient(120% 60% at 50% 0,rgba(139,92,246,.22),transparent 62%),#0e0e11;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Inter,system-ui,sans-serif}
+.ov.upd .ucard{background:linear-gradient(160deg,rgba(139,92,246,.2),#17171c 70%);border:1px solid rgba(139,92,246,.45);border-radius:24px;padding:28px 22px 22px;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 40px rgba(139,92,246,.18);color:#f2f2f7}
+.ov.upd .uic{width:68px;height:68px;margin:0 auto 4px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:32px;background:linear-gradient(145deg,#8b5cf6,#5b21b6);box-shadow:0 10px 30px rgba(139,92,246,.4)}
+.ov.upd .ucard h2{margin:14px 0 10px;font-size:22px;font-weight:800;color:#ede9fe}
+.ov.upd .uv{background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.45);color:#c4b5fd;font-weight:800;padding:3px 14px;border-radius:999px;margin-bottom:14px}
+.ov.upd .ucard ul{color:#d6d6e4}
+.ov.upd .ucard .btn{background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;border:0;border-radius:16px;padding:16px;font-size:17px;font-weight:800;font-family:inherit;box-shadow:0 10px 30px rgba(139,92,246,.4),inset 0 1px 0 rgba(255,255,255,.25)}
+.ov.upd .later{color:#9a9aa8;font-family:inherit;font-weight:600}

@@ -5,6 +5,7 @@ Improved:
 + Redesigned Select Mode screen with premium dark purple cards and a bigger Start Quiz button
 + Redesigned question screen with premium dark purple look, clearer answer feedback, and modern timer and lives
 + Redesigned results screen with score card, accuracy, points, correct and wrong stats
++ Stats dashboard, What's New and update popup redesigned with the premium dark purple theme
 
 ## v1.5 | 20 Oct 2026
 New:
