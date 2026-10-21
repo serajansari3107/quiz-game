@@ -217,7 +217,7 @@ async function applyUpd(){
  const c=await caches.open(ks[0]),q=f=>f+(f.includes("?")?"&":"?")+"chk="+Date.now();
  const h=await (await fetch(q("index.html"),{cache:"reload"})).text();
  const u=[...h.matchAll(/(?:src|href)="([^":#]+)"/g)].map(m=>m[1]);
- await Promise.all([...new Set(["./","index.html","whats-new.txt","manifest.json","icon-192.png","icon-512.png",...u])].map(f=>fetch(q(f),{cache:"reload"}).then(r=>{if(r.ok)return c.put(f,r)})));
+ await Promise.all([...new Set(["./","index.html","whats-new.txt","manifest.json","assets/icon-192.png","assets/icon-512.png",...u])].map(f=>fetch(q(f),{cache:"reload"}).then(r=>{if(r.ok)return c.put(f,r)})));
 }
 // ---- PWA: install button + offline + update banner ----
 let ip=null;
