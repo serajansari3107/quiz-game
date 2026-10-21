@@ -243,3 +243,25 @@ body{position:relative}
 .rtm-t tr:last-child td{border-bottom:0}
 .rtm-n{margin:14px 2px 0;color:#9a9aa8;font-size:13px;line-height:1.5;text-align:center}
 @media (max-width:360px){.ov.rtm{padding:10px}.rtm-box{padding:14px}.rtm-h h2{font-size:17px}.rtm-t th{padding:10px 6px;font-size:9.5px;letter-spacing:.05em}.rtm-t td{padding:11px 6px;font-size:13px}}
+/* ===== Menu drawer & Settings ===== */
+.ov.mnu{background:rgba(6,6,10,.72);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);padding:0;overflow:hidden}
+.panel.mnu-d{position:fixed;top:0;left:0;bottom:0;width:min(320px,86vw);max-width:none;margin:0;overflow-y:auto;background:radial-gradient(140% 40% at 50% 0,rgba(139,92,246,.2),transparent 70%),#0e0e11;border-right:1px solid rgba(139,92,246,.3);box-shadow:20px 0 60px rgba(0,0,0,.5);padding:calc(18px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Inter,system-ui,sans-serif;color:#f2f2f7;animation:mnuin .22s ease-out}
+@keyframes mnuin{from{transform:translateX(-28px);opacity:0}}
+.mnu-d .ph{margin-bottom:18px}
+.mnu-d .ph h2{font-size:22px;font-weight:800;color:#ede9fe}
+.mnu-d .x{background:#17171c;border:1px solid #2a2a33;color:#cfcfe0;border-radius:999px;padding:9px 16px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer}
+.mnu-i{display:flex;align-items:center;gap:14px;width:100%;margin:0 0 10px;padding:12px 14px;text-align:left;background:#17171c;border:1px solid #2a2a33;border-radius:18px;color:inherit;font-family:inherit;cursor:pointer;transition:transform .15s,border-color .2s,box-shadow .2s}
+.mnu-i:active{transform:scale(.98);border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,.18)}
+@media (hover:hover){.mnu-i:hover{border-color:#8b5cf6}}
+.mnu-ic{flex:none;width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;background:rgba(139,92,246,.14);border:1px solid rgba(139,92,246,.28)}
+.mnu-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.mnu-t b{font-size:16px;font-weight:700}
+.mnu-t small{font-size:12.5px;color:#9a9aa8}
+.se{position:fixed;inset:0;z-index:2;overflow-y:auto;-webkit-overflow-scrolling:touch;background:radial-gradient(120% 55% at 50% 0,rgba(139,92,246,.18),transparent 62%),#0e0e11;padding:calc(14px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Inter,system-ui,sans-serif;color:#f2f2f7}
+.se-in{max-width:520px;margin:0 auto}
+.se-list{margin-top:26px;display:flex;flex-direction:column;gap:12px}
+.se-r{display:flex;align-items:center;gap:14px;background:#17171c;border:1px solid #2a2a33;border-radius:20px;padding:14px 16px}
+.se-ic{flex:none;width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;background:rgba(139,92,246,.14);border:1px solid rgba(139,92,246,.28)}
+.se-t{flex:1;min-width:0;font-size:17px;font-weight:700}
+.se-tg{min-width:72px;padding:9px 16px;border-radius:999px;border:1px solid #3a3a46;background:#1f1f26;color:#9a9aa8;font-family:inherit;font-size:13px;font-weight:800;letter-spacing:.06em;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s}
+.se-tg.on{background:linear-gradient(135deg,#8b5cf6,#6d28d9);border-color:transparent;color:#fff;box-shadow:0 6px 18px rgba(139,92,246,.4)}

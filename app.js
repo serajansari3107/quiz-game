@@ -31,17 +31,18 @@ const SFX={
 };
 function openMenu(){
  const ov=document.createElement("div");ov.className="ov";
- ov.innerHTML='<div class="panel"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="btn" id="m1">📊 Stats (Best Score & History)</button><button class="btn" id="m2">⚙️ Settings</button></div>';
+ ov.innerHTML='<div class="panel mnu-d"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="mnu-i" id="m1"><span class="mnu-ic">📊</span><span class="mnu-t"><b>Stats</b><small>Best Score & History</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m2"><span class="mnu-ic">⚙️</span><span class="mnu-t"><b>Settings</b><small>Sound & Vibration</small></span><span class="hm-go">›</span></button></div>';
  document.body.appendChild(ov);
  ov.querySelector(".x").onclick=()=>ov.remove();
+ ov.className="ov mnu";ov.onclick=e=>{if(e.target===ov)ov.remove()};
  ov.querySelector("#m1").onclick=()=>{ov.remove();stats()};
  ov.querySelector("#m2").onclick=()=>{ov.remove();settings()};
 }
 function settings(){
- const row=(k,ic,t)=>`<div class="card hrow"><span>${ic} ${t}</span><button class="btn" data-k="${k}" style="width:auto;margin:0 0 0 auto;padding:8px 20px;font-size:15px;opacity:${SET[k]?1:.55}">${SET[k]?"ON":"OFF"}</button></div>`;
- app.innerHTML=`<div class="top"><button class="x" id="sb">← Home</button><span>⚙️ Settings</span><span></span></div>`+row("snd","🔊","Sound")+row("vib","📳","Vibration");
+ const row=(k,ic,t)=>`<div class="se-r"><span class="se-ic">${ic}</span><span class="se-t">${t}</span><button class="se-tg${SET[k]?" on":""}" data-k="${k}">${SET[k]?"ON":"OFF"}</button></div>`;
+ app.innerHTML=`<div class="se"><div class="se-in"><div class="st-bar"><button class="hm-chip" id="sb">← Home</button><span class="sm-cat">⚙️ Settings</span></div><div class="se-list">`+row("snd","🔊","Sound")+row("vib","📳","Vibration")+`</div></div></div>`;
  $("#sb").onclick=home;
- app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{const k=b.dataset.k;SET[k]=SET[k]?0:1;saveSet();unlockA();if(k==="snd"&&SET.snd)SFX.ok();if(k==="vib")vib(60);b.textContent=SET[k]?"ON":"OFF";b.style.opacity=SET[k]?1:.55});
+ app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{const k=b.dataset.k;SET[k]=SET[k]?0:1;saveSet();unlockA();if(k==="snd"&&SET.snd)SFX.ok();if(k==="vib")vib(60);b.textContent=SET[k]?"ON":"OFF";b.classList.toggle("on",!!SET[k])});
 }
 const gs=k=>{try{return JSON.parse(localStorage.getItem("seen_"+k))||[]}catch(e){return[]}};
 const ss=(k,a)=>{try{localStorage.setItem("seen_"+k,JSON.stringify(a))}catch(e){}};
