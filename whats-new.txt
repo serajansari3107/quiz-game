@@ -3,6 +3,9 @@ window.WN_TXT=(function(){/*
 New:
 + Brand new premium dark Home screen with purple accents and category cards
 
+Improved:
++ Redesigned Select Mode screen with premium dark purple cards and a bigger Start Quiz button
+
 ## v1.5 | 20 Oct 2026
 New:
 + New Select Mode screen with 5, 10 or 20 questions and a Play button

@@ -66,7 +66,7 @@ function home(){stopT();
 }
 function selMode(m){
  const draw=()=>{
-  app.innerHTML=`<div class="top"><button class="x" id="sb">← Home</button><span>${BANK[m].name}</span><span></span></div><h1 style="margin-top:20px">Select Mode</h1><div class="tabs">${[5,10,20].map(n=>`<button data-n="${n}" class="${n===QN?"on":""}">${n} Questions</button>`).join("")}</div><div class="sub" style="margin-bottom:20px">${modeInfo()}</div><button class="btn" id="pl">▶ Play</button>`;
+  app.innerHTML=`<div class="sm"><div class="sm-in"><div class="sm-bar"><button class="hm-chip" id="sb">← Home</button><span class="sm-cat">${BANK[m].name}</span></div><div class="sm-hd"><h1>Select Mode</h1><p>Choose how many questions you want to play</p></div><div class="sm-opts">${[5,10,20].map(n=>`<button class="sm-opt${n===QN?" on":""}" data-n="${n}"><span class="sm-n">${n}</span><span class="sm-t"><b>${n} Questions</b><small>${MODES[n].max} marks</small></span><span class="sm-ck"></span></button>`).join("")}</div><p class="sm-info">${modeInfo()}</p><button class="sm-go" id="pl">▶ Start Quiz</button></div></div>`;
   $("#sb").onclick=home;
   $("#pl").onclick=()=>start(m);
   app.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{setQN(+b.dataset.n);LW("qn",QN);draw()});
