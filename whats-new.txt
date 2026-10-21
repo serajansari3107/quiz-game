@@ -4,6 +4,7 @@ Improved:
 + Brand new premium dark Home screen with purple accents and category cards
 + Redesigned Select Mode screen with premium dark purple cards and a bigger Start Quiz button
 + Redesigned question screen with premium dark purple look, clearer answer feedback, and modern timer and lives
++ Redesigned results screen with score card, accuracy, points, correct and wrong stats
 
 ## v1.5 | 20 Oct 2026
 New:

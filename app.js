@@ -114,9 +114,9 @@ function pick(b,d){stopT();
 function end(){stopT();wrong>=MAXW?SFX.over():SFX.win();
  const p=Math.round(score/MAX*100);
  {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,n:QN,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));{const S=LS("sum",{}),sk=mode+"_"+QN,a=S[sk]||{r:0,q:0,c:0,w:0,p:0};a.r++;a.q+=right+wrong;a.c+=right;a.w+=wrong;a.p+=score;a.f=(a.f||0)+(right===QN?1:0);S[sk]=a;LW("sum",S)}const bk=bestKey(mode,QN);if(score>LS(bk,0))LW(bk,score)}
- app.innerHTML=`<h1>${wrong>=MAXW?"Game Over 💀":"Round Over!"}</h1><div class="big">${score}/${MAX}</div>
- <div class="c">${right}/${QN} Correct · ${p}% marks<br><br>${p<=20?"Don't give up, keep practicing! 💪":p<50?"Not bad, you can do better! 🙂":p<=70?"Good job, nice effort! 👍":p<=90?"Great work, almost there! 🔥":p<100?"Excellent! So close to perfect! 🏆":"PERFECT 100! You are a legend! 👑"}</div><br>
- <button class="btn" id="again">New Round (New questions)</button><button class="btn" id="hm">Home</button>`;
+ app.innerHTML=`<div class="rs"><div class="rs-in"><h1>${wrong>=MAXW?"Game Over 💀":"Round khatam!"}</h1><div class="rs-hero"><div class="rs-score">${score}<small>/${MAX}</small></div><div class="rs-bar"><i style="width:${Math.min(100,p)}%"></i></div><div class="rs-pc">${p}% marks</div></div><div class="rs-grid"><div class="rs-c"><small>Accuracy</small><b>${right+wrong?Math.round(right/(right+wrong)*100):0}%</b></div><div class="rs-c"><small>Points</small><b>${score}</b></div><div class="rs-c ok"><small>Correct</small><b>${right}/${QN}</b></div><div class="rs-c bad"><small>Wrong</small><b>${wrong}</b></div></div>
+ <div class="rs-msg">${p<=20?"Don't give up, keep practicing! 💪":p<50?"Not bad, you can do better! 🙂":p<=70?"Good job, nice effort! 👍":p<=90?"Great work, almost there! 🔥":p<100?"Excellent! So close to perfect! 🏆":"PERFECT 100! You are a legend! 👑"}</div><br>
+ <button class="rs-b1" id="again">New Round (New questions)</button><button class="rs-b2" id="hm">Home</button></div></div>`;
  $("#again").onclick=()=>start(mode);$("#hm").onclick=home;
 }
 
