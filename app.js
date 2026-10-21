@@ -120,10 +120,18 @@ function end(){stopT();wrong>=MAXW?SFX.over():SFX.win();
  $("#again").onclick=()=>start(mode);$("#hm").onclick=home;
 }
 
+function openRT(){
+ const ov=document.createElement("div");ov.className="ov rtm";
+ ov.innerHTML='<div class="rtm-box"><div class="rtm-h"><h2>🏅 Rating Criteria</h2><button class="hm-chip" id="rtx">Close</button></div><div class="rtm-w"><table class="rtm-t"><thead><tr><th>Rating</th><th>Min Accuracy</th><th>Min Rounds</th></tr></thead><tbody>'+RATINGS.map(t=>"<tr><td>"+t[0]+"</td><td>"+t[1]+"%</td><td>"+t[2]+"</td></tr>").join("")+'</tbody></table></div><p class="rtm-n">You need both the minimum accuracy and the minimum rounds to earn a rating.</p></div>';
+ document.body.appendChild(ov);
+ const cl=()=>ov.remove();
+ ov.querySelector("#rtx").onclick=cl;
+ ov.onclick=e=>{if(e.target===ov)cl()};
+}
 let sumQ="all",sumN="all";
 const RATINGS=[["👑 Quiz Legend",95,200],["🏆 Master",85,100],["🎖️ Expert",75,50],["⭐ Advanced",60,30],["⚔️ Challenger",40,20],["🌱 Rookie",0,10]];
 const getRating=(ac,r)=>{const a=RATINGS.find(t=>ac>=t[1]&&r>=t[2]),n=RATINGS.find(t=>ac>=t[1]);return[a?a[0]:"🔒 Unranked",a===n?"":(n[2]-r)+" more rounds needed for "+n[0].replace(/^\S+\s/,"")]};
-const rateRow=(ac,r)=>{const g=getRating(ac,r);return `<div class="card hrow st-rate"><span>Quiz Arena Rating</span><b>${g[0]}</b>${g[1]?`<small>${g[1]}</small>`:""}</div>`};
+const rateRow=(ac,r)=>{const g=getRating(ac,r);return `<div class="card hrow st-rate" id="rtc"><span>Quiz Arena Rating ⓘ</span><b>${g[0]}</b>${g[1]?`<small>${g[1]}</small>`:""}</div>`};
 function sumHTML(){
  const S=LS("sum",{}),t={r:0,q:0,c:0,w:0,p:0,f:0};
  Object.keys(S).forEach(k=>{const j=k.lastIndexOf("_"),m=k.slice(0,j),n=k.slice(j+1);if((sumQ==="all"||sumQ===m)&&(sumN==="all"||sumN===n))for(const f in t)t[f]+=S[k][f]||0});
@@ -142,7 +150,7 @@ function stats(tab){
   body=tab==="sum"?sumHTML():H.length?H.map(x=>`<div class="card hrow"><span>${BANK[x.m]?BANK[x.m].name:x.m}</span><b>${x.s}/${MODES[x.n||20].max}</b><small>${x.r}/${x.n||20} Correct · ${x.d}</small></div>`).join(""):'<div class="st-empty"><div>🕘</div><b>No rounds played yet</b><small>Finish a round and it will show up here.</small></div>';
  }
  app.innerHTML=`<div class="st"><div class="st-in"><div class="st-bar"><button class="hm-chip" id="sb">← Home</button><span class="sm-cat">📊 Stats</span></div><div class="tabs"><button class="${tab==="best"?"on":""}" id="t1">🏆 Best Score</button><button class="${tab==="hist"?"on":""}" id="t2">🕘 History (last 10)</button><button class="${tab==="sum"?"on":""}" id="t3">📈 Summary</button></div>`+body+`</div></div>`;
- $("#sb").onclick=home;$("#t1").onclick=()=>stats("best");$("#t2").onclick=()=>stats("hist");$("#t3").onclick=()=>stats("sum");if(tab==="sum"){$("#sq").onchange=e=>{sumQ=e.target.value;stats("sum")};$("#sn").onchange=e=>{sumN=e.target.value;stats("sum")}}
+ $("#sb").onclick=home;$("#t1").onclick=()=>stats("best");$("#t2").onclick=()=>stats("hist");$("#t3").onclick=()=>stats("sum");if(tab==="sum"){$("#sq").onchange=e=>{sumQ=e.target.value;stats("sum")};$("#sn").onchange=e=>{sumN=e.target.value;stats("sum")};$("#rtc").onclick=openRT}
 }
 // ---- What's New screen: reads whats-new.txt (newest version first) ----
 const loadWN=()=>fetch("whats-new.txt").then(r=>{if(!r.ok)throw 0;return r.text()}).catch(()=>new Promise((ok,no)=>{const s=document.createElement("script");s.src="whats-new.txt";s.onload=()=>window.WN_TXT?ok(window.WN_TXT):no();s.onerror=no;document.head.appendChild(s)}));
