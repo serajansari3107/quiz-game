@@ -77,12 +77,12 @@ function start(m){unlockA();mode=m;qs=build(m);i=0;score=0;right=0;skipped=0;wro
 function show(){
  const d=qs[i];locked=false;stopT();tl=TIME;
  const opts=shuf([d[1],...d[2]]);
- app.innerHTML=`<div class="top"><span>${BANK[mode].name}</span><span>Marks ${score} · ${"❤️".repeat(MAXW-wrong)}${"🖤".repeat(wrong)}</span><button id="qt" style="background:#7a1f33;color:#fff;border:0;border-radius:8px;padding:5px 12px">Quit</button></div>
+ app.innerHTML=`<div class="qz"><div class="qz-in"><div class="qz-top"><button id="qt" class="hm-chip">✕ Quit</button><div class="qz-st"><span class="qz-pill">Marks ${score}</span><span class="qz-pill">${"❤️".repeat(MAXW-wrong)}</span></div></div>
  <div class="bar"><i style="width:${i/qs.length*100}%"></i></div>
- <div class="top"><span>Question ${i+1}/${qs.length}</span><span class="badge">${LB[d[4]]} · ${MK[d[4]]} mark${MK[d[4]]>1?"s":""}</span></div>
- <div class="q">${d[0]}</div>`+`<div class="ll"><span class="tmt" id="tmt">⏱ ${TIME}s</span><button id="lc" ${ll.c?"":"disabled"} style="padding:7px 10px">🔄</button><button id="l5" ${ll.f?"":"disabled"}>50-50</button><button id="ls" ${ll.s?"":"disabled"}>Skip</button></div>`+
+ <div class="qz-prog"><span>Question ${i+1}/${qs.length}</span><span class="badge">${LB[d[4]]} · ${MK[d[4]]} mark${MK[d[4]]>1?"s":""}</span></div>
+ <div class="qz-card"><small class="qz-cat">${BANK[mode].name}</small><div class="q">${d[0]}</div></div>`+`<div class="ll"><span class="tmt" id="tmt">⏱ ${TIME}s</span><button id="lc" ${ll.c?"":"disabled"} style="padding:7px 10px">🔄</button><button id="l5" ${ll.f?"":"disabled"}>50-50</button><button id="ls" ${ll.s?"":"disabled"}>Skip</button></div>`+
  opts.map(o=>`<button class="opt">${o}</button>`).join("")+
- `<div class="info hide" id="info"></div><button class="btn hide" id="nx" style="font-size:17px;padding:15px">Next →</button>`;
+ `<div class="info hide" id="info"></div><button class="qz-nx hide" id="nx">Next →</button></div></div>`;
  $("#qt").onclick=()=>{if(confirm("Want to quit? Scores will not be saved."))home()};
  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pick(b,d));
  tm=setInterval(()=>{tl--;const t=$("#tmt");if(t){t.textContent="⏱ "+tl+"s";if(tl<=5){t.classList.add("low");if(tl>0)SFX.tick()}}if(tl<=0){stopT();timeUp(d)}},1000);
