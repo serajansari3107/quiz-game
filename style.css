@@ -199,7 +199,7 @@ body{position:relative}
 .st-c small{display:block;color:#9a9aa8;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .st-c b{display:block;margin-top:auto;padding-top:6px;font-size:24px;font-weight:800;color:#f2f2f7}
 .st-c b.z{color:#5f5f6e}
-.st-grid .st-c:last-child{grid-column:1/-1}
+@media (max-width:639px){.st-grid .st-c:last-child{grid-column:1/-1}}
 .st-empty{text-align:center;padding:40px 20px;background:#17171c;border:1px dashed #2a2a33;border-radius:20px;margin-top:6px}
 .st-empty div{font-size:34px;margin-bottom:10px}
 .st-empty b{display:block;font-size:17px;color:#f2f2f7}

@@ -10,6 +10,10 @@ Improved:
 + Redesigned Menu as a side drawer and Settings screen with the premium dark purple theme
 + Final polish: larger touch targets, subtle hover and focus effects, matching theme colors
 + Stats tabs reordered to Summary, Best Score, History
++ Back button in Stats and Settings now returns to the Menu drawer
+
+New:
++ Longest Perfect Streak and User Since added to Stats Summary
 
 ## v1.5 | 20 Oct 2026
 New:
