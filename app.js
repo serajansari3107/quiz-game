@@ -31,7 +31,7 @@ const SFX={
 };
 function openMenu(){
  const ov=document.createElement("div");ov.className="ov";
- ov.innerHTML='<div class="panel mnu-d"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="mnu-i" id="m1"><span class="mnu-ic">📊</span><span class="mnu-t"><b>Stats</b><small>Best Score & History</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m2"><span class="mnu-ic">⚙️</span><span class="mnu-t"><b>Settings</b><small>Sound & Vibration</small></span><span class="hm-go">›</span></button></div>';
+ ov.innerHTML='<div class="panel mnu-d"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="mnu-i" id="m1"><span class="mnu-ic">📊</span><span class="mnu-t"><b>Stats</b><small>Summary & History</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m2"><span class="mnu-ic">⚙️</span><span class="mnu-t"><b>Settings</b><small>Sound & Vibration</small></span><span class="hm-go">›</span></button></div>';
  document.body.appendChild(ov);
  ov.querySelector(".x").onclick=()=>ov.remove();
  ov.className="ov mnu";ov.onclick=e=>{if(e.target===ov)ov.remove()};
@@ -142,7 +142,7 @@ function sumHTML(){
  return '<div style="display:flex;gap:8px;margin-bottom:14px">'+sel("sq",sumQ,[["all","All time"]].concat(Object.keys(BANK).map(k=>[k,BANK[k].name])),1.6)+sel("sn",sumN,[["all","All"],["5","5"],["10","10"],["20","20"]],1)+'</div><div class="st-grid">'+row("Total Rounds Played",t.r)+row("Questions Played",t.q)+row("Correct Answers",t.c)+row("Wrong Answers",t.w)+row("Points Secured",rd(t.p))+row("Accuracy Rate",acc+"%")+row("Perfect Rounds",t.f)+'</div>'+rateRow(t.q?t.c/t.q*100:0,t.r);
 }
 function stats(tab){
- tab=tab||"best";
+ tab=tab||"sum";
  const H=LS("hist",[]);
  let body="";
  if(tab==="best"){
@@ -150,7 +150,7 @@ function stats(tab){
  }else{
   body=tab==="sum"?sumHTML():H.length?H.map(x=>`<div class="card hrow"><span>${BANK[x.m]?BANK[x.m].name:x.m}</span><b>${x.s}/${MODES[x.n||20].max}</b><small>${x.r}/${x.n||20} Correct · ${x.d}</small></div>`).join(""):'<div class="st-empty"><div>🕘</div><b>No rounds played yet</b><small>Finish a round and it will show up here.</small></div>';
  }
- app.innerHTML=`<div class="st"><div class="st-in"><div class="st-bar"><button class="hm-chip" id="sb">← Home</button><span class="sm-cat">📊 Stats</span></div><div class="tabs"><button class="${tab==="best"?"on":""}" id="t1">🏆 Best Score</button><button class="${tab==="hist"?"on":""}" id="t2">🕘 History (last 10)</button><button class="${tab==="sum"?"on":""}" id="t3">📈 Summary</button></div>`+body+`</div></div>`;
+ app.innerHTML=`<div class="st"><div class="st-in"><div class="st-bar"><button class="hm-chip" id="sb">← Home</button><span class="sm-cat">📊 Stats</span></div><div class="tabs"><button class="${tab==="sum"?"on":""}" id="t3">📈 Summary</button><button class="${tab==="best"?"on":""}" id="t1">🏆 Best Score</button><button class="${tab==="hist"?"on":""}" id="t2">🕘 History (last 10)</button></div>`+body+`</div></div>`;
  $("#sb").onclick=home;$("#t1").onclick=()=>stats("best");$("#t2").onclick=()=>stats("hist");$("#t3").onclick=()=>stats("sum");if(tab==="sum"){$("#sq").onchange=e=>{sumQ=e.target.value;stats("sum")};$("#sn").onchange=e=>{sumN=e.target.value;stats("sum")};$("#rtc").onclick=openRT}
 }
 // ---- What's New screen: reads whats-new.txt (newest version first) ----

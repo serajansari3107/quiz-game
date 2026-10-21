@@ -265,3 +265,25 @@ body{position:relative}
 .se-t{flex:1;min-width:0;font-size:17px;font-weight:700}
 .se-tg{min-width:72px;padding:9px 16px;border-radius:999px;border:1px solid #3a3a46;background:#1f1f26;color:#9a9aa8;font-family:inherit;font-size:13px;font-weight:800;letter-spacing:.06em;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s}
 .se-tg.on{background:linear-gradient(135deg,#8b5cf6,#6d28d9);border-color:transparent;color:#fff;box-shadow:0 6px 18px rgba(139,92,246,.4)}
+/* ===== Final polish ===== */
+html{color-scheme:dark}
+body{background:#0e0e11}
+.inst{background:linear-gradient(135deg,#8b5cf6,#6d28d9);box-shadow:0 10px 30px rgba(139,92,246,.4),inset 0 1px 0 rgba(255,255,255,.25)}
+.hm-chip{min-height:40px;transition:background .2s,border-color .2s,color .2s}
+.sm-cat{display:inline-flex;align-items:center;min-height:40px}
+.mnu-d .x,.wnp .x{min-height:40px}
+.se-tg{min-height:40px}
+.qz .ll button{height:38px}
+.qz .tmt{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding-top:0;padding-bottom:0}
+.ov.upd .later{padding:10px 18px;min-height:40px}
+.hm .ver{color:#8a8a9a}
+.sm-go,.qz-nx,.rs-b1{transition:transform .15s,filter .2s,box-shadow .2s}
+@media (hover:hover){
+.hm-chip:hover{border-color:rgba(139,92,246,.6);color:#fff}
+.sm-go:hover,.qz-nx:hover,.rs-b1:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.rs-b2:hover,.mnu-d .x:hover,.wnp .x:hover,.qz .ll button:hover:not(:disabled){border-color:rgba(139,92,246,.6)}
+.st .tabs button:not(.on):hover,.ov.upd .later:hover{color:#e6e6f0}
+.se-tg:not(.on):hover{border-color:rgba(139,92,246,.6);color:#e6e6f0}
+}
+.hm-chip:focus-visible,.hm-card:focus-visible,.sm-opt:focus-visible,.sm-go:focus-visible,.qz .opt:focus-visible,.qz-nx:focus-visible,.qz .ll button:focus-visible,.rs-b1:focus-visible,.rs-b2:focus-visible,.st .tabs button:focus-visible,.st select:focus-visible,.mnu-i:focus-visible,.mnu-d .x:focus-visible,.wnp .x:focus-visible,.se-tg:focus-visible,.ov.upd .btn:focus-visible,.ov.upd .later:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}

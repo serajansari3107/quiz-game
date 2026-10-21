@@ -8,6 +8,8 @@ Improved:
 + Stats dashboard, What's New and update popup redesigned with the premium dark purple theme
 + Tap the Quiz Arena Rating card in Stats to see all rating criteria (minimum accuracy and rounds) in a table
 + Redesigned Menu as a side drawer and Settings screen with the premium dark purple theme
++ Final polish: larger touch targets, subtle hover and focus effects, matching theme colors
++ Stats tabs reordered to Summary, Best Score, History
 
 ## v1.5 | 20 Oct 2026
 New:
