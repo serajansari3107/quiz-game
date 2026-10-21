@@ -1,4 +1,8 @@
 window.WN_TXT=(function(){/*
+## v1.6 | 21 Oct 2026
+New:
++ Brand new premium dark Home screen with purple accents and category cards
+
 ## v1.5 | 20 Oct 2026
 New:
 + New Select Mode screen with 5, 10 or 20 questions and a Play button

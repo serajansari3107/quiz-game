@@ -57,12 +57,12 @@ function build(m){
  return shuf(out);
 }
 function home(){stopT();
- app.innerHTML=`<button id="mn" class="wn" style="right:auto;left:14px">☰ Menu</button><button id="wn" class="wn">🆕 What’s New${VER?" · v"+VER:""}</button><h1>🎯 Quiz Arena</h1><div class="sub">Challenge Your Mind. Prove Your Knowledge.</div>`+
- Object.keys(BANK).map(k=>`<button class="btn" data-m="${k}">${BANK[k].name}<div style="font-size:13px;font-weight:400;color:#9fb8f0;margin-top:4px">${BANK[k].q.length} questions in bank</div></button>`).join("");
+ app.innerHTML=`<div class="hm"><div class="hm-in"><div class="hm-bar"><button id="mn" class="hm-chip">☰ Menu</button><button id="wn" class="hm-chip">🆕 What’s New${VER?" · v"+VER:""}</button></div><div class="hm-hero"><div class="hm-logo">🎯</div><h1>Quiz Arena</h1><p>Challenge Your Mind. Prove Your Knowledge.</p></div><div class="hm-label">Choose a category</div><div class="hm-grid">`+
+ Object.keys(BANK).map(k=>{const nm=BANK[k].name,e=nm.match(/^(\p{Extended_Pictographic}\S*)\s+(.+)$/u);return`<button class="hm-card" data-m="${k}"><span class="hm-ic">${e?e[1]:"📚"}</span><span class="hm-tx"><b>${e?e[2]:nm}</b><small>${BANK[k].q.length} questions</small></span><span class="hm-go">›</span></button>`}).join("")+`</div></div></div>`;
  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>selMode(b.dataset.m));
  $("#wn").onclick=openWN;$("#mn").onclick=openMenu;
  app.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{setQN(+b.dataset.n);LW("qn",QN);home()});
- app.insertAdjacentHTML("beforeend",`<div class="ver">${VER?"Version "+VER:""}</div>`);
+ $(".hm-in").insertAdjacentHTML("beforeend",`<div class="ver">${VER?"Version "+VER:""}</div>`);
 }
 function selMode(m){
  const draw=()=>{
