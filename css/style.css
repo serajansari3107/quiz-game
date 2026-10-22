@@ -305,4 +305,41 @@ body{background:#0e0e11}
 body:not(:has(.hm)) .inst,body:has(.ov) .inst{display:none}
 /* Update popup: full latest-release list scrolls inside the card */
 .ov.upd .ucard ul{max-height:calc(100vh - 340px);min-height:72px;overflow-y:auto;margin-bottom:14px}
+/* Step 8 Part 1: Welcome screen */
+.wl{position:fixed;inset:0;z-index:2;overflow-y:auto;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 55% at 50% 0,rgba(139,92,246,.18),transparent 62%),#0e0e11;padding:calc(20px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Inter,system-ui,sans-serif;color:#f2f2f7}
+.wl-in{width:100%;max-width:420px;text-align:center;margin:auto}
+.wl-logo{width:84px;height:84px;margin:0 auto 20px;border-radius:26px;display:flex;align-items:center;justify-content:center;font-size:40px;background:linear-gradient(145deg,#8b5cf6,#5b21b6);box-shadow:0 10px 30px rgba(139,92,246,.4),inset 0 1px 0 rgba(255,255,255,.25)}
+.wl h1{margin:0;font-size:36px;font-weight:800;letter-spacing:-.02em;background:linear-gradient(90deg,#fff,#c4b5fd);-webkit-background-clip:text;background-clip:text;color:transparent}
+.wl p{margin:10px 0 0;color:#9a9aa8;font-size:15px}
+.wl-btns{margin-top:34px}
+.wl-b1{display:block;width:100%;padding:18px;border:0;border-radius:18px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;font-family:inherit;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 10px 30px rgba(139,92,246,.4),inset 0 1px 0 rgba(255,255,255,.25)}
+.wl-b2{display:block;width:100%;margin-top:12px;padding:16px;border-radius:18px;background:transparent;border:1px solid #2a2a33;color:#e6e6f0;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer}
+.wl-b1:active,.wl-b2:active{transform:scale(.98)}
+.wl-b2:active{border-color:#8b5cf6;background:rgba(139,92,246,.12)}
+.wl-b1:focus-visible,.wl-b2:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}
+.wl-note{min-height:20px;margin-top:16px;color:#a78bfa;font-size:14px}
+.wl-code{margin:4px 0 14px;padding:16px 12px;background:#0f0f14;border:1px dashed #8b5cf6;border-radius:14px;color:#f2f2f7;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:clamp(14px,4.4vw,18px);font-weight:700;letter-spacing:.04em;text-align:center;word-break:break-all;user-select:all}
+.wl-chk{display:flex;gap:10px;align-items:flex-start;margin:0 0 16px;color:#b4b4c2;font-size:14px;line-height:1.45;text-align:left;cursor:pointer}
+.wl-chk input{margin-top:2px;width:18px;height:18px;flex:none;accent-color:#8b5cf6}
+.wl-b1:disabled{opacity:.45;cursor:not-allowed}
+.wl-form .wl-back{display:block;margin:0 auto 22px 0}
+.wl-form .wl-logo{width:64px;height:64px;font-size:30px;margin-bottom:14px;border-radius:20px}
+.wl-form h1{font-size:30px}
+.wl-fld{margin-top:18px;text-align:left}
+.wl-fld label{display:block;margin:0 0 8px 2px;color:#b4b4c2;font-size:13px;font-weight:600}
+.wl-fld input{display:block;width:100%;padding:15px 16px;border-radius:14px;border:1px solid #2a2a33;background:#17171c;color:#f2f2f7;font-family:inherit;font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s}
+.wl-fld input::placeholder{color:#6b6b7b}
+.wl-fld input:focus{border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,.18)}
+.wl-pw{position:relative}
+.wl-pw input{padding-right:76px}
+.wl-eye{position:absolute;top:50%;right:8px;transform:translateY(-50%);min-height:36px;padding:0 12px;border:0;border-radius:10px;background:transparent;color:#a78bfa;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.wl-link{display:block;margin:12px 2px 22px auto;padding:6px 2px;border:0;background:transparent;color:#a78bfa;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.wl-eye:focus-visible,.wl-link:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}
+.wl-hint{margin:12px 2px 22px;text-align:left;color:#9a9aa8;font-size:13px;line-height:1.5}
+.wl-fld+.wl-b1{margin-top:22px}
+.wl-pop{position:fixed;inset:0;z-index:9;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(5,5,8,.78)}
+.wl-card{width:100%;max-width:380px;max-height:100%;overflow-y:auto;background:#17171c;border:1px solid #2a2a33;border-radius:22px;padding:24px 20px;text-align:center;color:#f2f2f7;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.wl-ic{font-size:34px}
+.wl-card h2{margin:8px 0 10px;font-size:22px}
+.wl-card p{margin:0 0 20px;color:#b4b4c2;font-size:15px;line-height:1.55}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
