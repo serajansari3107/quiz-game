@@ -32,12 +32,13 @@ const SFX={
 };
 function openMenu(){
  const ov=document.createElement("div");ov.className="ov";
- ov.innerHTML='<div class="panel mnu-d"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="mnu-i" id="m1"><span class="mnu-ic">📊</span><span class="mnu-t"><b>Stats</b><small>Summary & History</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m2"><span class="mnu-ic">⚙️</span><span class="mnu-t"><b>Settings</b><small>Sound & Vibration</small></span><span class="hm-go">›</span></button></div>';
+ ov.innerHTML='<div class="panel mnu-d"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="mnu-i" id="m1"><span class="mnu-ic">📊</span><span class="mnu-t"><b>Stats</b><small>Summary & History</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m2"><span class="mnu-ic">⚙️</span><span class="mnu-t"><b>Settings</b><small>Sound & Vibration</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m3"><span class="mnu-ic">👤</span><span class="mnu-t"><b>Account</b><small>Profile & Logout</small></span><span class="hm-go">›</span></button></div>';
  document.body.appendChild(ov);
  ov.querySelector(".x").onclick=()=>ov.remove();
  ov.className="ov mnu";ov.onclick=e=>{if(e.target===ov)ov.remove()};
  ov.querySelector("#m1").onclick=()=>{ov.remove();stats()};
  ov.querySelector("#m2").onclick=()=>{ov.remove();settings()};
+ ov.querySelector("#m3").onclick=()=>{ov.remove();accountScr()};
 }
 const toMenu=()=>{home();openMenu()};
 function settings(){const home=toMenu;
@@ -59,7 +60,7 @@ function build(m){
  ss(m,seen.concat(out.map(x=>x[0])));
  return shuf(out);
 }
-function home(){stopT();
+function home(){if(!BOOTED){BOOTED=1;return welcome()}stopT();
  app.innerHTML=`<div class="hm"><div class="hm-in"><div class="hm-bar"><button id="mn" class="hm-chip">☰ Menu</button><button id="wn" class="hm-chip">🆕 What’s New${VER?" · v"+VER:""}</button></div><div class="hm-hero"><div class="hm-logo">🎯</div><h1>Quiz Arena</h1><p>Challenge Your Mind. Prove Your Knowledge.</p></div><div class="hm-label">Choose a category</div><div class="hm-grid">`+
  Object.keys(BANK).map(k=>{const nm=BANK[k].name,e=nm.match(/^(\p{Extended_Pictographic}\S*)\s+(.+)$/u);return`<button class="hm-card" data-m="${k}"><span class="hm-ic">${e?e[1]:"📚"}</span><span class="hm-tx"><b>${e?e[2]:nm}</b><small>${BANK[k].q.length} questions</small></span><span class="hm-go">›</span></button>`}).join("")+`</div></div></div>`;
  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>selMode(b.dataset.m));
@@ -116,7 +117,7 @@ function pick(b,d){stopT();
 }
 function end(){stopT();wrong>=MAXW?SFX.over():SFX.win();
  const p=Math.round(score/MAX*100);
- {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,n:QN,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));{const S=LS("sum",{}),sk=mode+"_"+QN,a=S[sk]||{r:0,q:0,c:0,w:0,p:0};a.r++;a.q+=right+wrong;a.c+=right;a.w+=wrong;a.p+=score;a.f=(a.f||0)+(right===QN?1:0);S[sk]=a;LW("sum",S)}upStr(mode,QN,right===QN);const bk=bestKey(mode,QN);if(score>LS(bk,0))LW(bk,score)}
+ {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,n:QN,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));{const S=LS("sum",{}),sk=mode+"_"+QN,a=S[sk]||{r:0,q:0,c:0,w:0,p:0};a.r++;a.q+=right+wrong;a.c+=right;a.w+=wrong;a.p+=score;a.f=(a.f||0)+(right===QN?1:0);S[sk]=a;LW("sum",S)}upStr(mode,QN,right===QN);const bk=bestKey(mode,QN);if(score>LS(bk,0))LW(bk,score)}evAdd(mode,QN,right,wrong,score);
  app.innerHTML=`<div class="rs"><div class="rs-in"><h1>${wrong>=MAXW?"Game Over 💀":"Round khatam!"}</h1><div class="rs-hero"><div class="rs-score">${score}<small>/${MAX}</small></div><div class="rs-bar"><i style="width:${Math.min(100,p)}%"></i></div><div class="rs-pc">${p}% marks</div></div><div class="rs-grid"><div class="rs-c"><small>Accuracy</small><b>${right+wrong?Math.round(right/(right+wrong)*100):0}%</b></div><div class="rs-c"><small>Points</small><b>${score}</b></div><div class="rs-c ok"><small>Correct</small><b>${right}/${QN}</b></div><div class="rs-c bad"><small>Wrong</small><b>${wrong}</b></div></div>
  <div class="rs-msg">${p<=20?"Don't give up, keep practicing! 💪":p<50?"Not bad, you can do better! 🙂":p<=70?"Good job, nice effort! 👍":p<=90?"Great work, almost there! 🔥":p<100?"Excellent! So close to perfect! 🏆":"PERFECT 100! You are a legend! 👑"}</div><br>
  <button class="rs-b1" id="again">New Round (New questions)</button><button class="rs-b2" id="hm">Home</button></div></div>`;
@@ -218,6 +219,198 @@ async function applyUpd(){
  const h=await (await fetch(q("index.html"),{cache:"reload"})).text();
  const u=[...h.matchAll(/(?:src|href)="([^":#]+)"/g)].map(m=>m[1]);
  await Promise.all([...new Set(["./","index.html","whats-new.txt","manifest.json","assets/icon-192.png","assets/icon-512.png",...u])].map(f=>fetch(q(f),{cache:"reload"}).then(r=>{if(r.ok)return c.put(f,r)})));
+}
+// ---- Step 8 Part 6: Backend connect (signup / login / session refresh) ----
+const API_URL="https://quiz-arena-api-goc7.onrender.com";
+const devId=()=>{let d=LS("dev_id","");if(!d){d=(self.crypto&&crypto.randomUUID)?crypto.randomUUID():"d"+Date.now().toString(36)+Math.random().toString(36).slice(2,10);LW("dev_id",d)}return d};
+async function api(path,body,tok){
+ const ac=new AbortController(),t=setTimeout(()=>ac.abort(),60000);
+ try{
+  const r=await fetch(API_URL+path,{method:"POST",headers:tok?{"Content-Type":"application/json",Authorization:"Bearer "+tok}:{"Content-Type":"application/json"},body:JSON.stringify(body),signal:ac.signal});
+  let j={};try{j=await r.json()}catch(e){}
+  return{ok:r.ok,status:r.status,data:j};
+ }catch(e){return{ok:false,status:0,data:{}}}
+ finally{clearTimeout(t)}
+}
+const authSave=d=>{LW("auth",{user:d.user,access:d.accessToken,refresh:d.refreshToken,exp:Date.now()+d.expiresIn*1000});LW("auth_mode","account");nsSwitch("u:"+d.user.id)};
+const authMsg=r=>r.status===0?"Can't reach server. Check your connection and try again.":(r.data&&r.data.error)||"Something went wrong. Try again.";
+let rfP=null;
+const sessionRefresh=()=>rfP||(rfP=sessionRefresh0().finally(()=>{rfP=null}));
+async function sessionRefresh0(){
+ const a=LS("auth",null);if(!a||!a.refresh)return;
+ const r=await api("/auth/refresh",{refreshToken:a.refresh});
+ if(r.ok){authSave(r.data);return true}
+ if(r.status===401){LW("auth","");LW("auth_mode","");nsSwitch("guest")}
+ return false
+}
+function recoveryScr(d){
+ app.innerHTML='<div class="wl"><div class="wl-in wl-form"><div class="wl-logo">🛡️</div><h1>Save Your Recovery Code</h1><p>This code is the only way to reset your password if you forget it. It is shown only once, so write it down or save it somewhere safe.</p><div class="wl-code" id="rcd"></div><button class="wl-b2" id="rcp" style="margin:0 0 16px">Copy Code</button><label class="wl-chk"><input type="checkbox" id="rck"><span>I have saved my recovery code</span></label><button class="wl-b1" id="rgo" disabled>Continue</button></div></div>';
+ $("#rcd").textContent=d.recoveryCode;
+ $("#rcp").onclick=()=>{try{navigator.clipboard.writeText(d.recoveryCode).then(()=>{$("#rcp").textContent="Copied ✓"},()=>{$("#rcp").textContent="Copy failed, select the code manually"})}catch(e){$("#rcp").textContent="Copy failed, select the code manually"}};
+ $("#rck").onchange=e=>{$("#rgo").disabled=!e.target.checked};
+ $("#rgo").onclick=()=>{authSave(d);home();syncNow()};
+}
+// ---- Step 8 Part 7: Account stats sync, stats namespaces, profile ----
+const uuid=()=>(self.crypto&&crypto.randomUUID)?crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==="x"?r:(r&3|8)).toString(16)});
+// Guest aur har account ki stats alag "namespace" mein; active wali hamesha same keys (hist/sum/pstr/best_*) par rehti hai.
+function nsSwitch(to){
+ const from=LS("stats_ns","guest");if(from===to)return;
+ try{
+  const ks=["hist","sum","pstr","outbox"];
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf("best_")===0)ks.push(k)}
+  ks.forEach(k=>{const v=localStorage.getItem(k);if(v!==null)localStorage.setItem("ns:"+from+":"+k,v);localStorage.removeItem(k)});
+  const pre="ns:"+to+":",mv=[];
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf(pre)===0)mv.push(k)}
+  mv.forEach(k=>{localStorage.setItem(k.slice(pre.length),localStorage.getItem(k));localStorage.removeItem(k)});
+ }catch(e){}
+ LW("stats_ns",to);
+}
+let syncT=null,syncBusy=false;
+function syncSoon(){if(LS("auth_mode","")!=="account")return;clearTimeout(syncT);syncT=setTimeout(syncNow,1500)}
+addEventListener("online",syncSoon);
+// end() se call hota hai; koi bhi error quiz ko nahi todta
+const evAdd=(m,n,r,w,s)=>{try{if(LS("auth_mode","")!=="account")return;const o=LS("outbox",[]);o.push({id:uuid(),m,n,r,w,s,t:Date.now()});LW("outbox",o);syncSoon()}catch(e){}};
+async function authedApi(path,body){
+ let a=LS("auth",null);if(!a)return{ok:false,status:0,data:{}};
+ if(a.exp-Date.now()<60000){if(!(await sessionRefresh()))return{ok:false,status:0,data:{}};a=LS("auth",null);if(!a)return{ok:false,status:0,data:{}}}
+ let r=await api(path,body,a.access);
+ if(r.status===401&&await sessionRefresh()){a=LS("auth",null);if(a)r=await api(path,body,a.access)}
+ return r;
+}
+// Guest ki stats (stash mein) ka ek-baar transfer; device par ek hi baar (bl_done)
+function guestBaseline(){
+ if(LS("bl_done",0))return null;
+ const g=k=>{try{return JSON.parse(localStorage.getItem("ns:guest:"+k))}catch(e){return null}};
+ const S=g("sum")||{},sum={},best={};
+ Object.keys(S).forEach(k=>{if(/^[a-z0-9_]+_(5|10|20)$/.test(k)){const a=S[k]||{};sum[k]={r:a.r|0,q:a.q|0,c:a.c|0,w:a.w|0,p:+a.p||0,f:a.f|0}}});
+ Object.keys(BANK).forEach(m=>[5,10,20].forEach(n=>{const v=+g(bestKey(m,n));if(v>0)best[m+"_"+n]=v}));
+ const hist=(g("hist")||[]).slice(0,10).map(x=>({m:String(x.m),s:+x.s||0,r:x.r|0,n:x.n||20,d:String(x.d||"")}));
+ return(Object.keys(sum).length||Object.keys(best).length||hist.length)?{sum,best,hist}:null;
+}
+function applySnap(d){
+ try{
+  const sum={},fmt=t=>new Date(t).toLocaleDateString("en-GB",{day:"2-digit",month:"short"});
+  Object.keys(BANK).forEach(m=>[5,10,20].forEach(n=>{
+   const x=(d.stats||{})[m+"_"+n];
+   if(x){sum[m+"_"+n]={r:x.r,q:x.q,c:x.c,w:x.w,p:x.p,f:x.f};if(x.b>0)LW(bestKey(m,n),x.b);else localStorage.removeItem(bestKey(m,n))}
+   else localStorage.removeItem(bestKey(m,n));
+  }));
+  LW("sum",sum);
+  LW("hist",(d.hist||[]).slice(0,10).map(x=>({m:x.m,s:x.s,r:x.r,n:x.n,d:x.d||fmt(x.t)})));
+  if(!LS("pstr",null))LW("pstr",bfStr());
+ }catch(e){}
+}
+async function syncNow(){
+ if(syncBusy||LS("auth_mode","")!=="account"||!navigator.onLine)return;
+ syncBusy=true;const ns=LS("stats_ns","guest");
+ try{
+  for(let i=0;i<10;i++){
+   const sent=LS("outbox",[]).slice(0,20),bl=guestBaseline();
+   const r=await authedApi("/sync",{deviceId:devId(),events:sent,baseline:bl||undefined});
+   if(!r.ok||LS("stats_ns","guest")!==ns)break;
+   const ids=new Set(sent.map(e=>e.id)),rest=LS("outbox",[]).filter(e=>!ids.has(e.id));
+   LW("outbox",rest);
+   if(bl&&typeof r.data.baselineApplied==="boolean")LW("bl_done",1);
+   if(!rest.length){applySnap(r.data);break}
+  }
+ }catch(e){}finally{syncBusy=false}
+}
+function accountScr(){
+ const a=LS("auth",null),acc=LS("auth_mode","")==="account"&&a&&a.user;
+ app.innerHTML='<div class="wl"><div class="wl-in wl-form"><button class="hm-chip wl-back" id="ab">← Back</button><div class="wl-logo">👤</div><h1 id="an"></h1><p id="au"></p>'+(acc?'<button class="wl-b1" id="alo">Logout</button>':'<button class="wl-b1" id="ali">Login</button><button class="wl-b2" id="acr">Create Account</button>')+'<div class="wl-note" id="wnt"></div></div></div>';
+ $("#an").textContent=acc?a.user.fullName:"Guest";
+ $("#au").textContent=acc?"@"+a.user.username+" · your stats sync to this account":"Your stats are saved only on this device.";
+ $("#ab").onclick=home;
+ if(acc)$("#alo").onclick=doLogout;else{$("#ali").onclick=loginScr;$("#acr").onclick=signupScr}
+}
+async function doLogout(){
+ const b=$("#alo"),m=$("#wnt");b.disabled=true;m.textContent="Syncing and logging out…";
+ await syncNow();
+ const a=LS("auth",null);if(a&&a.refresh)await api("/auth/logout",{refreshToken:a.refresh});
+ LW("auth","");LW("auth_mode","");nsSwitch("guest");authChoice();
+}
+// ---- Step 8 Part 1: Welcome screen (splash -> Guest / Login / Create Account) ----
+let BOOTED=0;
+function welcome(){
+ app.innerHTML='<div class="wl"><div class="wl-in"><div class="wl-logo">🎯</div><h1>Quiz Arena</h1><p>Cricket · WWE</p></div></div>';
+ setTimeout(()=>{if(LS("auth_mode","")){home();if(LS("auth_mode","")==="account"&&navigator.onLine)sessionRefresh().then(ok=>{if(ok)syncNow()})}else authChoice()},1600);
+}
+function authChoice(){
+ app.innerHTML='<div class="wl"><div class="wl-in"><div class="wl-logo">🎯</div><h1>Quiz Arena</h1><p>Choose how you want to continue</p><div class="wl-btns"><button class="wl-b1" id="wg">Play as Guest</button><button class="wl-b2" id="wlg">Already have an account? Login</button><button class="wl-b2" id="wca">Create Account</button></div><div class="wl-note" id="wnt"></div></div></div>';
+ const goG=()=>{LW("auth_mode","guest");home()};
+ $("#wg").onclick=()=>{
+  if(LS("guest_warn",0))return goG();
+  const pp=document.createElement("div");pp.className="wl-pop";
+  pp.innerHTML='<div class="wl-card"><div class="wl-ic">⚠️</div><h2>Guest Mode</h2><p>Guest stats will be saved only on this device. Creating an account will let you sync your stats across multiple devices in the future.</p><button class="wl-b1" id="wgo">Continue as Guest</button><button class="wl-b2" id="wcn">Cancel</button></div>';
+  document.body.appendChild(pp);
+  pp.onclick=e=>{if(e.target===pp)pp.remove()};
+  $("#wcn").onclick=()=>pp.remove();
+  $("#wgo").onclick=()=>{LW("guest_warn",1);pp.remove();goG()};
+ };
+ const soon=()=>{$("#wnt").textContent="Coming soon"};
+ $("#wlg").onclick=loginScr;$("#wca").onclick=signupScr;
+}
+// ---- Step 8 Part 3: Login screen (UI only, no real authentication yet) ----
+function loginScr(){
+ app.innerHTML='<div class="wl"><div class="wl-in wl-form"><button class="hm-chip wl-back" id="lb">← Back</button><div class="wl-logo">🔐</div><h1>Login</h1><p>Welcome back to Quiz Arena</p><div class="wl-fld"><label for="lu">Username</label><input id="lu" type="text" placeholder="Enter username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"></div><div class="wl-fld"><label for="lp">Password</label><div class="wl-pw"><input id="lp" type="password" placeholder="Enter password" autocomplete="current-password"><button type="button" class="wl-eye" id="le" aria-label="Show password">Show</button></div></div><button class="wl-link" id="lf">Forgot Password?</button><button class="wl-b1" id="lg">Login</button><div class="wl-note" id="wnt"></div></div></div>';
+ const soon=()=>{$("#wnt").textContent="Coming soon"};
+ $("#lb").onclick=authChoice;
+ $("#le").onclick=()=>{const f=$("#lp"),s=f.type==="password";f.type=s?"text":"password";$("#le").textContent=s?"Hide":"Show";$("#le").setAttribute("aria-label",s?"Hide password":"Show password")};
+ const doLogin=async()=>{
+  const u=$("#lu").value.trim(),p=$("#lp").value,m=$("#wnt"),b=$("#lg");
+  if(b.disabled)return;
+  if(!u||!p)return m.textContent="Enter username and password";
+  b.disabled=true;m.textContent="Please wait… (first request can take up to a minute)";
+  const r=await api("/auth/login",{username:u,password:p,deviceId:devId()});
+  if(r.ok&&r.data.accessToken){authSave(r.data);home();return syncNow()}
+  b.disabled=false;m.textContent=authMsg(r);
+ };
+ $("#lg").onclick=doLogin;$("#lf").onclick=forgotScr;
+ setTimeout(()=>app.querySelectorAll("input").forEach(x=>x.onkeydown=e=>{if(e.key==="Enter")doLogin()}),0); // purani keydown line ke baad override
+ app.querySelectorAll("input").forEach(x=>x.onkeydown=e=>{if(e.key==="Enter")soon()});
+}
+// ---- Step 8 Part 4: Create Account screen (UI only, nothing is created or saved yet) ----
+function signupScr(){
+ const pw=(id,l,ph)=>'<div class="wl-fld"><label for="'+id+'">'+l+'</label><div class="wl-pw"><input id="'+id+'" type="password" placeholder="'+ph+'" autocomplete="new-password"><button type="button" class="wl-eye" data-for="'+id+'" aria-label="Show password">Show</button></div></div>';
+ app.innerHTML='<div class="wl"><div class="wl-in wl-form"><button class="hm-chip wl-back" id="cb">← Back</button><div class="wl-logo">✨</div><h1>Create Account</h1><p>Join Quiz Arena</p><div class="wl-fld"><label for="cn">Full Name</label><input id="cn" type="text" placeholder="Enter full name" autocomplete="name"></div><div class="wl-fld"><label for="cu">Username</label><input id="cu" type="text" placeholder="Choose a username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"></div>'+pw("cp","Password","Create password")+pw("cc","Confirm Password","Re-enter password")+'<div class="wl-hint">Password must have at least 8 characters, 1 uppercase letter and 1 special character.</div><button class="wl-b1" id="cg">Create Account</button><div class="wl-note" id="wnt"></div></div></div>';
+ const soon=()=>{$("#wnt").textContent="Coming soon"};
+ $("#cb").onclick=authChoice;
+ app.querySelectorAll(".wl-eye").forEach(b=>b.onclick=()=>{const f=$("#"+b.dataset.for),s=f.type==="password";f.type=s?"text":"password";b.textContent=s?"Hide":"Show";b.setAttribute("aria-label",s?"Hide password":"Show password")});
+ const doSignup=async()=>{
+  const n=$("#cn").value.trim(),u=$("#cu").value.trim(),p=$("#cp").value,c=$("#cc").value,m=$("#wnt"),b=$("#cg");
+  if(b.disabled)return;
+  if(!n||!u||!p||!c)return m.textContent="Please fill in all fields";
+  if(!/^[A-Za-z0-9_]{3,30}$/.test(u))return m.textContent="Username: 3-30 letters, numbers or underscore";
+  if(p.length<8||!/[A-Z]/.test(p)||!/[^A-Za-z0-9]/.test(p))return m.textContent="Password must have at least 8 characters, 1 uppercase letter and 1 special character";
+  if(p!==c)return m.textContent="Passwords do not match";
+  b.disabled=true;m.textContent="Please wait… (first request can take up to a minute)";
+  const r=await api("/auth/signup",{fullName:n,username:u,password:p,deviceId:devId()});
+  if(r.ok&&r.data.recoveryCode)return recoveryScr(r.data);
+  b.disabled=false;m.textContent=authMsg(r);
+ };
+ $("#cg").onclick=doSignup;
+ setTimeout(()=>app.querySelectorAll("input").forEach(x=>x.onkeydown=e=>{if(e.key==="Enter")doSignup()}),0); // purani keydown line ke baad override
+ app.querySelectorAll("input").forEach(x=>x.onkeydown=e=>{if(e.key==="Enter")soon()});
+}
+// ---- Step 8 Part 5: Forgot Password screen (UI only, no recovery yet) ----
+function forgotScr(){
+ app.innerHTML='<div class="wl"><div class="wl-in wl-form"><button class="hm-chip wl-back" id="fb">← Back</button><div class="wl-logo">🔑</div><h1>Forgot Password</h1><p>Enter your username, recovery code and a new password</p><div class="wl-fld"><label for="fu">Username</label><input id="fu" type="text" placeholder="Enter username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"></div><div class="wl-fld"><label for="frc">Recovery Code</label><input id="frc" type="text" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false"></div><div class="wl-fld"><label for="fnp">New Password</label><div class="wl-pw"><input id="fnp" type="password" placeholder="New password" autocomplete="new-password"><button type="button" class="wl-eye" data-for="fnp" aria-label="Show password">Show</button></div></div><div class="wl-fld"><label for="fnc">Confirm New Password</label><div class="wl-pw"><input id="fnc" type="password" placeholder="Re-enter new password" autocomplete="new-password"><button type="button" class="wl-eye" data-for="fnc" aria-label="Show password">Show</button></div></div><div class="wl-hint">Password must have at least 8 characters, 1 uppercase letter and 1 special character.</div><button class="wl-b1" id="fc">Reset Password</button><div class="wl-note" id="wnt"></div></div></div>';
+ const soon=()=>{$("#wnt").textContent="Coming soon"};
+ $("#fb").onclick=loginScr;
+ const doForgot=async()=>{
+  const u=$("#fu").value.trim(),c=$("#frc").value.trim(),p=$("#fnp").value,q=$("#fnc").value,m=$("#wnt"),b=$("#fc");
+  if(b.disabled)return;
+  if(!u||!c||!p||!q)return m.textContent="Please fill in all fields";
+  if(p.length<8||!/[A-Z]/.test(p)||!/[^A-Za-z0-9]/.test(p))return m.textContent="Password must have at least 8 characters, 1 uppercase letter and 1 special character";
+  if(p!==q)return m.textContent="Passwords do not match";
+  b.disabled=true;m.textContent="Please wait… (first request can take up to a minute)";
+  const r=await api("/auth/recover",{username:u,recoveryCode:c,newPassword:p,deviceId:devId()});
+  if(r.ok&&r.data.recoveryCode)return recoveryScr(r.data);
+  b.disabled=false;m.textContent=authMsg(r);
+ };
+ app.querySelectorAll(".wl-eye").forEach(b=>b.onclick=()=>{const f=$("#"+b.dataset.for),s=f.type==="password";f.type=s?"text":"password";b.textContent=s?"Hide":"Show";b.setAttribute("aria-label",s?"Hide password":"Show password")});
+ $("#fc").onclick=doForgot;
+ app.querySelectorAll("input").forEach(x=>x.onkeydown=e=>{if(e.key==="Enter")doForgot()});
 }
 // ---- PWA: install button + offline + update banner ----
 let ip=null;
