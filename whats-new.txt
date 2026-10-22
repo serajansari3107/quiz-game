@@ -1,4 +1,10 @@
 window.WN_TXT=(function(){/*
+## v1.8 | 22 Oct 2026
+Added:
++ New Welcome screen with Play as Guest, Login and Create Account options
++ Guest warning before entering the game
++ Connected frontend to the production backend API
+
 ## v1.7 | 22 Oct 2026
 Improved:
 + Question screen now fits on one screen, so the explanation and Next button show without scrolling
