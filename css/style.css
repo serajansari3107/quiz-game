@@ -286,4 +286,23 @@ body{background:#0e0e11}
 .se-tg:not(.on):hover{border-color:rgba(139,92,246,.6);color:#e6e6f0}
 }
 .hm-chip:focus-visible,.hm-card:focus-visible,.sm-opt:focus-visible,.sm-go:focus-visible,.qz .opt:focus-visible,.qz-nx:focus-visible,.qz .ll button:focus-visible,.rs-b1:focus-visible,.rs-b2:focus-visible,.st .tabs button:focus-visible,.st select:focus-visible,.mnu-i:focus-visible,.mnu-d .x:focus-visible,.wnp .x:focus-visible,.se-tg:focus-visible,.ov.upd .btn:focus-visible,.ov.upd .later:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}
+/* Question screen: fit question, options, explanation and Next on one screen */
+.qz{padding:calc(10px + env(safe-area-inset-top)) 16px calc(10px + env(safe-area-inset-bottom))}
+.qz .bar{margin:10px 0 8px}
+.qz-card{margin:8px 0;padding:12px 16px 14px}
+.qz-cat{margin-bottom:6px}
+.qz .q{line-height:1.35}
+.qz .ll{margin:0 0 8px}
+.qz .opt{margin:0 0 8px;padding:12px 44px 12px 16px}
+.qz .info{margin:8px 0;padding:10px 14px;line-height:1.45}
+.qz-nx{padding:13px}
+.qz:has(#info:not(.hide)) .ll{display:none}
+@media (max-height:760px){.qz .q{font-size:18px}.qz .opt{font-size:15px;padding:10px 40px 10px 14px;margin-bottom:6px}.qz .info{font-size:13.5px;padding:8px 12px;margin:6px 0}.qz-nx{padding:11px;font-size:16px}.qz-pill{padding:6px 11px}.qz-card{padding:10px 14px 12px;margin:6px 0}.qz .bar{margin:8px 0 6px}.qz-cat{margin-bottom:4px}.qz .ll button,.qz .tmt{height:32px;min-height:32px}}
+@media (max-height:640px){.qz .q{font-size:16px}.qz .opt{font-size:14px;padding:8px 36px 8px 12px;margin-bottom:5px}.qz .info{font-size:13px;padding:7px 11px}.qz-nx{padding:9px;font-size:15px}.qz-prog{font-size:12.5px}.qz-card{padding:8px 12px 10px}}
+@media (max-height:600px){.qz{padding-top:calc(8px + env(safe-area-inset-top));padding-bottom:calc(8px + env(safe-area-inset-bottom))}.qz .q{font-size:15px}.qz .opt{padding:7px 34px 7px 11px;margin-bottom:4px}.qz-nx{padding:8px}.qz .bar{margin:6px 0 4px}.qz-card{margin:4px 0}.qz .info{margin:4px 0}.qz-pill{padding:5px 9px}}
+/* Install icon: small, Home screen only */
+.inst{left:auto;right:16px;transform:none;width:44px;height:44px;padding:0;border-radius:50%;font-size:20px;line-height:44px;bottom:calc(16px + env(safe-area-inset-bottom))}
+body:not(:has(.hm)) .inst,body:has(.ov) .inst{display:none}
+/* Update popup: full latest-release list scrolls inside the card */
+.ov.upd .ucard ul{max-height:calc(100vh - 340px);min-height:72px;overflow-y:auto;margin-bottom:14px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}

@@ -1,4 +1,11 @@
 window.WN_TXT=(function(){/*
+## v1.7 | 22 Oct 2026
+Improved:
++ Question screen now fits on one screen, so the explanation and Next button show without scrolling
++ Install App is now a small icon that appears only on the Home screen
+Fixed:
++ Update popup now also appears in the web browser and shows only the latest release details
+
 ## v1.6 | 21 Oct 2026
 Improved:
 + Brand new premium dark Home screen with purple accents and category cards
