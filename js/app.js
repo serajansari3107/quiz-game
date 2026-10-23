@@ -248,7 +248,7 @@ function recoveryScr(d){
  $("#rcd").textContent=d.recoveryCode;
  $("#rcp").onclick=()=>{try{navigator.clipboard.writeText(d.recoveryCode).then(()=>{$("#rcp").textContent="Copied ✓"},()=>{$("#rcp").textContent="Copy failed, select the code manually"})}catch(e){$("#rcp").textContent="Copy failed, select the code manually"}};
  $("#rck").onchange=e=>{$("#rgo").disabled=!e.target.checked};
- $("#rgo").onclick=()=>{authSave(d);home();syncNow()};
+ $("#rgo").onclick=()=>{authSave(d);afterAuth()};
 }
 // ---- Step 8 Part 7: Account stats sync, stats namespaces, profile ----
 const uuid=()=>(self.crypto&&crypto.randomUUID)?crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==="x"?r:(r&3|8)).toString(16)});
@@ -279,7 +279,7 @@ async function authedApi(path,body){
 }
 // Guest ki stats (stash mein) ka ek-baar transfer; device par ek hi baar (bl_done)
 function guestBaseline(){
- if(LS("bl_done",0))return null;
+ if(LS("bl_done",0)||LS("bl_go","")!==LS("stats_ns","guest"))return null;
  const g=k=>{try{return JSON.parse(localStorage.getItem("ns:guest:"+k))}catch(e){return null}};
  const S=g("sum")||{},sum={},best={};
  Object.keys(S).forEach(k=>{if(/^[a-z0-9_]+_(5|10|20)$/.test(k)){const a=S[k]||{};sum[k]={r:a.r|0,q:a.q|0,c:a.c|0,w:a.w|0,p:+a.p||0,f:a.f|0}}});
@@ -310,18 +310,38 @@ async function syncNow(){
    if(!r.ok||LS("stats_ns","guest")!==ns)break;
    const ids=new Set(sent.map(e=>e.id)),rest=LS("outbox",[]).filter(e=>!ids.has(e.id));
    LW("outbox",rest);
-   if(bl&&typeof r.data.baselineApplied==="boolean")LW("bl_done",1);
+   if(bl&&typeof r.data.baselineApplied==="boolean"){LW("bl_done",1);LW("bl_go","");if(!r.data.baselineApplied)alert("These guest stats could not be transferred (already transferred from this device).")}
    if(!rest.length){applySnap(r.data);break}
   }
  }catch(e){}finally{syncBusy=false}
 }
+const sumRounds=S=>Object.keys(S||{}).reduce((t,k)=>t+((S[k]&&S[k].r)|0),0);
+// Login/signup ke baad: agar user "Transfer guest stats" se aaya tha to confirm popup
+function afterAuth(){home();syncNow();const t=LS("bl_intent",0);LW("bl_intent",0);if(t&&Date.now()-t<600000)xferAsk()}
+function xferStart(){
+ const m=$("#wnt");
+ if(LS("bl_done",0))return m.textContent="This device's guest stats were already transferred once.";
+ if(!sumRounds(LS("sum",{})))return m.textContent="No guest stats to transfer.";
+ LW("bl_intent",Date.now());authChoice();
+}
+function xferAsk(){
+ const a=LS("auth",null);let S={};try{S=JSON.parse(localStorage.getItem("ns:guest:sum"))||{}}catch(e){}
+ const n=sumRounds(S);if(!a||!a.user||LS("bl_done",0)||!n)return;
+ const pp=document.createElement("div");pp.className="wl-pop";
+ pp.innerHTML='<div class="wl-card"><div class="wl-ic">📤</div><h2>Transfer Guest Stats?</h2><p id="xfp"></p><button class="wl-b1" id="xfy">Transfer</button><button class="wl-b2" id="xfn">Cancel</button></div>';
+ document.body.appendChild(pp);
+ $("#xfp").textContent="Transfer your guest stats ("+n+" rounds) to @"+a.user.username+"? This can be done only once from this device. Your guest stats on this device will not be deleted.";
+ pp.onclick=e=>{if(e.target===pp)pp.remove()};
+ $("#xfn").onclick=()=>pp.remove();
+ $("#xfy").onclick=()=>{pp.remove();LW("bl_go","u:"+a.user.id);const go=()=>{if(syncBusy)setTimeout(go,800);else syncNow()};go()};
+}
 function accountScr(){
  const a=LS("auth",null),acc=LS("auth_mode","")==="account"&&a&&a.user;
- app.innerHTML='<div class="wl"><div class="wl-in wl-form"><button class="hm-chip wl-back" id="ab">← Back</button><div class="wl-logo">👤</div><h1 id="an"></h1><p id="au"></p>'+(acc?'<button class="wl-b1" id="alo">Logout</button>':'<button class="wl-b1" id="ali">Login</button><button class="wl-b2" id="acr">Create Account</button>')+'<div class="wl-note" id="wnt"></div></div></div>';
+ app.innerHTML='<div class="wl"><div class="wl-in wl-form"><button class="hm-chip wl-back" id="ab">← Back</button><div class="wl-logo">👤</div><h1 id="an"></h1><p id="au"></p>'+(acc?'<button class="wl-b1" id="alo">Logout</button>':'<button class="wl-b1" id="ali">Login</button><button class="wl-b2" id="acr">Create Account</button><button class="wl-b2" id="axf">Transfer guest stats to an account</button>')+'<div class="wl-note" id="wnt"></div></div></div>';
  $("#an").textContent=acc?a.user.fullName:"Guest";
  $("#au").textContent=acc?"@"+a.user.username+" · your stats sync to this account":"Your stats are saved only on this device.";
  $("#ab").onclick=home;
- if(acc)$("#alo").onclick=doLogout;else{$("#ali").onclick=loginScr;$("#acr").onclick=signupScr}
+ if(acc)$("#alo").onclick=doLogout;else{$("#ali").onclick=loginScr;$("#acr").onclick=signupScr;$("#axf").onclick=xferStart}
 }
 async function doLogout(){
  const b=$("#alo"),m=$("#wnt");b.disabled=true;m.textContent="Syncing and logging out…";
@@ -362,7 +382,7 @@ function loginScr(){
   if(!u||!p)return m.textContent="Enter username and password";
   b.disabled=true;m.textContent="Please wait… (first request can take up to a minute)";
   const r=await api("/auth/login",{username:u,password:p,deviceId:devId()});
-  if(r.ok&&r.data.accessToken){authSave(r.data);home();return syncNow()}
+  if(r.ok&&r.data.accessToken){authSave(r.data);return afterAuth()}
   b.disabled=false;m.textContent=authMsg(r);
  };
  $("#lg").onclick=doLogin;$("#lf").onclick=forgotScr;
