@@ -1,13 +1,16 @@
 window.WN_TXT=(function(){/*
-## v1.8 | 22 Oct 2026
+## v1.8 | 23 Oct 2026
 New:
 + New Welcome screen with Play as Guest, Login and Create Account options
 + Recovery code to reset a forgotten password
 + Account screen in the menu with Logout
 + Optional "Transfer guest stats to an account" (your choice, once per device)
 + Guest warning before entering the game
+Improved:
 + Guest and account stats are now kept separate
 + Connected frontend to the production backend API
+Fixed:
++ Stats no longer shows 0 right after login while your account stats are syncing.
 
 ## v1.7 | 22 Oct 2026
 Improved:

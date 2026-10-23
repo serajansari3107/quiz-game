@@ -146,7 +146,9 @@ function sumHTML(){
  const sel=(id,v,o,w)=>`<select id="${id}" style="${st};flex:${w}">${o.map(x=>`<option value="${x[0]}"${x[0]===v?" selected":""}>${x[1]}</option>`).join("")}</select>`;
  return '<div style="display:flex;gap:8px;margin-bottom:14px">'+sel("sq",sumQ,[["all","All time"]].concat(Object.keys(BANK).map(k=>[k,BANK[k].name])),1.6)+sel("sn",sumN,[["all","All"],["5","5"],["10","10"],["20","20"]],1)+'</div><div class="st-grid">'+row("Total Rounds Played",t.r)+row("Questions Played",t.q)+row("Correct Answers",t.c)+row("Wrong Answers",t.w)+row("Points Secured",rd(t.p))+row("Accuracy Rate",acc+"%")+row("Perfect Rounds",t.f)+row("Longest Perfect Streak",Math.max(((LS("pstr",null)||bfStr())[sumQ+"_"+sumN]||{}).b||0,t.f>0?1:0))+row("User Since",(()=>{const v=LS("since",0);return v?new Date(v).toLocaleDateString("en-US",{month:"long",year:"numeric"}):"—"})())+'</div>'+rateRow(t.q?t.c/t.q*100:0,t.r);
 }
-function stats(tab){
+let statsTab="sum",statsWait=false;
+function stats(tab){stats0(tab);statsTab=tab||"sum";statsWait=syncBusy&&LS("auth_mode","")==="account"&&!sumRounds(LS("sum",{}))&&!LS("hist",[]).length;if(statsWait){const t=$(".tabs");if(t){while(t.nextSibling)t.nextSibling.remove();const w=document.createElement("div");w.className="st-empty";w.innerHTML="<div>⏳</div><b>Syncing your account stats…</b><small>This can take up to a minute the first time.</small>";t.after(w)}}}
+function stats0(tab){
  tab=tab||"sum";
  const H=LS("hist",[]);
  let body="";
@@ -313,7 +315,7 @@ async function syncNow(){
    if(bl&&typeof r.data.baselineApplied==="boolean"){LW("bl_done",1);LW("bl_go","");if(!r.data.baselineApplied)alert("These guest stats could not be transferred (already transferred from this device).")}
    if(!rest.length){applySnap(r.data);break}
   }
- }catch(e){}finally{syncBusy=false}
+ }catch(e){}finally{syncBusy=false;if(statsWait&&$(".st"))stats(statsTab)}
 }
 const sumRounds=S=>Object.keys(S||{}).reduce((t,k)=>t+((S[k]&&S[k].r)|0),0);
 // Login/signup ke baad: agar user "Transfer guest stats" se aaya tha to confirm popup
