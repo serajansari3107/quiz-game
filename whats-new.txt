@@ -2,6 +2,7 @@ window.WN_TXT=(function(){/*
 ## v1.9 | 24 Oct 2026
 New:
 + 50 new Cricket record questions (Tests, ODIs, World Cups, IPL, Women’s cricket).
++ 16 new WWE questions (titles, NXT, Hall of Fame, history).
 + My Account section with Personal Details, Change Password, new Recovery Code and Logout.
 + Change your password from the app (other devices are logged out for safety).
 + Generate a new recovery code anytime and copy it with one tap.
