@@ -2,7 +2,7 @@ window.WN_TXT=(function(){/*
 ## v2.0 | 24 Oct 2026
 New:
 + New Grammar Quiz: questions in Hinglish with English options, with a short explanation for every answer.
-+ Grammar Quiz has 50 questions and works in all quiz sizes (5, 10 and 20 questions).
++ Grammar Quiz has 90+ questions and works in all quiz sizes (5, 10 and 20 questions).
 + New About section in the Menu: how the app works, marks, lifelines, stats, accounts and the number of questions in each quiz.
 
 ## v1.9 | 24 Oct 2026
