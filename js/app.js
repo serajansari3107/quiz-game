@@ -206,7 +206,7 @@ function checkUp2(inst){
   const a=topB(inst),b=topB(rt);if(!a||!b)return;
   const sg=x=>String(x.join("\n").split("").reduce((p,c)=>(p*31+c.charCodeAt(0))|0,0)),ak=LS("wn_ack",null);if(!ak)LW("wn_ack",sg(a));if(a.join("\n")===b.join("\n")&&(ak||sg(a))===sg(b))return;
   const va=a[0].slice(3).split("|")[0].trim(),vb=b[0].slice(3).split("|")[0].trim();
-  const items=b.filter(l=>l.startsWith("+ ")).map(l=>"<li>"+l.slice(2).replace(/</g,"&lt;")+"</li>").join("");
+  const nw=b.filter(l=>l.startsWith("+ ")&&(va!==vb||!a.includes(l))),items=(nw.length?nw:b.filter(l=>l.startsWith("+ "))).map(l=>"<li>"+l.slice(2).replace(/</g,"&lt;")+"</li>").join("");
   const ov=document.createElement("div");ov.className="ov upd";
   ov.innerHTML='<div class="ucard"><div class="uic">🚀</div><h2>'+(va!==vb?"New version available":"New features added")+'</h2><div class="uv">'+vb+'</div><ul>'+items+'</ul><button class="btn" id="ub">Update now</button><button class="later" id="ulat">Not now</button></div>';
   document.body.appendChild(ov);
