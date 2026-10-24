@@ -150,5 +150,21 @@ QUIZ_DATA.wwe={name:"🤼 WWE Quiz",q:[
   ["John Cena ne apna aakhri (retirement) match kis ke khilaf khela?","Gunther",["CM Punk","Cody Rhodes","Brock Lesnar"],"Yeh match December 2025 mein Washington DC mein Saturday Night’s Main Event par hua.","h"],
   ["WrestleMania IX mein Hulk Hogan ne kise haraakar WWF title jeeta?","Yokozuna",["Bret Hart","The Undertaker","Lex Luger"],"Yokozuna ne usi raat pehle Bret Hart ko haraya tha, phir Hogan ne title jeeta.","h"],
   ["WrestleMania 22 mein title jeetne ke baad Rey Mysterio ne kise tribute diya?","Eddie Guerrero",["Owen Hart","Andre the Giant","Dusty Rhodes"],"Rey Mysterio ne apne dost Eddie Guerrero ko yaad kiya.","h"],
-  ["WrestleMania 39 mein Rhea Ripley ne SmackDown Women’s Champion kise haraya?","Charlotte Flair",["Becky Lynch","Bianca Belair","Asuka"],"Yeh match Los Angeles ke SoFi Stadium mein hua.","h"]
+    ["WrestleMania 39 mein Rhea Ripley ne SmackDown Women’s Champion kise haraya?","Charlotte Flair",["Becky Lynch","Bianca Belair","Asuka"],"Yeh match Los Angeles ke SoFi Stadium mein hua.","h"],
+  ["WWE ka pehla United States Champion kaun tha?","Harley Race",["Greg Valentine","Sgt. Slaughter","Roddy Piper"],"Harley Race ne 1 January 1975 ko pehla NWA United States Championship jeeta tha.","h"],
+  ["NXT Women's Championship ki pehli champion kaun thi?","Paige",["Emma","Bayley","Sasha Banks"],"Paige ne 24 July 2013 ko Emma ko hara kar inaugural NXT Women's Championship jeeti.","m"],
+  ["NXT Tag Team Championship kis saal introduce hui thi?","2013",["2010","2015","2017"],"NXT Tag Team Championship 2013 mein introduce hui thi.","m"],
+  ["NXT Women's Tag Team Titles ki pehli champions kaun bani thi?","Dakota Kai aur Raquel Gonzalez",["Ember Moon aur Shotzi Blackheart","Io Shirai aur Zoey Stark","Cora Jade aur Roxanne Perez"],"Dakota Kai aur Raquel Gonzalez inaugural champions bani, lekin usi raat Ember Moon aur Shotzi Blackheart ne titles jeet liye.","h"],
+  ["WWE Women's Tag Team Championship ke pehle champions kaun the?","The Boss 'N' Hug Connection",["The IIconics","The Kabuki Warriors","Alexa Bliss aur Nikki Cross"],"Bayley aur Sasha Banks ne 17 February 2019 ko inaugural titles jeete.","h"],
+  ["WWE United States Championship ki shuruaat kis promotion mein hui thi?","NWA ke Mid-Atlantic Championship Wrestling mein",["ECW","WWF","TNA"],"Original NWA United States Championship 1 January 1975 ko introduce hui thi.","h"],
+  ["WWE mein pehla World Heavyweight Championship 2002 mein kisne present kiya tha?","Eric Bischoff",["Teddy Long","William Regal","John Laurinaitis"],"Raw General Manager Eric Bischoff ne 2 September 2002 ko Triple H ko inaugural champion banaya.","h"],
+  ["WWE Championship pehli baar kis wrestler ko diya gaya tha?","Buddy Rogers",["Bruno Sammartino","Pedro Morales","Bob Backlund"],"Buddy Rogers ne 1963 mein tournament final jeetkar inaugural WWE Championship haasil ki.","h"],
+  ["WWE mein pehli NXT Women's Champion banne ke liye Paige ne final mein kise haraya tha?","Emma",["Bayley","Natalya","Carmella"],"Paige ne 24 July 2013 ko tournament final mein Emma ko haraya tha.","h"],
+  ["WWE ka pehla NXT Champion kaun tha?","Seth Rollins",["Big E","Bo Dallas","Adrian Neville"],"Seth Rollins ne 2012 mein inaugural NXT Championship jeeti thi.","h"],
+  ["WWE mein pehli baar Women's United States Championship kisne jeeti?","Chelsea Green",["Zelina Vega","Giulia","Tiffany Stratton"],"Chelsea Green ne 14 December 2024 ko inaugural Women's United States Championship jeeti.","h"],
+  ["The New Day ka pehla WWE Tag Team Championship kis saal aaya?","2015",["2013","2014","2017"],"The New Day ne 26 April 2015 ko Extreme Rules mein WWE Tag Team Championship jeeti.","m"],
+  ["WWE mein Kofi Kingston ka janm kis desh mein hua tha?","Ghana",["Nigeria","Jamaica","South Africa"],"Kofi Kingston ka janm Ghana mein hua tha.","m"],
+  ["WWE Superstar Sami Zayn ka janm kis desh mein hua tha?","Canada",["France","USA","Ireland"],"Sami Zayn ka hometown Montreal, Quebec, Canada hai.","m"],
+  ["WWE ka pehla pay-per-view event jo UK mein hua tha kaun sa tha?","SummerSlam 1992",["WrestleMania 17","Survivor Series 1997","King of the Ring 1998"],"SummerSlam 1992 Wembley Stadium, London mein hua tha.","h"],
+  ["WWE ke Survivor Series event ka central match concept kya hai?","Elimination tag team match",["Ladder match","Battle royal","Iron Man match"],"Survivor Series traditional elimination tag team matches ke liye jaana jaata hai.","m"]
 ]};
