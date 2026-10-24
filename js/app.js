@@ -287,7 +287,9 @@ function guestBaseline(){
  Object.keys(S).forEach(k=>{if(/^[a-z0-9_]+_(5|10|20)$/.test(k)){const a=S[k]||{};sum[k]={r:a.r|0,q:a.q|0,c:a.c|0,w:a.w|0,p:+a.p||0,f:a.f|0}}});
  Object.keys(BANK).forEach(m=>[5,10,20].forEach(n=>{const v=+g(bestKey(m,n));if(v>0)best[m+"_"+n]=v}));
  const hist=(g("hist")||[]).slice(0,10).map(x=>({m:String(x.m),s:+x.s||0,r:x.r|0,n:x.n||20,d:String(x.d||"")}));
- return(Object.keys(sum).length||Object.keys(best).length||hist.length)?{sum,best,hist}:null;
+ const ps0=g("pstr")||{},pstr={};
+ Object.keys(ps0).forEach(k=>{const b=ps0[k]&&ps0[k].b|0;if(b>0&&/^[a-z0-9][a-z0-9_]{0,39}$/.test(k))pstr[k]=b});
+ return(Object.keys(sum).length||Object.keys(best).length||hist.length)?{sum,best,hist,pstr}:null;
 }
 function applySnap(d){
  try{
@@ -300,6 +302,7 @@ function applySnap(d){
   LW("sum",sum);
   LW("hist",(d.hist||[]).slice(0,10).map(x=>({m:x.m,s:x.s,r:x.r,n:x.n,d:x.d||fmt(x.t)})));
   if(!LS("pstr",null))LW("pstr",bfStr());
+  if(Number.isFinite(d.since)&&d.since>0&&d.since<=Date.now()){const o=LS("since",0);if(!o||d.since<o)LW("since",d.since)}
   if(d.streak&&typeof d.streak==="object"){const P=LS("pstr",{}),idle=!LS("outbox",[]).length;Object.keys(d.streak).forEach(k=>{const s=d.streak[k];if(!/^[a-z0-9_]{1,40}$/.test(k)||!s||!Number.isInteger(s.b)||!Number.isInteger(s.c)||s.b<0||s.c<0)return;const o=P[k]||{c:0,b:0};o.c=idle?s.c:o.c;o.b=Math.max(o.b,s.b,o.c);P[k]=o});LW("pstr",P)}
  }catch(e){}
 }

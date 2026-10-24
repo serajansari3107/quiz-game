@@ -47,7 +47,12 @@ function cleanBaseline(b) {
     .slice(0, 10)
     .filter((x) => x && typeof x === "object" && MODE_RE.test(String(x.m)) && MAXSCORE[x.n] && isHalf(x.s, MAXSCORE[x.n]) && isInt(x.r, 0, x.n))
     .map((x) => ({ m: x.m, s: x.s, r: x.r, n: x.n, d: String(x.d || "").slice(0, 12) }));
-  return { rows, hist };
+  const PS = b.pstr && typeof b.pstr === "object" ? b.pstr : {};
+  const pstr = {};
+  Object.keys(PS).slice(0, 60).forEach((k) => {
+    if (/^[a-z0-9][a-z0-9_]{0,39}$/.test(k) && isInt(PS[k], 0, 1e6)) pstr[k] = PS[k];
+  });
+  return { rows, hist, pstr };
 }
 
 // Perfect-round streak (right_cnt = quiz_n), rounds ke time order mein. Keys: all_all, <mode>_all, all_<n>, <mode>_<n>
@@ -95,7 +100,7 @@ async function sync(req, res) {
         const ins = await client.query(
           "INSERT INTO baselines (device_id, user_id, baseline) VALUES ($1, $2, $3) " +
             "ON CONFLICT (device_id) DO NOTHING RETURNING device_id",
-          [body.deviceId, uid, JSON.stringify({ rows: baseline.rows, hist: baseline.hist })]
+          [body.deviceId, uid, JSON.stringify({ rows: baseline.rows, hist: baseline.hist, pstr: baseline.pstr })]
         );
         if (ins.rowCount) {
           for (const x of baseline.rows)
@@ -148,9 +153,21 @@ async function sync(req, res) {
       [uid]
     );
     const streak = calcStreak(sr.rows);
+    const bp = await client.query("SELECT baseline -> 'pstr' AS ps FROM baselines WHERE user_id = $1", [uid]);
+    bp.rows.forEach((r) => {
+      if (!r.ps || typeof r.ps !== "object") return;
+      Object.keys(r.ps).forEach((k) => {
+        const v = r.ps[k];
+        if (!/^[a-z0-9][a-z0-9_]{0,39}$/.test(k) || !Number.isInteger(v) || v < 0) return;
+        const o = streak[k] || (streak[k] = { c: 0, b: 0 });
+        if (v > o.b) o.b = v;
+      });
+    });
+    const ur = await client.query("SELECT (extract(epoch from created_at) * 1000)::float8 AS t FROM users WHERE id = $1", [uid]);
+    const since = ur.rows[0] ? Math.round(ur.rows[0].t) : 0;
 
     await client.query("COMMIT");
-    const out = { stats, hist, streak };
+    const out = { stats, hist, streak, since };
     if (baselineApplied !== undefined) out.baselineApplied = baselineApplied;
     return res.json(out);
   } catch (err) {

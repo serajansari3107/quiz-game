@@ -6,8 +6,9 @@ New:
 + My Account section with Personal Details, Change Password, new Recovery Code and Logout.
 + Change your password from the app (other devices are logged out for safety).
 + Generate a new recovery code anytime and copy it with one tap.
++ User Since now syncs with your account and shows your account creation date on new devices.
 Improved:
-+ Longest perfect streak will now sync with your account.
++ Longest Perfect Streak of your guest stats is now included when you transfer them to your account.
 Fixed:
 + Update popup now shows only the newly added items, not the older ones.
 
