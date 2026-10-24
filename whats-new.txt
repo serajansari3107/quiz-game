@@ -1,4 +1,8 @@
 window.WN_TXT=(function(){/*
+## v1.9 | 24 Oct 2026
+New:
++ 50 new Cricket record questions (Tests, ODIs, World Cups, IPL, Women’s cricket).
+
 ## v1.8 | 23 Oct 2026
 New:
 + New Welcome screen with Play as Guest, Login and Create Account options
