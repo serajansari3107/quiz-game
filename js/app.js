@@ -17,6 +17,11 @@ const LW=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const stopT=()=>{clearInterval(tm)};
 const SET=Object.assign({snd:1,vib:1},LS("settings",{}));
 const saveSet=()=>LW("settings",SET);
+let THEME=LS("theme","dark")==="light"?"light":"dark";
+const applyTheme=()=>{const l=THEME==="light",h=document.documentElement,m=document.querySelector('meta[name="theme-color"]');if(l)h.setAttribute("data-theme","light");else h.removeAttribute("data-theme");if(m)m.setAttribute("content",l?"#F5F3FF":"#0e0e11")};
+const setTheme=t=>{THEME=t==="light"?"light":"dark";LW("theme",THEME);applyTheme()};
+const thHtml=()=>'<span class="mnu-ic">'+(THEME==="light"?"☀️":"🌙")+'</span><span class="mnu-t"><b>Switch Theme</b><small>Now: '+(THEME==="light"?"Light":"Dark")+' · Tap for '+(THEME==="light"?"Dark":"Light")+'</small></span><span class="hm-go">›</span>';
+applyTheme();
 setQN(LS("qn",20));
 if(!LS("since",0))LW("since",Date.now());
 let AC=null;
@@ -32,7 +37,7 @@ const SFX={
 };
 function openMenu(){
  const ov=document.createElement("div");ov.className="ov";
- ov.innerHTML='<div class="panel mnu-d"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="mnu-i" id="m1"><span class="mnu-ic">📊</span><span class="mnu-t"><b>Stats</b><small>Summary & History</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m2"><span class="mnu-ic">⚙️</span><span class="mnu-t"><b>Settings</b><small>Sound & Vibration</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m3"><span class="mnu-ic">👤</span><span class="mnu-t"><b>My Account</b><small>Profile, Password & Logout</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m4"><span class="mnu-ic">ℹ️</span><span class="mnu-t"><b>About</b><small>How it works & question counts</small></span><span class="hm-go">›</span></button></div>';
+ ov.innerHTML='<div class="panel mnu-d"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="mnu-i" id="m1"><span class="mnu-ic">📊</span><span class="mnu-t"><b>Stats</b><small>Summary & History</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m2"><span class="mnu-ic">⚙️</span><span class="mnu-t"><b>Settings</b><small>Sound & Vibration</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m3"><span class="mnu-ic">👤</span><span class="mnu-t"><b>My Account</b><small>Profile, Password & Logout</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m4"><span class="mnu-ic">ℹ️</span><span class="mnu-t"><b>About</b><small>How it works & question counts</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m5">'+thHtml()+'</button></div>';
  document.body.appendChild(ov);
  ov.querySelector(".x").onclick=()=>ov.remove();
  ov.className="ov mnu";ov.onclick=e=>{if(e.target===ov)ov.remove()};
@@ -40,6 +45,7 @@ function openMenu(){
  ov.querySelector("#m2").onclick=()=>{ov.remove();settings()};
  ov.querySelector("#m3").onclick=()=>{ov.remove();accountScr()};
  ov.querySelector("#m4").onclick=()=>{ov.remove();aboutScr()};
+ ov.querySelector("#m5").onclick=function(){setTheme(THEME==="light"?"dark":"light");this.innerHTML=thHtml()};
 }
 const toMenu=()=>{home();openMenu()};
 function aboutScr(){

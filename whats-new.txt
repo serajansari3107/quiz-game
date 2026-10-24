@@ -4,6 +4,7 @@ New:
 + New Grammar Quiz: questions in Hinglish with English options, with a short explanation for every answer.
 + Grammar Quiz has 90+ questions and works in all quiz sizes (5, 10 and 20 questions).
 + New About section in the Menu: how the app works, marks, lifelines, stats, accounts and the number of questions in each quiz.
++ Light Theme (Soft Lavender) with a new Switch Theme option in the Menu. Your choice is saved on your device.
 
 ## v1.9 | 24 Oct 2026
 New:
