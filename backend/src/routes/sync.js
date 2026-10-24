@@ -50,6 +50,19 @@ function cleanBaseline(b) {
   return { rows, hist };
 }
 
+// Perfect-round streak (right_cnt = quiz_n), rounds ke time order mein. Keys: all_all, <mode>_all, all_<n>, <mode>_<n>
+function calcStreak(rows) {
+  const S = {};
+  for (const x of rows) {
+    const n = String(x.quiz_n);
+    new Set(["all_all", x.mode + "_all", "all_" + n, x.mode + "_" + n]).forEach((k) => {
+      const o = S[k] || (S[k] = { c: 0, b: 0 });
+      if (x.p) { o.c++; if (o.c > o.b) o.b = o.c; } else o.c = 0;
+    });
+  }
+  return S;
+}
+
 const UPSERT_STATS =
   "INSERT INTO user_stats (user_id, mode, quiz_n, rounds, questions, correct, wrong, points, perfect, best_score) " +
   "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) " +
@@ -130,8 +143,14 @@ async function sync(req, res) {
       hist = hist.slice(0, 10);
     }
 
+    const sr = await client.query(
+      "SELECT mode, quiz_n, (right_cnt = quiz_n) AS p FROM rounds WHERE user_id = $1 ORDER BY played_at ASC, seq ASC",
+      [uid]
+    );
+    const streak = calcStreak(sr.rows);
+
     await client.query("COMMIT");
-    const out = { stats, hist };
+    const out = { stats, hist, streak };
     if (baselineApplied !== undefined) out.baselineApplied = baselineApplied;
     return res.json(out);
   } catch (err) {
