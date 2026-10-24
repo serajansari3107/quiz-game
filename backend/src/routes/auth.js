@@ -11,6 +11,7 @@ const {
   sha256,
 } = require("../lib/tokens");
 const { isLimited, record } = require("../lib/rateLimit");
+const requireAuth = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -285,6 +286,106 @@ async function recover(req, res) {
   }
 }
 
+// Logged-in user: password badlo (current password zaroori). Baaki sab devices logout, ye device login rehta hai.
+async function changePassword(req, res) {
+  const body = req.body || {};
+  const current = str(body.currentPassword);
+  const next = str(body.newPassword);
+  if (current.length < 1 || current.length > 128)
+    return res.status(400).json({ error: "Enter your current password" });
+  const pe = passwordError(next);
+  if (pe) return res.status(400).json({ error: pe });
+  if (next === current)
+    return res.status(400).json({ error: "New password must be different from the current password" });
+
+  const pool = getPool();
+  if (!pool) return res.status(503).json({ error: "Service unavailable" });
+
+  const uKey = String(req.userId);
+  if (await isLimited(pool, "chpw_user", uKey, 5, 15, true))
+    return res.status(429).json({ error: "Too many attempts. Try again later." });
+
+  const r = await pool.query(
+    "SELECT id, full_name, username, password_hash FROM users WHERE id = $1",
+    [req.userId]
+  );
+  const user = r.rows[0];
+  if (!user) return res.status(401).json({ error: "Unauthorized" });
+  if (!(await verifyPassword(user.password_hash, current))) {
+    await record(pool, "chpw_user", uKey, false);
+    return res.status(403).json({ error: "Current password is incorrect" });
+  }
+
+  const passwordHash = await hashPassword(next);
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    await client.query("UPDATE users SET password_hash = $1, updated_at = now() WHERE id = $2", [
+      passwordHash,
+      user.id,
+    ]);
+    // Sab devices ke sessions band, phir sirf is device ka naya session
+    await client.query("UPDATE refresh_tokens SET revoked_at = now() WHERE user_id = $1 AND revoked_at IS NULL", [
+      user.id,
+    ]);
+    const refreshToken = await createRefreshToken(client, user.id, deviceOf(body));
+    await client.query("COMMIT");
+    return res.json({
+      user: userJson(user),
+      accessToken: signAccessToken(user.id),
+      refreshToken,
+      expiresIn: ACCESS_TTL_SEC,
+    });
+  } catch (err) {
+    await client.query("ROLLBACK").catch(() => {});
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+// Logged-in user: naya recovery code (password confirm karke). Purana code band, naya sirf ek baar dikhta hai.
+async function regenerateRecovery(req, res) {
+  const password = str((req.body || {}).password);
+  if (password.length < 1 || password.length > 128)
+    return res.status(400).json({ error: "Enter your password" });
+
+  const pool = getPool();
+  if (!pool) return res.status(503).json({ error: "Service unavailable" });
+
+  const uKey = String(req.userId);
+  if (await isLimited(pool, "rcgen_user", uKey, 5, 15, true))
+    return res.status(429).json({ error: "Too many attempts. Try again later." });
+
+  const r = await pool.query("SELECT id, password_hash FROM users WHERE id = $1", [req.userId]);
+  const user = r.rows[0];
+  if (!user) return res.status(401).json({ error: "Unauthorized" });
+  if (!(await verifyPassword(user.password_hash, password))) {
+    await record(pool, "rcgen_user", uKey, false);
+    return res.status(403).json({ error: "Password is incorrect" });
+  }
+
+  const newCode = newRecoveryCode();
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    await client.query("UPDATE recovery_codes SET used_at = now() WHERE user_id = $1 AND used_at IS NULL", [
+      user.id,
+    ]);
+    await client.query("INSERT INTO recovery_codes (user_id, code_hash) VALUES ($1, $2)", [
+      user.id,
+      hashRecoveryCode(newCode),
+    ]);
+    await client.query("COMMIT");
+    return res.json({ recoveryCode: newCode });
+  } catch (err) {
+    await client.query("ROLLBACK").catch(() => {});
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
 // Express 4 async errors ko error handler tak pahunchane ke liye
 const wrap = (fn) => (req, res, next) => fn(req, res).catch(next);
 
@@ -293,6 +394,8 @@ router.post("/login", wrap(login));
 router.post("/refresh", wrap(refresh));
 router.post("/logout", wrap(logout));
 router.post("/recover", wrap(recover));
+router.post("/change-password", requireAuth, wrap(changePassword));
+router.post("/recovery/regenerate", requireAuth, wrap(regenerateRecovery));
 
 module.exports = router;
-module.exports.handlers = { signup, login, refresh, logout, recover };
+module.exports.handlers = { signup, login, refresh, logout, recover, changePassword, regenerateRecovery };
