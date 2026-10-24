@@ -300,6 +300,7 @@ function applySnap(d){
   LW("sum",sum);
   LW("hist",(d.hist||[]).slice(0,10).map(x=>({m:x.m,s:x.s,r:x.r,n:x.n,d:x.d||fmt(x.t)})));
   if(!LS("pstr",null))LW("pstr",bfStr());
+  if(d.streak&&typeof d.streak==="object"){const P=LS("pstr",{}),idle=!LS("outbox",[]).length;Object.keys(d.streak).forEach(k=>{const s=d.streak[k];if(!/^[a-z0-9_]{1,40}$/.test(k)||!s||!Number.isInteger(s.b)||!Number.isInteger(s.c)||s.b<0||s.c<0)return;const o=P[k]||{c:0,b:0};o.c=idle?s.c:o.c;o.b=Math.max(o.b,s.b,o.c);P[k]=o});LW("pstr",P)}
  }catch(e){}
 }
 async function syncNow(){
