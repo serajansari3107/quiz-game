@@ -32,7 +32,7 @@ const SFX={
 };
 function openMenu(){
  const ov=document.createElement("div");ov.className="ov";
- ov.innerHTML='<div class="panel mnu-d"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="mnu-i" id="m1"><span class="mnu-ic">📊</span><span class="mnu-t"><b>Stats</b><small>Summary & History</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m2"><span class="mnu-ic">⚙️</span><span class="mnu-t"><b>Settings</b><small>Sound & Vibration</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m3"><span class="mnu-ic">👤</span><span class="mnu-t"><b>Account</b><small>Profile & Logout</small></span><span class="hm-go">›</span></button></div>';
+ ov.innerHTML='<div class="panel mnu-d"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="mnu-i" id="m1"><span class="mnu-ic">📊</span><span class="mnu-t"><b>Stats</b><small>Summary & History</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m2"><span class="mnu-ic">⚙️</span><span class="mnu-t"><b>Settings</b><small>Sound & Vibration</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m3"><span class="mnu-ic">👤</span><span class="mnu-t"><b>My Account</b><small>Profile, Password & Logout</small></span><span class="hm-go">›</span></button></div>';
  document.body.appendChild(ov);
  ov.querySelector(".x").onclick=()=>ov.remove();
  ov.className="ov mnu";ov.onclick=e=>{if(e.target===ov)ov.remove()};
@@ -157,7 +157,7 @@ function stats0(tab){
  }else{
   body=tab==="sum"?sumHTML():H.length?H.map(x=>`<div class="card hrow"><span>${BANK[x.m]?BANK[x.m].name:x.m}</span><b>${x.s}/${MODES[x.n||20].max}</b><small>${x.r}/${x.n||20} Correct · ${x.d}</small></div>`).join(""):'<div class="st-empty"><div>🕘</div><b>No rounds played yet</b><small>Finish a round and it will show up here.</small></div>';
  }
- app.innerHTML=`<div class="st"><div class="st-in"><div class="st-bar"><button class="hm-chip" id="sb">← Back</button><span class="sm-cat">📊 Stats</span></div><div class="tabs"><button class="${tab==="sum"?"on":""}" id="t3">📈 Summary</button><button class="${tab==="best"?"on":""}" id="t1">🏆 Best Score</button><button class="${tab==="hist"?"on":""}" id="t2">🕘 History (last 10)</button></div>`+body+`</div></div>`;
+ app.innerHTML=`<div class="st"><div class="st-in"><div class="st-bar"><button class="hm-chip" id="sb">← Back</button><span class="sm-cat">📊 Stats</span></div><div class="tabs"><button class="${tab==="sum"?"on":""}" id="t3">📈 Summary</button><button class="${tab==="best"?"on":""}" id="t1">🏆 Best Score</button><button class="${tab==="hist"?"on":""}" id="t2">🕘 History</button></div>`+body+`</div></div>`;
  $("#sb").onclick=toMenu;$("#t1").onclick=()=>stats("best");$("#t2").onclick=()=>stats("hist");$("#t3").onclick=()=>stats("sum");if(tab==="sum"){$("#sq").onchange=e=>{sumQ=e.target.value;stats("sum")};$("#sn").onchange=e=>{sumN=e.target.value;stats("sum")};$("#rtc").onclick=openRT}
 }
 // ---- What's New screen: reads whats-new.txt (newest version first) ----
@@ -338,12 +338,57 @@ function xferAsk(){
  $("#xfy").onclick=()=>{pp.remove();LW("bl_go","u:"+a.user.id);const go=()=>{if(syncBusy)setTimeout(go,800);else syncNow()};go()};
 }
 function accountScr(){
- const a=LS("auth",null),acc=LS("auth_mode","")==="account"&&a&&a.user;
+ const a=LS("auth",null),acc=LS("auth_mode","")==="account"&&a&&a.user;if(acc)return myAccScr(a);
  app.innerHTML='<div class="wl"><div class="wl-in wl-form"><button class="hm-chip wl-back" id="ab">← Back</button><div class="wl-logo">👤</div><h1 id="an"></h1><p id="au"></p>'+(acc?'<button class="wl-b1" id="alo">Logout</button>':'<button class="wl-b1" id="ali">Login</button><button class="wl-b2" id="acr">Create Account</button><button class="wl-b2" id="axf">Transfer guest stats to an account</button>')+'<div class="wl-note" id="wnt"></div></div></div>';
  $("#an").textContent=acc?a.user.fullName:"Guest";
  $("#au").textContent=acc?"@"+a.user.username+" · your stats sync to this account":"Your stats are saved only on this device.";
  $("#ab").onclick=home;
  if(acc)$("#alo").onclick=doLogout;else{$("#ali").onclick=loginScr;$("#acr").onclick=signupScr;$("#axf").onclick=xferStart}
+}
+// ---- My Account screen (logged-in user): details, change password, recovery code, logout ----
+function myAccScr(a){
+ const pf=(id,l,ph)=>'<div class="wl-fld"><label for="'+id+'">'+l+'</label><div class="wl-pw"><input id="'+id+'" type="password" placeholder="'+ph+'" autocomplete="off"><button type="button" class="wl-eye" data-for="'+id+'" aria-label="Show password">Show</button></div></div>';
+ const eyes=root=>root.querySelectorAll(".wl-eye").forEach(b=>b.onclick=()=>{const f=$("#"+b.dataset.for),s=f.type==="password";f.type=s?"text":"password";b.textContent=s?"Hide":"Show";b.setAttribute("aria-label",s?"Hide password":"Show password")});
+ app.innerHTML='<div class="wl"><div class="wl-in wl-form"><button class="hm-chip wl-back" id="ab">← Back</button><div class="wl-logo">👤</div><h1>My Account</h1><p>Manage your profile and security</p>'
+ +'<div class="ma-sec"><h2 class="ma-h">Personal Details</h2><div class="ma-row"><span>Full name</span><b id="mfn"></b></div><div class="ma-row"><span>User ID</span><b id="mun"></b></div></div>'
+ +'<div class="ma-sec"><h2 class="ma-h">Privacy &amp; Security</h2><div class="ma-sub">Change Password</div>'+pf("mcp","Current Password","Enter current password")+pf("mnp","New Password","Enter new password")+pf("mrp","Re-enter New Password","Re-enter new password")+'<div class="wl-hint">Password must have at least 8 characters, 1 uppercase letter and 1 special character. You will be logged out on your other devices.</div><button class="wl-b1" id="mpb">Change Password</button><div class="wl-note" id="mpm"></div></div>'
+ +'<div class="ma-sec"><h2 class="ma-h">Recover Your Account</h2><p class="ma-p">Your recovery code is the only way to reset a forgotten password. For safety it cannot be shown again, but you can create a new one any time. The old code then stops working.</p><div id="mrbox"></div><div class="wl-note" id="mrm"></div></div>'
+ +'<button class="wl-b1" id="alo" style="margin-top:22px">Logout</button><div class="wl-note" id="wnt"></div></div></div>';
+ $("#mfn").textContent=a.user.fullName;$("#mun").textContent="@"+a.user.username;
+ eyes(app);
+ $("#ab").onclick=home;
+ $("#alo").onclick=doLogout;
+ $("#mpb").onclick=async()=>{
+  const c=$("#mcp").value,n=$("#mnp").value,r2=$("#mrp").value,m=$("#mpm"),b=$("#mpb");
+  if(!c){m.textContent="Enter your current password";return}
+  if(n.length<8||!/[A-Z]/.test(n)||!/[^A-Za-z0-9]/.test(n)){m.textContent="New password must have at least 8 characters, 1 uppercase letter and 1 special character.";return}
+  if(n!==r2){m.textContent="New passwords do not match";return}
+  if(n===c){m.textContent="New password must be different from the current password";return}
+  b.disabled=true;m.textContent="Changing password… (can take up to a minute if the server is waking up)";
+  const r=await authedApi("/auth/change-password",{currentPassword:c,newPassword:n,deviceId:devId()});
+  const ok=r.ok&&r.data.accessToken;if(ok)authSave(r.data);
+  const m2=$("#mpm");if(!m2)return;
+  $("#mpb").disabled=false;
+  if(ok){["mcp","mnp","mrp"].forEach(i=>{$("#"+i).value=""});m2.textContent="Password changed ✓ Other devices have been logged out."}else m2.textContent=authMsg(r)
+ };
+ const gen=()=>{$("#mrbox").innerHTML='<button class="wl-b2" id="mrg">Generate New Recovery Code</button>';$("#mrg").onclick=ask};
+ const ask=()=>{
+  $("#mrbox").innerHTML=pf("mrw","Enter your password to confirm","Your password")+'<button class="wl-b1" id="mrc">Create New Code</button><button class="wl-b2" id="mrx">Cancel</button>';
+  eyes($("#mrbox"));
+  $("#mrx").onclick=()=>{gen();$("#mrm").textContent=""};
+  $("#mrc").onclick=async()=>{
+   const p=$("#mrw").value,m=$("#mrm"),b=$("#mrc");
+   if(!p){m.textContent="Enter your password";return}
+   b.disabled=true;m.textContent="Creating new code… (can take up to a minute if the server is waking up)";
+   const r=await authedApi("/auth/recovery/regenerate",{password:p});
+   const box=$("#mrbox");if(!box)return;
+   if(!(r.ok&&r.data.recoveryCode)){b.disabled=false;$("#mrm").textContent=authMsg(r);return}
+   box.innerHTML='<div class="ma-code"><span id="mrv"></span><button type="button" class="ma-cp" id="mrcp" aria-label="Copy recovery code">📋</button></div><div class="wl-hint">Save this code now. It will not be shown again, and your old recovery code no longer works.</div>';
+   $("#mrv").textContent=r.data.recoveryCode;$("#mrm").textContent="";
+   $("#mrcp").onclick=()=>{const t=$("#mrv").textContent,f=()=>{$("#mrm").textContent="Copy failed, select the code manually"};try{navigator.clipboard.writeText(t).then(()=>{$("#mrcp").textContent="✓";$("#mrm").textContent="Copied";setTimeout(()=>{const x=$("#mrcp");if(x)x.textContent="📋"},2000)},f)}catch(e){f()}}
+  }
+ }
+ gen()
 }
 async function doLogout(){
  const b=$("#alo"),m=$("#wnt");b.disabled=true;m.textContent="Syncing and logging out…";
