@@ -1,5 +1,5 @@
 // Quiz Arena — game logic. Question banks: cricket.js, wwe.js. Release notes: whats-new.txt
-let VER="";
+let VER="",LUP="";
 const BANK=window.QUIZ_DATA;
 Object.keys(BANK).forEach(k=>{const s=new Set();BANK[k].q=BANK[k].q.filter(x=>{const n=x[0].toLowerCase().replace(/[^a-z0-9]/g,"");if(s.has(n))return false;s.add(n);return true})});
 const MODES={5:{n:{e:2,m:2,h:1},mk:{e:2,m:4,h:8},max:20},10:{n:{e:3,m:4,h:3},mk:{e:2,m:5,h:8},max:50},20:{n:{e:7,m:7,h:6},mk:{e:2,m:5,h:8.5},max:100}};
@@ -47,7 +47,7 @@ function aboutScr(){
  const ks=Object.keys(BANK),tot=ks.reduce((s,k)=>s+BANK[k].q.length,0);
  const cnt='<div class="ma-sec"><h2 class="ma-h">📚 Questions Available</h2>'+ks.map(k=>'<div class="ma-row"><span>'+BANK[k].name+'</span><b>'+BANK[k].q.length+'</b></div>').join("")+'<div class="ma-row"><span>Total</span><b>'+tot+'</b></div><div class="ab-n">These numbers update automatically and grow as new questions are added.</div></div>';
  app.innerHTML='<div class="se"><div class="se-in"><div class="st-bar"><button class="hm-chip" id="sb">← Back</button><span class="sm-cat">ℹ️ About</span></div>'
- +'<div class="ab-hero"><div class="ab-logo">🎯</div><h1>Quiz Arena</h1><p>Challenge Your Mind. Prove Your Knowledge.</p>'+(VER?'<small>Version v'+VER+'</small>':'')+'</div>'
+ +'<div class="ab-hero"><div class="ab-logo">🎯</div><h1>Quiz Arena</h1><p>Challenge Your Mind. Prove Your Knowledge.</p>'+(VER?'<small>Version v'+VER+'</small>':'')+'<small class="ab-d">Released On : 19 Oct 2026</small>'+(LUP?'<small class="ab-d">Last Updated : '+LUP+'</small>':'')+'</div>'
  +sec("🎮 What is Quiz Arena?",["Quiz Arena is a quiz game where you test your knowledge in different categories.","Every question has 4 options and only one of them is correct.","The Grammar Quiz asks questions in Hinglish with English options, to help you learn English.","It is a PWA: you can install it on your phone like an app, and the quizzes work without internet."])
  +cnt
  +sec("▶️ How to Play",["<b>Step 1:</b> On the Home screen, choose a category.","<b>Step 2:</b> Choose a quiz size: 5, 10 or 20 questions.","<b>Step 3:</b> Tap <b>Start Quiz</b>.","<b>Step 4:</b> Read the question and tap one option before the timer ends.","<b>Step 5:</b> You instantly see if you were right, the correct answer and a short explanation.","<b>Step 6:</b> Tap <b>Next</b> to continue. At the end you see your result."])
@@ -520,5 +520,5 @@ if("serviceWorker"in navigator){
     const b=document.createElement("button");b.className="inst";b.textContent="🔄 New update available — tap to update";
     b.onclick=()=>location.reload();document.body.appendChild(b)}})})}).catch(()=>{});
 }
-loadWN().then(t=>{const m=t.match(/^## v([\d.]+)/m);if(m){VER=m[1];checkUp2(t);const b=$("#wn");if(b)b.textContent="🆕 What’s New · v"+VER;const v=document.querySelector(".ver");if(v)v.textContent="Version "+VER}}).catch(()=>{});
+loadWN().then(t=>{const m=t.match(/^## v([\d.]+)/m);if(m){VER=m[1];const d=(t.match(/^## v.*$/m)||[""])[0].match(/\|\s*(.+?)\s*$/);if(d)LUP=d[1];checkUp2(t);const b=$("#wn");if(b)b.textContent="🆕 What’s New · v"+VER;const v=document.querySelector(".ver");if(v)v.textContent="Version "+VER}}).catch(()=>{});
 home();
