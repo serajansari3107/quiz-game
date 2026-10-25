@@ -1,6 +1,7 @@
 const express = require("express");
 const { getPool } = require("../db");
 const requireAuth = require("../middleware/auth");
+const { DAILY_CAP, roundCoins } = require("../lib/coins");
 
 const router = express.Router();
 
@@ -77,6 +78,38 @@ const UPSERT_STATS =
   "points = user_stats.points + EXCLUDED.points, perfect = user_stats.perfect + EXCLUDED.perfect, " +
   "best_score = GREATEST(user_stats.best_score, EXCLUDED.best_score), updated_at = now()";
 
+// Naya round: stats update + coins credit (caller isi transaction mein chalata hai).
+// Coins: har correct = 1, perfect par bonus; daily cap 500 (IST din). Duplicate round yahan tak aata hi nahi
+// (rounds insert ka rowCount 0 hota hai) aur coin_ledger.event_id UNIQUE hai (dusri suraksha).
+async function recordRound(client, uid, e, coin) {
+  await client.query(UPSERT_STATS, [uid, e.m, e.n, 1, e.r + e.w, e.r, e.w, e.s, e.r === e.n ? 1 : 0, e.s]);
+  const c = roundCoins(e.n, e.r);
+  if (c.total <= 0) return;
+  if (!coin.ready) {
+    // Is user ki coin row lock: do devices ek saath sync karein to cap ek hi line mein check hota hai
+    await client.query("INSERT INTO user_coins (user_id) VALUES ($1) ON CONFLICT (user_id) DO NOTHING", [uid]);
+    await client.query("SELECT balance FROM user_coins WHERE user_id = $1 FOR UPDATE", [uid]);
+    const d = await client.query("SELECT (now() AT TIME ZONE 'Asia/Kolkata')::date::text AS day");
+    coin.day = d.rows[0].day;
+    const t = await client.query(
+      "SELECT COALESCE(SUM(delta), 0)::int AS n FROM coin_ledger WHERE user_id = $1 AND earn_day = $2::date",
+      [uid, coin.day]
+    );
+    coin.today = t.rows[0].n;
+    coin.ready = true;
+  }
+  const give = Math.min(c.total, Math.max(0, DAILY_CAP - coin.today));
+  if (give <= 0) return;
+  const led = await client.query(
+    "INSERT INTO coin_ledger (user_id, event_id, delta, reason, earn_day) VALUES ($1, $2, $3, $4, $5::date) " +
+      "ON CONFLICT (event_id) DO NOTHING RETURNING id",
+    [uid, e.id, give, c.bonus > 0 ? "round_perfect" : "round", coin.day]
+  );
+  if (!led.rowCount) return;
+  await client.query("UPDATE user_coins SET balance = balance + $2, updated_at = now() WHERE user_id = $1", [uid, give]);
+  coin.today += give;
+}
+
 // POST /sync : events push (idempotent) + optional guest baseline (device par ek baar) + snapshot return
 async function sync(req, res) {
   const body = req.body || {};
@@ -110,6 +143,7 @@ async function sync(req, res) {
       }
     }
 
+    const coin = {};
     for (const e of events) {
       const ins = await client.query(
         "INSERT INTO rounds (event_id, user_id, device_id, mode, quiz_n, right_cnt, wrong_cnt, score, played_at) " +
@@ -118,7 +152,7 @@ async function sync(req, res) {
         [e.id, uid, body.deviceId, e.m, e.n, e.r, e.w, e.s, e.t]
       );
       if (ins.rowCount)
-        await client.query(UPSERT_STATS, [uid, e.m, e.n, 1, e.r + e.w, e.r, e.w, e.s, e.r === e.n ? 1 : 0, e.s]);
+        await recordRound(client, uid, e, coin);
     }
 
     const st = await client.query(
@@ -165,9 +199,15 @@ async function sync(req, res) {
     });
     const ur = await client.query("SELECT (extract(epoch from created_at) * 1000)::float8 AS t FROM users WHERE id = $1", [uid]);
     const since = ur.rows[0] ? Math.round(ur.rows[0].t) : 0;
+    const cb = await client.query("SELECT balance FROM user_coins WHERE user_id = $1", [uid]);
+    const ct = await client.query(
+      "SELECT COALESCE(SUM(delta), 0)::int AS n FROM coin_ledger WHERE user_id = $1 AND earn_day = (now() AT TIME ZONE 'Asia/Kolkata')::date",
+      [uid]
+    );
+    const coins = { balance: cb.rows[0] ? cb.rows[0].balance : 0, today: ct.rows[0].n, cap: DAILY_CAP };
 
     await client.query("COMMIT");
-    const out = { stats, hist, streak, since };
+    const out = { stats, hist, streak, since, coins };
     if (baselineApplied !== undefined) out.baselineApplied = baselineApplied;
     return res.json(out);
   } catch (err) {

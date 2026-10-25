@@ -94,4 +94,23 @@ CREATE TABLE IF NOT EXISTS login_attempts (
 CREATE INDEX IF NOT EXISTS login_attempts_lookup_idx
   ON login_attempts (bucket, key_hash, attempted_at DESC);
 
+-- 8) user_coins (server-side coin balance; client kabhi balance nahi bhejta)
+CREATE TABLE IF NOT EXISTS user_coins (
+  user_id    uuid PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  balance    integer     NOT NULL DEFAULT 0 CHECK (balance >= 0),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+-- 9) coin_ledger (har round se max ek credit; event_id UNIQUE = duplicate protection)
+CREATE TABLE IF NOT EXISTS coin_ledger (
+  id         bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  user_id    uuid        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  event_id   uuid        NOT NULL UNIQUE,
+  delta      integer     NOT NULL CHECK (delta > 0),
+  reason     text        NOT NULL,
+  earn_day   date        NOT NULL,                 -- IST din (daily cap yahin se count hota hai)
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS coin_ledger_user_day_idx ON coin_ledger (user_id, earn_day);
+
 COMMIT;
