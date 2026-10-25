@@ -20,6 +20,11 @@ const saveSet=()=>LW("settings",SET);
 let THEME=LS("theme","dark")==="light"?"light":"dark";
 const applyTheme=()=>{const l=THEME==="light",h=document.documentElement,m=document.querySelector('meta[name="theme-color"]');if(l)h.setAttribute("data-theme","light");else h.removeAttribute("data-theme");if(m)m.setAttribute("content",l?"#F5F3FF":"#0e0e11")};
 const setTheme=t=>{THEME=t==="light"?"light":"dark";LW("theme",THEME);applyTheme()};
+const coinFmt=n=>Number(n).toLocaleString("en-US");
+const coinGet=()=>{const a=LS("auth",null),c=LS("coins",null);return a&&a.user&&c&&c.id===a.user.id&&Number.isInteger(c.b)&&c.b>=0?c.b:null};
+const coinTxt=()=>coinGet()===null?"–":coinFmt(coinGet());
+const coinPill=()=>LS("auth_mode","")==="account"?'<div class="hm-coin" id="cp" title="Your coins"><span class="hm-ci">🪙</span><b id="cn">'+coinTxt()+'</b></div>':"";
+const coinShow=()=>{const n=$("#cn");if(n)n.textContent=coinTxt()};
 const thHtml=()=>'<span class="mnu-ic">'+(THEME==="light"?"☀️":"🌙")+'</span><span class="mnu-t"><b>Switch Theme</b><small>Now: '+(THEME==="light"?"Light":"Dark")+' · Tap for '+(THEME==="light"?"Dark":"Light")+'</small></span><span class="hm-go">›</span>';
 applyTheme();
 setQN(LS("qn",20));
@@ -92,7 +97,7 @@ function build(m){
  return shuf(out);
 }
 function home(){if(!BOOTED){BOOTED=1;return welcome()}stopT();
- app.innerHTML=`<div class="hm"><div class="hm-in"><div class="hm-bar"><div class="hm-brand"><span class="hm-bl">🎯</span><b>Quiz Arena</b></div><button id="mn" class="hm-chip hm-menu" aria-label="Menu">☰</button></div><div class="hm-hero2"><div class="hm-hl">Ready to Prove Yourself?</div><p class="hm-sub">Play smart. Build your streak. Earn your glory.</p></div><div class="hm-label">Choose a category</div><div class="hm-grid">`+
+ app.innerHTML=`<div class="hm"><div class="hm-in"><div class="hm-bar"><div class="hm-brand"><span class="hm-bl">🎯</span><b>Quiz Arena</b></div><div class="hm-right">${coinPill()}<button id="mn" class="hm-chip hm-menu" aria-label="Menu">☰</button></div></div><div class="hm-hero2"><div class="hm-hl">Ready to Prove Yourself?</div><p class="hm-sub">Play smart. Build your streak. Earn your glory.</p></div><div class="hm-label">Choose a category</div><div class="hm-grid">`+
  Object.keys(BANK).map(k=>{const nm=BANK[k].name,e=nm.match(/^(\p{Extended_Pictographic}\S*)\s+(.+)$/u);return`<button class="hm-card" data-m="${k}"><span class="hm-ic">${e?e[1]:"📚"}</span><span class="hm-tx"><b>${e?e[2]:nm}</b><small>${BANK[k].q.length} questions</small></span><span class="hm-go">›</span></button>`}).join("")+`</div></div></div>`;
  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>selMode(b.dataset.m));
  $("#mn").onclick=openMenu;
@@ -334,6 +339,7 @@ function applySnap(d){
   LW("hist",(d.hist||[]).slice(0,10).map(x=>({m:x.m,s:x.s,r:x.r,n:x.n,d:x.d||fmt(x.t)})));
   if(!LS("pstr",null))LW("pstr",bfStr());
   if(Number.isFinite(d.since)&&d.since>0&&d.since<=Date.now()){const o=LS("since",0);if(!o||d.since<o)LW("since",d.since)}
+   if(d.coins&&Number.isInteger(d.coins.balance)&&d.coins.balance>=0){const a=LS("auth",null);if(a&&a.user){LW("coins",{id:a.user.id,b:d.coins.balance});coinShow()}}
   if(d.streak&&typeof d.streak==="object"){const P=LS("pstr",{}),idle=!LS("outbox",[]).length;Object.keys(d.streak).forEach(k=>{const s=d.streak[k];if(!/^[a-z0-9_]{1,40}$/.test(k)||!s||!Number.isInteger(s.b)||!Number.isInteger(s.c)||s.b<0||s.c<0)return;const o=P[k]||{c:0,b:0};o.c=idle?s.c:o.c;o.b=Math.max(o.b,s.b,o.c);P[k]=o});LW("pstr",P)}
  }catch(e){}
 }

@@ -69,6 +69,11 @@ body{position:relative}
 .hm-bl{width:38px;height:38px;flex:none;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;background:linear-gradient(145deg,#8b5cf6,#5b21b6);box-shadow:0 6px 18px rgba(139,92,246,.4),inset 0 1px 0 rgba(255,255,255,.25)}
 .hm-brand b{font-size:19px;font-weight:800;letter-spacing:-.01em;color:#f2f2f7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hm .hm-menu{width:44px;height:44px;min-height:44px;padding:0;flex:none;display:flex;align-items:center;justify-content:center;font-size:20px;border-radius:14px}
+.hm-right{display:flex;align-items:center;gap:8px;flex:none;min-width:0}
+.hm-coin{display:flex;align-items:center;gap:6px;height:44px;padding:0 13px;border-radius:14px;max-width:150px;background:linear-gradient(160deg,rgba(251,191,36,.16),rgba(251,191,36,.06));border:1px solid rgba(251,191,36,.38);box-shadow:0 0 16px rgba(251,191,36,.14);animation:hmUp .5s .1s cubic-bezier(.2,.8,.2,1) backwards}
+.hm-ci{font-size:18px;line-height:1;flex:none;filter:drop-shadow(0 0 6px rgba(251,191,36,.5))}
+.hm-coin b{font-size:15px;font-weight:800;letter-spacing:.01em;color:#fde68a;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:360px){.hm-right{gap:6px}.hm-coin{height:40px;padding:0 10px;gap:5px}.hm-ci{font-size:16px}.hm-coin b{font-size:14px}.hm .hm-menu{width:40px;height:40px;min-height:40px}}
 .hm-hero2{position:relative;overflow:hidden;margin:18px 0 24px;padding:28px 18px 26px;border-radius:24px;text-align:center;background:radial-gradient(120% 140% at 50% -10%,rgba(139,92,246,.34),transparent 62%),linear-gradient(160deg,#1f1f26,#17171c);border:1px solid rgba(139,92,246,.3);box-shadow:0 14px 40px rgba(139,92,246,.16),inset 0 1px 0 rgba(255,255,255,.06);animation:hmUp .6s cubic-bezier(.2,.8,.2,1) backwards}
 .hm-hero2::before{content:"";position:absolute;width:240px;height:240px;left:50%;top:-130px;margin-left:-120px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.45),transparent 68%);filter:blur(8px);animation:hmGlow 5s ease-in-out infinite;pointer-events:none}
 .hm-hero2>*{position:relative}

@@ -4,6 +4,7 @@ New:
 + Premium new Home screen with a "Ready to Prove Yourself?" hero section and a cleaner top bar.
 + 50 new Grammar questions
 + 10 new WWE questions
++ Coin balance (🪙) now shows on the Home screen for logged-in accounts and stays in sync across your devices.
 Improved:
 + What's New is now inside the Menu.
 
