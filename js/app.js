@@ -37,7 +37,7 @@ const SFX={
 };
 function openMenu(){
  const ov=document.createElement("div");ov.className="ov";
- ov.innerHTML='<div class="panel mnu-d"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="mnu-i" id="m1"><span class="mnu-ic">📊</span><span class="mnu-t"><b>Stats</b><small>Summary & History</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m2"><span class="mnu-ic">⚙️</span><span class="mnu-t"><b>Settings</b><small>Sound & Vibration</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m3"><span class="mnu-ic">👤</span><span class="mnu-t"><b>My Account</b><small>Profile, Password & Logout</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m4"><span class="mnu-ic">ℹ️</span><span class="mnu-t"><b>About</b><small>How it works & question counts</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m5">'+thHtml()+'</button></div>';
+ ov.innerHTML='<div class="panel mnu-d"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="mnu-i" id="m1"><span class="mnu-ic">📊</span><span class="mnu-t"><b>Stats</b><small>Summary & History</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m2"><span class="mnu-ic">⚙️</span><span class="mnu-t"><b>Settings</b><small>Sound & Vibration</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m3"><span class="mnu-ic">👤</span><span class="mnu-t"><b>My Account</b><small>Profile, Password & Logout</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m6"><span class="mnu-ic">🆕</span><span class="mnu-t"><b>What’s New</b><small>Latest updates'+(VER?' · v'+VER:'')+'</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m4"><span class="mnu-ic">ℹ️</span><span class="mnu-t"><b>About</b><small>How it works & question counts</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m5">'+thHtml()+'</button></div>';
  document.body.appendChild(ov);
  ov.querySelector(".x").onclick=()=>ov.remove();
  ov.className="ov mnu";ov.onclick=e=>{if(e.target===ov)ov.remove()};
@@ -45,6 +45,7 @@ function openMenu(){
  ov.querySelector("#m2").onclick=()=>{ov.remove();settings()};
  ov.querySelector("#m3").onclick=()=>{ov.remove();accountScr()};
  ov.querySelector("#m4").onclick=()=>{ov.remove();aboutScr()};
+ ov.querySelector("#m6").onclick=()=>{ov.remove();openWN()};
  ov.querySelector("#m5").onclick=function(){setTheme(THEME==="light"?"dark":"light");this.innerHTML=thHtml()};
 }
 const toMenu=()=>{home();openMenu()};
@@ -91,10 +92,10 @@ function build(m){
  return shuf(out);
 }
 function home(){if(!BOOTED){BOOTED=1;return welcome()}stopT();
- app.innerHTML=`<div class="hm"><div class="hm-in"><div class="hm-bar"><button id="mn" class="hm-chip">☰ Menu</button><button id="wn" class="hm-chip">🆕 What’s New${VER?" · v"+VER:""}</button></div><div class="hm-hero"><div class="hm-logo">🎯</div><h1>Quiz Arena</h1><p>Challenge Your Mind. Prove Your Knowledge.</p></div><div class="hm-label">Choose a category</div><div class="hm-grid">`+
+ app.innerHTML=`<div class="hm"><div class="hm-in"><div class="hm-bar"><div class="hm-brand"><span class="hm-bl">🎯</span><b>Quiz Arena</b></div><button id="mn" class="hm-chip hm-menu" aria-label="Menu">☰</button></div><div class="hm-hero2"><div class="hm-hl">Ready to Prove Yourself?</div><p class="hm-sub">Play smart. Build your streak. Earn your glory.</p></div><div class="hm-label">Choose a category</div><div class="hm-grid">`+
  Object.keys(BANK).map(k=>{const nm=BANK[k].name,e=nm.match(/^(\p{Extended_Pictographic}\S*)\s+(.+)$/u);return`<button class="hm-card" data-m="${k}"><span class="hm-ic">${e?e[1]:"📚"}</span><span class="hm-tx"><b>${e?e[2]:nm}</b><small>${BANK[k].q.length} questions</small></span><span class="hm-go">›</span></button>`}).join("")+`</div></div></div>`;
  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>selMode(b.dataset.m));
- $("#wn").onclick=openWN;$("#mn").onclick=openMenu;
+ $("#mn").onclick=openMenu;
  app.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{setQN(+b.dataset.n);LW("qn",QN);home()});
  $(".hm-in").insertAdjacentHTML("beforeend",`<div class="ver">${VER?"Version "+VER:""}</div>`);
 }
