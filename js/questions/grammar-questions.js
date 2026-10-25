@@ -101,5 +101,6 @@ QUIZ_DATA.grammar={name:"📝 Grammar Quiz",q:[
   ["'While I ___ for the bus, I read a magazine.' Sahi option chuno.","was waiting",["waited","am waiting","have waited"],"Past mein chal rahi action ke liye Past Continuous use hota hai. Yahan 'was waiting' ke dauran doosri action hui.","m"],
   ["'The novel was written ___ a young author.' Sahi preposition chuno.","by",["with","from","at"],"Passive voice mein action karne wale person ko batane ke liye 'by' use hota hai.","m"],
   ["'She bought ___ umbrella because it was raining.' Khali jagah mein kya aayega?","an",["a","the","no article"],"'Umbrella' vowel sound se shuru hota hai, isliye singular countable noun ke saath 'an umbrella' sahi hai.","e"],
+  ["'Despite the heavy rain, the match continued.' Is sentence mein 'Despite' ki jagah kaunsa word use ho sakta hai?","Although",["Because","Unless","Therefore"],"'Although' ke baad subject aur verb aata hai, isliye sentence hoga: 'Although it was raining heavily, the match continued.'","m"],
   ["'Neither answer ___ correct.' Sahi word chuno.","is",["are","were","have"],"'Neither' jab do options mein se kisi ek ko bhi sahi na batane ke liye singular subject ki tarah use hota hai, to singular verb 'is' aata hai.","m"]
 ]};
