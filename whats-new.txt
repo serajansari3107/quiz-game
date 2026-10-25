@@ -9,7 +9,7 @@ New:
 Improved:
 + New Quiz Arena app icon and startup logo for the installed app.
 + The tagline on the Home screen now always stays on a single line.
-+ Faster startup: if you are already logged in, the app now opens straight to the Home screen.
++ Enhanced Perfomance
 
 ## v1.9 | 24 Oct 2026
 New:

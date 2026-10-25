@@ -434,7 +434,7 @@ async function doLogout(){
 let BOOTED=0;
 function welcome(){
  app.innerHTML='<div class="wl"><div class="wl-in"><div class="wl-logo">🎯</div><h1>Quiz Arena</h1><p>Cricket · WWE</p></div></div>';
- setTimeout(()=>{if(LS("auth_mode","")){home();if(LS("auth_mode","")==="account"&&navigator.onLine)sessionRefresh().then(ok=>{if(ok)syncNow()})}else authChoice()},LS("auth_mode","")?0:1600);
+ setTimeout(()=>{if(LS("auth_mode","")){home();if(LS("auth_mode","")==="account"&&navigator.onLine)sessionRefresh().then(ok=>{if(ok)syncNow()})}else authChoice()},1600);
 }
 function authChoice(){
  app.innerHTML='<div class="wl"><div class="wl-in"><div class="wl-logo">🎯</div><h1>Quiz Arena</h1><p>Choose how you want to continue</p><div class="wl-btns"><button class="wl-b1" id="wg">Play as Guest</button><button class="wl-b2" id="wlg">Already have an account? Login</button><button class="wl-b2" id="wca">Create Account</button></div><div class="wl-note" id="wnt"></div></div></div>';
