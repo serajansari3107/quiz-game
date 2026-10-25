@@ -46,6 +46,12 @@ html[data-theme="light"] .ucard ul{color:#4A4784}
 html[data-theme="light"] .ucard .btn{background:#fff;color:#0d2a7a}
 html[data-theme="light"] .later{color:#4A4784}
 html[data-theme="light"] .hm{background:radial-gradient(120% 55% at 50% 0,rgba(139,92,246,.18),transparent 62%),#F5F3FF;color:#312E81}
+html[data-theme="light"] .hm-grid .hm-card{background:linear-gradient(160deg,#FFFFFF,#FFFFFF);box-shadow:0 8px 24px rgba(139,92,246,.10)}
+html[data-theme="light"] .hm-grid .hm-ic{box-shadow:0 0 20px rgba(139,92,246,.22)}
+html[data-theme="light"] .hm-grid .hm-card:active{border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,.18)}
+@media (hover:hover){
+html[data-theme="light"] .hm-grid .hm-card:hover{border-color:#8b5cf6;box-shadow:0 12px 30px rgba(139,92,246,.28)}
+}
 html[data-theme="light"] .hm-chip{background:#FFFFFF;border:1px solid #DDD6FE;color:#4A4784}
 html[data-theme="light"] .hm-chip:active{background:#FFFFFF}
 html[data-theme="light"] #wn.hm-chip{background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.45);color:#6D28D9}
@@ -243,4 +249,7 @@ html[data-theme="light"] .wl-card{background:#FFFFFF;border:1px solid #DDD6FE;co
 html[data-theme="light"] .wl-card p{color:#6B67A8}
 html[data-theme="light"] ::placeholder{color:#8582B8;opacity:1}
 /* Stats dropdowns ka inline dark style (app.js) override */
+/* Home category cards */
+html[data-theme="light"] .hm-grid .hm-card{background:linear-gradient(160deg,#FFFFFF,#F5F3FF);box-shadow:0 8px 22px rgba(139,92,246,.12)}
+html[data-theme="light"] .hm-grid .hm-ic{box-shadow:0 0 18px rgba(139,92,246,.20)}
 html[data-theme="light"] .st select{background:#FFFFFF!important;color:#312E81!important;border-color:#DDD6FE!important;color-scheme:light}

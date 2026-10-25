@@ -1,10 +1,14 @@
 window.WN_TXT=(function(){/*
-## v2.0 | 24 Oct 2026
+## v2.0 | 25 Oct 2026
 New:
 + New Grammar Quiz: questions in Hinglish with English options, with a short explanation for every answer.
 + Grammar Quiz has 90+ questions and works in all quiz sizes (5, 10 and 20 questions).
 + New About section in the Menu: how the app works, marks, lifelines, stats, accounts and the number of questions in each quiz.
 + Light Theme (Soft Lavender) with a new Switch Theme option in the Menu. Your choice is saved on your device.
++ Home categories now show in a clean 2-column grid with a centered logo and title.
+Improved:
++ New Quiz Arena app icon and startup logo for the installed app.
++ The tagline on the Home screen now always stays on a single line.
 
 ## v1.9 | 24 Oct 2026
 New:

@@ -63,6 +63,17 @@ body{position:relative}
 /* ===== Home screen (premium dark) ===== */
 .hm{position:fixed;inset:0;z-index:2;overflow-y:auto;-webkit-overflow-scrolling:touch;background:radial-gradient(120% 55% at 50% 0,rgba(139,92,246,.18),transparent 62%),#0e0e11;padding:calc(14px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Inter,system-ui,sans-serif;color:#f2f2f7}
 .hm-in{max-width:640px;margin:0 auto}
+.hm .hm-hero p{max-width:none;white-space:nowrap;font-size:clamp(10.5px,3.55vw,15px)}
+.hm .hm-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.hm-grid .hm-card{flex-direction:column;justify-content:center;text-align:center;gap:12px;min-height:136px;padding:20px 10px 18px;background:linear-gradient(160deg,#1f1f26,#17171c);box-shadow:0 8px 24px rgba(139,92,246,.10)}
+.hm-grid .hm-card:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - 7px)}
+.hm-grid .hm-ic{width:64px;height:64px;font-size:32px;border-radius:20px;box-shadow:0 0 20px rgba(139,92,246,.22)}
+.hm-grid .hm-tx{flex:none;align-items:center;gap:0;width:100%}
+.hm-grid .hm-tx b{font-size:15.5px;line-height:1.25;letter-spacing:.01em;overflow-wrap:anywhere}
+.hm-grid .hm-tx small,.hm-grid .hm-go{display:none}
+.hm-grid .hm-card:active{transform:scale(.97);border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,.18)}
+@media (hover:hover){.hm-grid .hm-card:hover{transform:translateY(-2px);border-color:#8b5cf6;box-shadow:0 12px 30px rgba(139,92,246,.28)}}
+@media (max-width:360px){.hm .hm-grid{gap:10px}.hm-grid .hm-card{min-height:122px;padding:16px 8px 14px}.hm-grid .hm-ic{width:56px;height:56px;font-size:28px}.hm-grid .hm-tx b{font-size:14.5px}.hm-grid .hm-card:last-child:nth-child(odd){width:calc(50% - 5px)}}
 .hm-bar{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .hm-chip{background:#17171c;border:1px solid #2a2a33;color:#cfcfe0;border-radius:999px;padding:9px 15px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap;transition:background .2s,border-color .2s}
 .hm-chip:active{background:#1f1f26}
