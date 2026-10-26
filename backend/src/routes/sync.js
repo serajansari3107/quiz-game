@@ -214,16 +214,7 @@ async function sync(req, res) {
       );
       cr.rows.forEach((r) => { credits[r.id] = r.delta; });
     }
-    // Is request ke har valid round ka exact credit (naya ho ya pehle ka retry; coin na mile to 0)
-    const credits = {};
-    if (events.length) {
-      events.forEach((e) => { credits[e.id] = 0; });
-      const cr = await client.query(
-        "SELECT event_id::text AS id, delta FROM coin_ledger WHERE user_id = $1 AND event_id = ANY($2::uuid[])",
-        [uid, events.map((e) => e.id)]
-      );
-      cr.rows.forEach((r) => { credits[r.id] = r.delta; });
-    }
+    
     const coins = { balance: cb.rows[0] ? cb.rows[0].balance : 0, today: ct.rows[0].n, cap: DAILY_CAP, credits };
 
     await client.query("COMMIT");

@@ -1,3 +1,4 @@
+require("dotenv").config();
 const DEFAULT_ORIGIN = "https://serajansari3107.github.io";
 
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || DEFAULT_ORIGIN)
