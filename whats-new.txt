@@ -11,6 +11,8 @@ Improved:
 + Offline coins are saved on your device and added to your balance automatically when you are back online.
 + Guests now see a hint to log in to earn coins.
 + About section now explains coins, themes and where What's New lives.
+Fixed:
++ "Update now" no longer gets stuck on the same screen. If an update fails, it now shows "Try again".
 
 ## v2.0 | 25 Oct 2026
 New:

@@ -90,7 +90,7 @@ function aboutScr(){
  +sec("👤 Guest &amp; Account",["<b>Guest:</b> play without an account. Your stats are saved only on this device.","<b>Account:</b> create an account with your full name, a username and a password. Your stats are saved to your account and appear on any device where you log in.","On one device, the guest and every account keep their stats separately.","If you play without internet, your rounds are synced to your account when you are online again.","You can transfer your guest stats to your account <b>one time per device</b>. The app asks for your confirmation first.","Your old guest stats are never deleted by logging in.","Only logged-in accounts earn coins (see the Coins section). A guest sees a small hint to log in on the result screen."])
  +sec("🔐 My Account &amp; Security",["Open <b>Menu → My Account</b> after login to see your details.","<b>Change Password:</b> enter your current password and a new one. You will stay logged in on this device, and your other devices are logged out.","<b>Recovery Code:</b> a secret code that lets you reset your password if you forget it. Keep it safe.","<b>Generate New Recovery Code:</b> needs your password. The old code stops working, and the new code is shown only once, so copy it with the 📋 button.","<b>Forgot Password:</b> use your username, your recovery code and a new password.","Passwords are stored in a protected (hashed) form, never as plain text. For this reason, the app can never show your current password or your old recovery code."])
  +sec("⚙️ Settings",["Open <b>Menu → Settings</b> to turn <b>Sound</b> and <b>Vibration</b> ON or OFF.","Open <b>Menu → Switch Theme</b> to change between the <b>Dark Theme</b> and the <b>Light Theme</b> (Soft Lavender). Your choice is saved on your device."])
- +sec("🆕 Updates",["Open <b>Menu → What’s New</b> to see the latest features, fixes and the app version.","After an update, a popup shows only the new changes."])
+ +sec("🆕 Updates",["Open <b>Menu → What’s New</b> to see the latest features, fixes and the app version.","After an update, a popup shows only the new changes. If <b>Update now</b> cannot finish (for example because of a weak internet connection), the button changes to <b>Try again</b> and your data stays safe."])
  +sec("🌐 Internet &amp; Offline",["Quizzes, stats and settings work without internet.","Internet is needed only for sign up, login, password changes and syncing your stats and coins."])
  +sec("💡 Tips",["Save <b>Swap</b> and <b>50-50</b> for hard questions.","Read the explanation after every answer. It helps you remember, especially in the Grammar Quiz.","Watch the timer. Time-up costs a life, just like a wrong answer.","Play perfect rounds for bonus coins, but remember the daily limit of 500."])
  +'</div></div>';
@@ -266,10 +266,24 @@ function checkUp2(inst){
   ov.innerHTML='<div class="ucard"><div class="uic">🚀</div><h2>'+(va!==vb?"New version available":"New features added")+'</h2><div class="uv">'+vb+'</div><ul>'+items+'</ul><button class="btn" id="ub">Update now</button><button class="later" id="ulat">Not now</button></div>';
   document.body.appendChild(ov);
   $("#ulat").onclick=()=>ov.remove();
-  $("#ub").onclick=async()=>{$("#ub").textContent="Updating…";try{await applyUpd()}catch(e){}LW("wn_ack",sg(b));location.reload()};
+  $("#ub").onclick=async()=>{const bt=$("#ub");bt.textContent="Updating…";let ok=false;try{ok=await applyUpd(b.join("\n"))}catch(e){}if(!ok){bt.textContent="Try again";return}LW("wn_ack",sg(b));location.reload()};
  }).catch(()=>{});
 }
-async function applyUpd(){
+async function applyUpd(want){
+ if(!window.caches)return true;
+ const cs=[];for(const k of await caches.keys()){const x=await caches.open(k);if(await x.match("index.html"))cs.push(x)}
+ if(!cs.length)return true;
+ const q=f=>f+(f.includes("?")?"&":"?")+"chk="+Date.now();
+ const h=await (await fetch(q("index.html"),{cache:"reload"})).text();
+ const u=[...h.matchAll(/(?:src|href)="([^":#]+)"/g)].map(m=>m[1]);
+ let mi=[];try{mi=((await (await fetch(q("manifest.json"),{cache:"reload"})).json()).icons||[]).map(i=>i.src)}catch(e){}
+ const fs=[...new Set(["./","index.html","whats-new.txt","manifest.json",...mi,...u])];
+ const rs=await Promise.all(fs.map(f=>fetch(q(f),{cache:"reload"})));
+ for(let i=0;i<fs.length;i++)if(rs[i].ok)for(const c of cs)await c.put(fs[i],rs[i].clone());
+ const w=await cs[0].match("whats-new.txt"),tb=w?topB(await w.text()):null;
+ return !!tb&&tb.join("\n")===want
+}
+async function applyUpdOld(){
  if(!window.caches)return;
  const ks=await caches.keys();if(!ks.length)return;
  const c=await caches.open(ks[0]),q=f=>f+(f.includes("?")?"&":"?")+"chk="+Date.now();

@@ -183,7 +183,7 @@ git push
 5. `git status` se check karo ki `.env` file list mein na ho.
 6. **Frontend:** push ke baad GitHub Pages khud update ho jata hai.
 7. **Backend:** Render redeploy karta hai (Render dashboard mein "Live" dikhna chahiye).
-8. `whats-new.txt` ka sabse upar wala header `## v1.9 | 24 Oct 2026` (version, `|`, date) is format mein rakho, kyunki About ki "Last Updated" tarikh wahin se aati hai.
+8. Har release mein `whats-new.txt` mein nayi lines jodo (nahi to update popup aur `?v=` stamp nahi badlenge). Sabse upar wala header `## v1.9 | 24 Oct 2026` (version, `|`, date) is format mein rakho, kyunki About ki "Last Updated" tarikh wahin se aati hai.
 
 ---
 
@@ -192,6 +192,9 @@ git push
 - `.env` file ya asli passwords/secrets kabhi commit mat karo.
 - Purani stats (guest ya account) ko delete ya overwrite mat karo.
 - `sw.js` mein `CACHE` ka naam (`quiz-v1.3`) mat badlo. App ka "Update now" isi par chalta hai.
+- **Update flow (important):** "Update now" (`applyUpd` in `js/app.js`) sirf us cache mein likhta hai jisme is app ka `index.html` hai, sab files pehle fetch karta hai (ek bhi fail ho to kuch nahi likhta, button "Try again" ho jata hai), likhne ke baad check karta hai ki naya `whats-new.txt` sach mein cache mein aa gaya, tabhi reload karta hai.
+- `sw.js` page kholte waqt `index.html` ke `js/` aur `css/` links par `?v=<stamp>` jodta hai. Stamp `whats-new.txt` se banta hai. Isse reload par Chrome purani script apni memory cache se nahi uthata. **Isliye har release mein `whats-new.txt` zaroor badlo** (popup bhi usi se aata hai).
+- Agar phone par update atak jaye to app ko poori tarah band karke (recent apps se hata kar) 10-15 second baad dobara kholo.
 - Naye sawal jodne se pehle duplicate aur galat answer check karo.
 - Render ka free server kuch der baad so sakta hai, to pehli request mein thoda wait lag sakta hai.
 - **Rule:** har change ke saath **About** (`aboutScr` in `js/app.js`) aur **README.md** bhi update karo, phir git commands chalao.

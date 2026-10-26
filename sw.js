@@ -1,5 +1,5 @@
 // CACHE sirf cache folder ka naam hai, ise badalne ki zaroorat nahi. App version whats-new.txt ke sabse upar wale block se aata hai.
-const CACHE="quiz-v1.4";
+const CACHE="quiz-v1.3";
 const CORE=["./","index.html","css/style.css","js/app.js","js/questions/cricket-questions.js","js/questions/wwe-questions.js","whats-new.txt","manifest.json","assets/qa-icon-192.png","assets/qa-icon-512.png","assets/qa-icon-maskable-512.png","assets/qa-apple-180.png"];
 self.addEventListener("install",e=>{
  e.waitUntil((async()=>{
@@ -26,6 +26,7 @@ self.addEventListener("fetch",e=>{
   let r=await c.match(e.request,{ignoreSearch:true});
   if(!r&&e.request.mode==="navigate")r=await c.match("index.html");
   if(r){
+   if(e.request.mode==="navigate"){const w=await c.match("whats-new.txt");let h=0;if(w){const x=await w.text();for(let i=0;i<x.length;i++)h=(h*31+x.charCodeAt(i))|0}const t=await r.text();return new Response(t.replace(/((?:src|href)=")((?:js|css)\/[^"?]+)(")/g,"$1$2?v="+(h>>>0).toString(36)+"$3"),{status:200,headers:{"Content-Type":"text/html; charset=utf-8"}})}
    if(r.redirected)r=new Response(await r.blob(),{status:200,headers:{"Content-Type":"text/html"}});
    return r;
   }
