@@ -1,5 +1,5 @@
 // CACHE sirf cache folder ka naam hai, ise badalne ki zaroorat nahi. App version whats-new.txt ke sabse upar wale block se aata hai.
-const CACHE="quiz-v1.3";
+const CACHE="quiz-v1.4";
 const CORE=["./","index.html","css/style.css","js/app.js","js/questions/cricket-questions.js","js/questions/wwe-questions.js","whats-new.txt","manifest.json","assets/qa-icon-192.png","assets/qa-icon-512.png","assets/qa-icon-maskable-512.png","assets/qa-apple-180.png"];
 self.addEventListener("install",e=>{
  e.waitUntil((async()=>{
