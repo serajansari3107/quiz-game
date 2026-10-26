@@ -1,8 +1,8 @@
 # Quiz Arena
 
-Ek offline-first quiz game (PWA). Topics: **Cricket** aur **WWE**.
+Ek offline-first quiz game (PWA). Topics: **Cricket**, **WWE** aur **Grammar** (Hinglish sawal, English options).
 Phone/desktop par install ho sakta hai, bina internet ke bhi chalta hai.
-Account banao to stats kisi bhi device par sync hoti hain.
+Account banao to stats aur coins kisi bhi device par sync hote hain.
 
 - **Live app:** https://serajansari3107.github.io/quiz-game/
 - **Backend (API):** https://quiz-arena-api-goc7.onrender.com
@@ -18,9 +18,9 @@ Phone / Browser  ->  GitHub Pages (frontend, static files)
 ```
 
 - **Frontend** (app): sirf HTML/CSS/JS. GitHub Pages par free host hota hai.
-- **Backend** (API): Node.js + Express. Render par chalta hai. Login, signup aur stats sync yahi sambhalta hai.
-- **Database:** Neon PostgreSQL. Users, rounds aur stats yahin save hote hain.
-- **Guest mode:** bina login ke khel sakte ho. Stats sirf us device par rehti hain.
+- **Backend** (API): Node.js + Express. Render par chalta hai. Login, signup, stats sync aur coins yahi sambhalta hai.
+- **Database:** Neon PostgreSQL. Users, rounds, stats aur coins yahin save hote hain.
+- **Guest mode:** bina login ke khel sakte ho. Stats sirf us device par rehti hain. Guest ko **coins nahi** milte.
 
 ---
 
@@ -28,29 +28,33 @@ Phone / Browser  ->  GitHub Pages (frontend, static files)
 
 ```
 quiz-game/
-├── index.html            App ka main page
-├── manifest.json         PWA settings (naam, icon, colors)
+├── index.html            App ka main page (aur startup splash)
+├── manifest.json         PWA settings (naam "Quiz Arena", icons, colors)
 ├── sw.js                 Service Worker (offline chalne ke liye)
-├── whats-new.txt         Update popup mein dikhne wali "What's New" list
+├── whats-new.txt         "What's New" list + app version (About mein bhi dikhta hai)
 ├── css/
-│   └── style.css         Poora design
+│   ├── style.css         Dark theme ka poora design (default)
+│   └── light.css         Light theme (Soft Lavender), sirf tab lagti hai jab theme Light ho
 ├── js/
-│   ├── app.js            App ka poora logic (screens, quiz, stats, login, sync)
+│   ├── app.js            App ka poora logic (screens, quiz, stats, login, sync, coins, theme)
 │   └── questions/
 │       ├── cricket-questions.js   Cricket ke sawal
-│       └── wwe-questions.js       WWE ke sawal
-├── assets/               Icons (192 / 512)
+│       ├── wwe-questions.js       WWE ke sawal
+│       └── grammar-questions.js   Grammar ke sawal
+├── assets/               PWA icons: qa-icon-192/512, qa-icon-maskable-512, qa-apple-180
 └── backend/              Server (Render par deploy hota hai)
     ├── package.json
     ├── .env.example      Kaun-kaun se settings chahiye (asli values nahi)
     ├── db/schema.sql     Database ke tables
+    ├── test/
+    │   └── coins.test.js Coins ke tests (mock database, asli DB nahi chahiye)
     └── src/
         ├── server.js, app.js, config.js, db.js
         ├── routes/
         │   ├── auth.js   Signup, login, logout, password, recovery code
-        │   └── sync.js   Stats sync (rounds, best, history, streak)
+        │   └── sync.js   Stats + coins sync (rounds, best, history, streak, coins)
         ├── middleware/   auth.js (login check), cors.js
-        └── lib/          password.js, tokens.js, rateLimit.js
+        └── lib/          password.js, tokens.js, rateLimit.js, coins.js (coin rules)
 ```
 
 ---
@@ -59,25 +63,47 @@ quiz-game/
 
 | Kaam | File |
 |---|---|
-| Naye sawal jodna | `js/questions/cricket-questions.js` ya `wwe-questions.js` |
-| Design / colors / layout | `css/style.css` |
+| Naye sawal jodna | `js/questions/cricket-questions.js`, `wwe-questions.js` ya `grammar-questions.js` |
+| Dark design / colors / layout | `css/style.css` |
+| Light theme ke colors | `css/light.css` |
 | Game ya screens ka behaviour | `js/app.js` |
-| What's New popup ki lines | `whats-new.txt` |
+| About screen ka text | `js/app.js` (function `aboutScr`) |
+| What's New popup + version + "Last Updated" date | `whats-new.txt` |
+| App ka naam / icon | `manifest.json` aur `assets/` |
 | Login / password ka logic | `backend/src/routes/auth.js` |
-| Stats sync ka logic | `backend/src/routes/sync.js` |
-| Database ka structure | `backend/db/schema.sql` |
+| Stats / coins sync ka logic | `backend/src/routes/sync.js` |
+| Coins ke rules (kitne coins, daily cap) | `backend/src/lib/coins.js` |
+| Database ka structure | `backend/db/schema.sql` (aur Neon mein SQL chalani padti hai) |
 
 ---
 
 ## Features
 
-- Cricket aur WWE quiz (5 / 10 / 20 questions ke modes)
-- Score, accuracy, timer, history (last 10), best scores, perfect streak
+- Cricket, WWE aur Grammar quiz (5 / 10 / 20 questions ke modes)
+- Score, accuracy, timer, 3 lives, lifelines (Swap, 50-50, Skip), history (last 10), best scores, perfect streak
+- **Home screen:** top bar mein logo + coin balance + Menu, "Ready to Prove Yourself?" hero, 2-column category cards
+- **Menu:** Stats, Settings, My Account, What's New, About, Switch Theme
+- **Themes:** Dark (default) aur Light (Soft Lavender). Choice device par save hoti hai
+- **Coins:** account walon ko milte hain (neeche detail)
 - Guest mode, Login, Signup, Forgot Password (recovery code se)
 - My Account: naam/username, password change, naya recovery code, logout
 - Guest stats ko account mein ek baar transfer karna
 - Har account ki stats alag, guest ki alag
 - Offline chalta hai aur install ho sakta hai (PWA)
+- **About** screen: app ki poori jankari + har category ke sawalon ki ginti (apne aap update hoti hai)
+
+---
+
+## Coins
+
+- Har sahi jawab = **1 coin**. Perfect round (saare sawal sahi) par bonus: 5Q = **5**, 10Q = **10**, 20Q = **20**.
+- **Daily cap 500 coins** per account. Din **IST raat 12:00 baje** badalta hai. Cap ke paas round bada ho to sirf bacha hua hissa milta hai.
+- Sirf logged-in account. Guest ko nahi (result screen par sirf hint "Login to earn coins").
+- **Server hi balance rakhta hai** (`user_coins` + `coin_ledger` tables). Client kabhi coins ya balance nahi bhejta, sirf round ka event.
+- Round, stats aur coins **ek hi transaction** mein save hote hain. Duplicate round sync karne par double coins nahi milte (`rounds.event_id` aur `coin_ledger.event_id` UNIQUE).
+- `/sync` ke jawab mein `coins: { balance, today, cap, credits }` aata hai. `credits` mein har round ka exact credit hota hai.
+- **Offline:** result par turant estimate (`+N`) dikhta hai aur coins udte hain. Round outbox mein save rehta hai, Home pill par chhota dot dikhta hai. Net aate hi auto-sync hota hai aur server ka balance final hota hai. Cap ki wajah se farak aaye to card par "Adjusted" likha aata hai.
+- Local `coins` aur `cpend` keys sirf dikhane ke liye hain. Inhe edit karne se server ka balance nahi badalta.
 
 ---
 
@@ -92,8 +118,15 @@ quiz-game/
 | `POST /auth/recover` | Recovery code se password reset |
 | `POST /auth/change-password` | Password badalna (login chahiye) |
 | `POST /auth/recovery/regenerate` | Naya recovery code (login chahiye) |
-| `POST /sync` | Rounds bhejna aur stats wapas lena (login chahiye) |
+| `POST /sync` | Rounds bhejna aur stats, streak, since, coins wapas lena (login chahiye) |
 | `GET /health`, `GET /health/db` | Server aur database chal rahe hain ya nahi |
+
+---
+
+## Database tables (Neon)
+
+`users`, `refresh_tokens`, `recovery_codes`, `rounds`, `baselines`, `user_stats`, `login_attempts`, `user_coins`, `coin_ledger`.
+Naya table ya column ho to pehle `backend/db/schema.sql` mein jodo, aur wahi SQL Neon ke SQL Editor mein chalao. Kabhi purana data delete ya reset mat karo.
 
 ---
 
@@ -128,20 +161,29 @@ npm install
 npm start
 ```
 
+**Tests** (backend folder mein, database ki zarurat nahi):
+```
+node test/coins.test.js
+```
+Aakhir mein `ALL PASS` aana chahiye.
+
 ---
 
 ## Update kaise live karte hain
 
 1. File mein change karo aur save karo.
-2. Terminal mein:
+2. **Agar database ka koi change hai**, pehle Neon mein SQL chalao (code se pehle).
+3. **Backend ka change hai**, to pehle backend push karke Render par deploy "Live" hone do, phir frontend.
+4. Terminal mein:
 ```
 git add .
 git commit -m "kya badla"
 git push
 ```
-3. `git status` se check karo ki `.env` file list mein na ho.
-4. **Frontend:** push ke baad GitHub Pages khud update ho jata hai.
-5. **Backend:** Render redeploy karta hai (Render dashboard mein "Live" dikhna chahiye).
+5. `git status` se check karo ki `.env` file list mein na ho.
+6. **Frontend:** push ke baad GitHub Pages khud update ho jata hai.
+7. **Backend:** Render redeploy karta hai (Render dashboard mein "Live" dikhna chahiye).
+8. `whats-new.txt` ka sabse upar wala header `## v1.9 | 24 Oct 2026` (version, `|`, date) is format mein rakho, kyunki About ki "Last Updated" tarikh wahin se aati hai.
 
 ---
 
@@ -149,5 +191,7 @@ git push
 
 - `.env` file ya asli passwords/secrets kabhi commit mat karo.
 - Purani stats (guest ya account) ko delete ya overwrite mat karo.
+- `sw.js` mein `CACHE` ka naam (`quiz-v1.3`) mat badlo. App ka "Update now" isi par chalta hai.
 - Naye sawal jodne se pehle duplicate aur galat answer check karo.
-- Render ka free server kuch der baad so jata hai, to pehli request mein thoda wait lag sakta hai.
+- Render ka free server kuch der baad so sakta hai, to pehli request mein thoda wait lag sakta hai.
+- **Rule:** har change ke saath **About** (`aboutScr` in `js/app.js`) aur **README.md** bhi update karo, phir git commands chalao.

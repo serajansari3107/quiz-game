@@ -22,6 +22,7 @@ const client = {
     if (/\(right_cnt = quiz_n\) AS p/.test(sql)) return { rows: [...S.rounds.values()].filter((x) => x.uid === p[0]).map((x) => ({ mode: x.mode, quiz_n: x.n, p: x.r === x.n })) };
     if (/baseline -> 'pstr'/.test(sql)) return { rows: [...S.baselines.values()].map((b) => ({ ps: b.pstr || null })) };
     if (/FROM users/.test(sql)) return { rows: [{ t: S.userCreated }] };
+    if (/event_id::text AS id, delta FROM coin_ledger/.test(sql)) return { rows: S.ledger.filter((x) => x.uid === p[0] && p[1].includes(x.event)).map((x) => ({ id: x.event, delta: x.delta })) };
     if (/INSERT INTO user_coins/.test(sql)) { if (!S.coins.has(p[0])) S.coins.set(p[0], 0); return { rowCount: 1, rows: [] }; }
     if (/FROM user_coins WHERE user_id = \$1 FOR UPDATE/.test(sql)) return { rows: [{ balance: S.coins.get(p[0]) || 0 }] };
     if (/AT TIME ZONE 'Asia\/Kolkata'\)::date::text AS day/.test(sql)) return { rows: [{ day: istDay() }] };
@@ -55,7 +56,7 @@ const U1 = "11111111-1111-1111-1111-111111111111", U2 = "22222222-2222-2222-2222
 (async () => {
   // 1. formula
   reset(); let x = await call(U1, { events: [EV(10, 7)] });
-  eq("1 10Q, 7 sahi -> 7 coins", x.o.coins, { balance: 7, today: 7, cap: 500 });
+  eq("1 10Q, 7 sahi -> 7 coins", [x.o.coins.balance, x.o.coins.today, x.o.coins.cap], [7, 7, 500]);
   reset(); x = await call(U1, { events: [EV(5, 5)] });
   eq("2 5Q perfect -> 5 + 5 bonus = 10", x.o.coins.balance, 10);
   reset(); x = await call(U1, { events: [EV(10, 10)] });
@@ -105,7 +106,7 @@ const U1 = "11111111-1111-1111-1111-111111111111", U2 = "22222222-2222-2222-2222
   eq("21 ek account ka cap doosre par asar nahi", x.o.coins.balance, 20);
   // 6. guest / baseline / koi event nahi
   reset(); x = await call(U1, { baseline: { sum: { cricket_5: { r: 5, q: 25, c: 20, w: 5, p: 80, f: 2 } }, best: { cricket_5: 18 }, hist: [], pstr: { cricket_5: 2 } } });
-  eq("22 guest baseline transfer -> koi coin nahi", [x.o.coins, x.o.baselineApplied, S.ledger.length], [{ balance: 0, today: 0, cap: 500 }, true, 0]);
+  eq("22 guest baseline transfer -> koi coin nahi", [x.o.coins, x.o.baselineApplied, S.ledger.length], [{ balance: 0, today: 0, cap: 500, credits: {} }, true, 0]);
   reset(); x = await call(U1, {});
   eq("23 kuch na bheje (sirf snapshot) -> coins 0, lock/ledger nahi", [x.o.coins.balance, S.log.some((q) => /FOR UPDATE/.test(q))], [0, false]);
   // 7. atomic transaction
@@ -122,6 +123,7 @@ const U1 = "11111111-1111-1111-1111-111111111111", U2 = "22222222-2222-2222-2222
   // 9. purane features
   reset(); x = await call(U1, { events: [EV(5, 5), EV(5, 2)] });
   eq("29 response mein purane fields + coins", Object.keys(x.o).sort(), ["coins", "hist", "since", "stats", "streak"]);
+  eq("29b coins mein balance/today/cap/credits", Object.keys(x.o.coins).sort(), ["balance", "cap", "credits", "today"]);
   eq("30 streak abhi bhi sahi (P X -> c0,b1)", x.o.streak.cricket_5, { c: 0, b: 1 });
   eq("31 since abhi bhi aata hai", x.o.since, S.userCreated);
   eq("32 stats upsert har naye round par 1 baar", S.statsUpserts, 2);
@@ -129,6 +131,27 @@ const U1 = "11111111-1111-1111-1111-111111111111", U2 = "22222222-2222-2222-2222
   eq("33 galat deviceId -> 400 pehle jaisa", x.c, 400);
   reset(); x = await call(U1, { events: [{ id: "not-uuid", m: "cricket", n: 10, r: 5, w: 5, s: 10, t: 1 }, { ...EV(10, 11) }, { ...EV(7, 3) }] });
   eq("34 galat events skip (coin nahi), request fail nahi", [x.c, x.o.coins.balance, S.ledger.length], [200, 0, 0]);
+  // 10. exact credits (result screen ke liye)
+  reset(); const c1 = EV(10, 7), c2 = EV(5, 5), c3 = EV(10, 0);
+  x = await call(U1, { events: [c1, c2, c3] });
+  eq("35 credits: 7, 10 (perfect 5Q), 0 (zero sahi)", [x.o.coins.credits[c1.id], x.o.coins.credits[c2.id], x.o.coins.credits[c3.id]], [7, 10, 0]);
+  eq("36 balance = credits ka total", x.o.coins.balance, 17);
+  x = await call(U1, { events: [c1] });
+  eq("37 same event retry -> wahi credit 7 (double nahi), balance wahi", [x.o.coins.credits[c1.id], x.o.coins.balance], [7, 17]);
+  x = await call(U1, {});
+  eq("38 koi event nahi -> credits {}", x.o.coins.credits, {});
+  reset(); for (let i = 0; i < 12; i++) await call(U1, { events: [EV(20, 20)] });
+  const cp = EV(20, 20), cz = EV(20, 20);
+  x = await call(U1, { events: [cp, cz] });
+  eq("39 cap par partial 20, phir 0", [x.o.coins.credits[cp.id], x.o.coins.credits[cz.id], x.o.coins.balance], [20, 0, 500]);
+  x = await call(U1, { events: [cz] });
+  eq("40 cap wala 0-credit retry -> 0 hi, balance 500", [x.o.coins.credits[cz.id], x.o.coins.balance], [0, 500]);
+  reset(); const own = EV(10, 8); await call(U1, { events: [own] });
+  x = await call(U2, { events: [{ ...own }] });
+  eq("41 dusre user ka event_id: us user ko credit/coin nahi", [x.o.coins.credits[own.id], x.o.coins.balance], [0, 0]);
+  reset(); const lst = Array.from({ length: 20 }, () => EV(5, 5));
+  x = await call(U1, { events: lst });
+  eq("42 20 events ek request mein: sabka credit, total cap 500 ke andar", [Object.keys(x.o.coins.credits).length, Object.values(x.o.coins.credits).reduce((a, b) => a + b, 0) === x.o.coins.balance, x.o.coins.balance], [20, true, 200]);
   console.log(fails ? "FAILED " + fails : "ALL PASS");
   process.exit(fails ? 1 : 0);
 })();

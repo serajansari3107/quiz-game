@@ -22,9 +22,27 @@ const applyTheme=()=>{const l=THEME==="light",h=document.documentElement,m=docum
 const setTheme=t=>{THEME=t==="light"?"light":"dark";LW("theme",THEME);applyTheme()};
 const coinFmt=n=>Number(n).toLocaleString("en-US");
 const coinGet=()=>{const a=LS("auth",null),c=LS("coins",null);return a&&a.user&&c&&c.id===a.user.id&&Number.isInteger(c.b)&&c.b>=0?c.b:null};
-const coinTxt=()=>coinGet()===null?"–":coinFmt(coinGet());
-const coinPill=()=>LS("auth_mode","")==="account"?'<div class="hm-coin" id="cp" title="Your coins"><span class="hm-ci">🪙</span><b id="cn">'+coinTxt()+'</b></div>':"";
-const coinShow=()=>{const n=$("#cn");if(n)n.textContent=coinTxt()};
+const coinTxt=()=>coinTot()===null?"–":coinFmt(coinTot());
+const coinPill=()=>LS("auth_mode","")==="account"?'<div class="hm-coin'+(coinPendSum()>0?' pend':'')+'" id="cp" title="Your coins"><span class="hm-ci">🪙</span><b id="cn">'+coinTxt()+'</b></div>':"";
+const coinShow=()=>{if(coinFlying)return;const n=$("#cn");if(n)n.textContent=coinTxt();const p=$("#cp");if(p)p.classList.toggle("pend",coinPendSum()>0)};
+let coinWait=null,coinRes=null,coinFlying=0;
+const coinEst=(n,r)=>r+(r===n?({5:5,10:10,20:20}[n]||0):0);
+const coinPendGet=()=>{const a=LS("auth",null),p=LS("cpend",null);return a&&a.user&&p&&p.id===a.user.id&&p.m&&typeof p.m==="object"?p.m:{}};
+const coinPendSum=()=>{const m=coinPendGet();return LS("outbox",[]).reduce((s,e)=>s+(Number.isInteger(m[e.id])&&m[e.id]>0?m[e.id]:0),0)};
+const coinPendAdd=(id,n)=>{const a=LS("auth",null);if(!a||!a.user||!id||!(n>0))return;const o=new Set(LS("outbox",[]).map(e=>e.id)),m=coinPendGet(),k={};for(const x in m)if(o.has(x))k[x]=m[x];k[id]=n;LW("cpend",{id:a.user.id,m:k})};
+const coinTot=()=>{const b=coinGet();return b===null?null:b+coinPendSum()};
+const coinReduced=()=>window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+const coinNote=t=>{const e=$("#rce");if(e&&coinWait)e.textContent=t};
+const coinCard=(id,est)=>{coinRes=null;coinWait=null;if(LS("auth_mode","")!=="account")return'<div class="rs-coin rs-coin-g"><span class="rc-i">🪙</span><span>Login to earn coins</span></div>';if(!id)return"";const card=(t,n,cl)=>'<div class="rs-coin'+cl+'" id="rc"><span class="rc-i">🪙</span><div class="rc-t"><small>Coins earned</small><b id="rcn">'+t+'</b><em id="rce">'+n+'</em></div></div>';if(!(est>0)){coinRes={n:0};return card("No coins","No correct answers this round","")}coinRes={n:est};coinWait={id,est};setTimeout(()=>{if(coinWait&&coinWait.id===id)coinNote("Still syncing…")},10000);setTimeout(()=>{const e=$("#rcn");if(e&&coinWait&&coinWait.id===id)coinCount(e,est)},0);return card("+0",navigator.onLine?"Syncing…":"Will sync when online"," sync")};
+const coinCount=(el,n)=>{delete el.dataset.fin;if(coinReduced()){el.textContent="+"+n;return}const t0=performance.now(),d=Math.min(900,300+n*25),f=t=>{if(el.dataset.fin)return;const k=Math.min(1,(t-t0)/d);el.textContent="+"+Math.round(n*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f);else el.textContent="+"+n};requestAnimationFrame(f)};
+const coinConfirm=(v,c,rej)=>{if(!coinWait)return;const est=coinWait.est;coinWait=null;const e=$("#rcn"),b=$("#rc"),m=$("#rce");if(!e||!b||!m)return;b.classList.remove("sync");e.dataset.fin=1;coinRes={n:v};e.textContent=v>0?"+"+v:"No coins";const lim=c.today>=c.cap,L="("+c.cap+" coins)";m.textContent=rej?"Round not counted for coins":v===est?(lim?"Daily limit reached "+L:""):(v===0&&lim?"Daily limit reached "+L:lim?"Adjusted to your daily limit "+L:"Adjusted by server")};
+const coinCredits=d=>{try{if(!d||!d.coins)return;const c=d.coins,a=LS("auth",null);if(Number.isInteger(c.balance)&&c.balance>=0&&a&&a.user)LW("coins",{id:a.user.id,b:c.balance});if(coinWait&&c.credits){const v=c.credits[coinWait.id];if(Number.isInteger(v)&&v>=0)coinConfirm(v,c);else if(!LS("outbox",[]).some(e=>e.id===coinWait.id))coinConfirm(0,c,1)}coinShow()}catch(e){}};
+const coinFlyStart=()=>{try{if(!coinRes||!coinRes.n||coinReduced())return null;const i=$("#rc .rc-i");if(!i)return null;const r=i.getBoundingClientRect();return{n:coinRes.n,x:r.left+r.width/2,y:r.top+r.height/2}}catch(e){return null}};
+const coinFlyRun=f=>{try{if(!f)return;const bal=coinTot(),cn=$("#cn"),cp=$("#cp"),ci=$("#cp .hm-ci");if(bal===null||!cn||!cp||!ci)return;cp.style.animation="none";coinFlying=1;let cur=Math.max(0,bal-f.n);cn.textContent=coinFmt(cur);const t=ci.getBoundingClientRect(),tx=t.left+t.width/2,ty=t.top+t.height/2,K=Math.min(f.n,12),base=Math.floor(f.n/K),extra=f.n%K;let done=0;
+ for(let j=0;j<K;j++){const el=document.createElement("span");el.className="coin-fly";el.textContent="🪙";el.style.opacity=0;document.body.appendChild(el);const sx=f.x-11+(Math.random()-.5)*24,sy=f.y-11+(Math.random()-.5)*10,mx=(sx+tx-11)/2+(Math.random()-.5)*70,my=Math.min(sy,ty)-40-Math.random()*40;
+  const a=el.animate([{transform:`translate(${sx}px,${sy}px) scale(1)`,opacity:1},{transform:`translate(${mx}px,${my}px) scale(1.2)`,opacity:1,offset:.5},{transform:`translate(${tx-11}px,${ty-11}px) scale(.55)`,opacity:.95}],{duration:820,delay:j*90,easing:"cubic-bezier(.45,.05,.35,1)",fill:"forwards"});
+  a.onfinish=()=>{el.remove();cur+=base+(j<extra?1:0);const n=$("#cn");if(n)n.textContent=coinFmt(cur);const p=$("#cp");if(p){p.classList.remove("pop");void p.offsetWidth;p.classList.add("pop")}if(++done===K)setTimeout(()=>{coinFlying=0;coinShow();const p2=$("#cp");if(p2)p2.classList.remove("pop")},380)};
+  a.oncancel=()=>el.remove()}}catch(e){coinFlying=0;coinShow()}};
 const thHtml=()=>'<span class="mnu-ic">'+(THEME==="light"?"☀️":"🌙")+'</span><span class="mnu-t"><b>Switch Theme</b><small>Now: '+(THEME==="light"?"Light":"Dark")+' · Tap for '+(THEME==="light"?"Dark":"Light")+'</small></span><span class="hm-go">›</span>';
 applyTheme();
 setQN(LS("qn",20));
@@ -68,12 +86,13 @@ function aboutScr(){
  +sec("🛟 Lifelines",["Each lifeline can be used <b>once per round</b>.","<b>🔄 Swap:</b> replaces the current question with a new one of the same difficulty.","<b>50-50:</b> removes 2 wrong options, so only 2 options remain.","<b>Skip:</b> moves to the next question. You do not earn marks, and you do not lose a life."])
  +sec("🔀 Fair Question Rotation",["Questions are shuffled in every round.","The app remembers which questions you have already seen in each category and avoids repeating them until you have seen them all."])
  +sec("📊 Stats",["Open <b>Menu → Stats</b> to see your progress. It has 3 tabs: <b>Best</b>, <b>History</b> and <b>Summary</b>.","<b>Best:</b> your highest scores.","<b>History:</b> your last 10 rounds.","<b>Summary:</b> Total Rounds Played, Questions Played, Correct Answers, Wrong Answers, Points Secured, Accuracy Rate, Perfect Rounds, Longest Perfect Streak and User Since. You can filter it by category and quiz size.","A <b>Perfect Round</b> means you answered every question of the round correctly. <b>Longest Perfect Streak</b> is the most perfect rounds in a row."])
- +sec("👤 Guest &amp; Account",["<b>Guest:</b> play without an account. Your stats are saved only on this device.","<b>Account:</b> create an account with your full name, a username and a password. Your stats are saved to your account and appear on any device where you log in.","On one device, the guest and every account keep their stats separately.","If you play without internet, your rounds are synced to your account when you are online again.","You can transfer your guest stats to your account <b>one time per device</b>. The app asks for your confirmation first.","Your old guest stats are never deleted by logging in."])
+ +sec("🪙 Coins",["Coins are a reward you earn by playing. Only <b>logged-in accounts</b> earn coins. Guests do not.","Every correct answer gives <b>1 coin</b>.","A <b>perfect round</b> (every question correct) gives a bonus: <b>5</b> coins in a 5-question quiz, <b>10</b> in a 10-question quiz and <b>20</b> in a 20-question quiz.","You can earn up to <b>500 coins per day</b>. The limit resets at <b>12:00 AM India time (IST)</b>. If a round would cross the limit, you get only the coins that are left for the day.","Your balance (🪙) is shown on the Home screen next to the Menu button. It is saved safely on the server, so it is the same on every device where you log in.","On the result screen you see the coins you earned. Tap <b>Home</b> and the coins fly to your balance.","Offline? You still see your coins right away and your balance shows a small dot. The coins are confirmed automatically when you are back online. In rare cases, for example when the daily limit is reached, the final number can be a little different and the app tells you.","The real balance lives on the server, so it cannot be changed from your phone."])
+ +sec("👤 Guest &amp; Account",["<b>Guest:</b> play without an account. Your stats are saved only on this device.","<b>Account:</b> create an account with your full name, a username and a password. Your stats are saved to your account and appear on any device where you log in.","On one device, the guest and every account keep their stats separately.","If you play without internet, your rounds are synced to your account when you are online again.","You can transfer your guest stats to your account <b>one time per device</b>. The app asks for your confirmation first.","Your old guest stats are never deleted by logging in.","Only logged-in accounts earn coins (see the Coins section). A guest sees a small hint to log in on the result screen."])
  +sec("🔐 My Account &amp; Security",["Open <b>Menu → My Account</b> after login to see your details.","<b>Change Password:</b> enter your current password and a new one. You will stay logged in on this device, and your other devices are logged out.","<b>Recovery Code:</b> a secret code that lets you reset your password if you forget it. Keep it safe.","<b>Generate New Recovery Code:</b> needs your password. The old code stops working, and the new code is shown only once, so copy it with the 📋 button.","<b>Forgot Password:</b> use your username, your recovery code and a new password.","Passwords are stored in a protected (hashed) form, never as plain text. For this reason, the app can never show your current password or your old recovery code."])
- +sec("⚙️ Settings",["Open <b>Menu → Settings</b> to turn <b>Sound</b> and <b>Vibration</b> ON or OFF."])
- +sec("🆕 Updates",["Tap <b>What’s New</b> on the Home screen to see the latest features, fixes and the app version.","After an update, a popup shows only the new changes."])
- +sec("🌐 Internet &amp; Offline",["Quizzes, stats and settings work without internet.","Internet is needed only for sign up, login, password changes and syncing your stats."])
- +sec("💡 Tips",["Save <b>Swap</b> and <b>50-50</b> for hard questions.","Read the explanation after every answer. It helps you remember, especially in the Grammar Quiz.","Watch the timer. Time-up costs a life, just like a wrong answer."])
+ +sec("⚙️ Settings",["Open <b>Menu → Settings</b> to turn <b>Sound</b> and <b>Vibration</b> ON or OFF.","Open <b>Menu → Switch Theme</b> to change between the <b>Dark Theme</b> and the <b>Light Theme</b> (Soft Lavender). Your choice is saved on your device."])
+ +sec("🆕 Updates",["Open <b>Menu → What’s New</b> to see the latest features, fixes and the app version.","After an update, a popup shows only the new changes."])
+ +sec("🌐 Internet &amp; Offline",["Quizzes, stats and settings work without internet.","Internet is needed only for sign up, login, password changes and syncing your stats and coins."])
+ +sec("💡 Tips",["Save <b>Swap</b> and <b>50-50</b> for hard questions.","Read the explanation after every answer. It helps you remember, especially in the Grammar Quiz.","Watch the timer. Time-up costs a life, just like a wrong answer.","Play perfect rounds for bonus coins, but remember the daily limit of 500."])
  +'</div></div>';
  $("#sb").onclick=toMenu;
 }
@@ -153,11 +172,11 @@ function pick(b,d){stopT();
 }
 function end(){stopT();wrong>=MAXW?SFX.over():SFX.win();
  const p=Math.round(score/MAX*100);
- {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,n:QN,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));{const S=LS("sum",{}),sk=mode+"_"+QN,a=S[sk]||{r:0,q:0,c:0,w:0,p:0};a.r++;a.q+=right+wrong;a.c+=right;a.w+=wrong;a.p+=score;a.f=(a.f||0)+(right===QN?1:0);S[sk]=a;LW("sum",S)}upStr(mode,QN,right===QN);const bk=bestKey(mode,QN);if(score>LS(bk,0))LW(bk,score)}evAdd(mode,QN,right,wrong,score);
+ {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,n:QN,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));{const S=LS("sum",{}),sk=mode+"_"+QN,a=S[sk]||{r:0,q:0,c:0,w:0,p:0};a.r++;a.q+=right+wrong;a.c+=right;a.w+=wrong;a.p+=score;a.f=(a.f||0)+(right===QN?1:0);S[sk]=a;LW("sum",S)}upStr(mode,QN,right===QN);const bk=bestKey(mode,QN);if(score>LS(bk,0))LW(bk,score)}const eid=evAdd(mode,QN,right,wrong,score),est=coinEst(QN,right);if(eid){coinPendAdd(eid,est);syncNow()}
  app.innerHTML=`<div class="rs"><div class="rs-in"><h1>${wrong>=MAXW?"Game Over 💀":"Round khatam!"}</h1><div class="rs-hero"><div class="rs-score">${score}<small>/${MAX}</small></div><div class="rs-bar"><i style="width:${Math.min(100,p)}%"></i></div><div class="rs-pc">${p}% marks</div></div><div class="rs-grid"><div class="rs-c"><small>Accuracy</small><b>${right+wrong?Math.round(right/(right+wrong)*100):0}%</b></div><div class="rs-c"><small>Points</small><b>${score}</b></div><div class="rs-c ok"><small>Correct</small><b>${right}/${QN}</b></div><div class="rs-c bad"><small>Wrong</small><b>${wrong}</b></div></div>
- <div class="rs-msg">${p<=20?"Don't give up, keep practicing! 💪":p<50?"Not bad, you can do better! 🙂":p<=70?"Good job, nice effort! 👍":p<=90?"Great work, almost there! 🔥":p<100?"Excellent! So close to perfect! 🏆":"PERFECT 100! You are a legend! 👑"}</div><br>
+ ${coinCard(eid,est)}<div class="rs-msg">${p<=20?"Don't give up, keep practicing! 💪":p<50?"Not bad, you can do better! 🙂":p<=70?"Good job, nice effort! 👍":p<=90?"Great work, almost there! 🔥":p<100?"Excellent! So close to perfect! 🏆":"PERFECT 100! You are a legend! 👑"}</div><br>
  <button class="rs-b1" id="again">New Round (New questions)</button><button class="rs-b2" id="hm">Home</button></div></div>`;
- $("#again").onclick=()=>start(mode);$("#hm").onclick=home;
+ $("#again").onclick=()=>start(mode);$("#hm").onclick=()=>{const f=coinFlyStart();home();coinFlyRun(f)};
 }
 
 function openRT(){
@@ -307,7 +326,7 @@ let syncT=null,syncBusy=false;
 function syncSoon(){if(LS("auth_mode","")!=="account")return;clearTimeout(syncT);syncT=setTimeout(syncNow,1500)}
 addEventListener("online",syncSoon);
 // end() se call hota hai; koi bhi error quiz ko nahi todta
-const evAdd=(m,n,r,w,s)=>{try{if(LS("auth_mode","")!=="account")return;const o=LS("outbox",[]);o.push({id:uuid(),m,n,r,w,s,t:Date.now()});LW("outbox",o);syncSoon()}catch(e){}};
+const evAdd=(m,n,r,w,s)=>{try{if(LS("auth_mode","")!=="account")return;const o=LS("outbox",[]);o.const id=uuid();o.push({id,m,n,r,w,s,t:Date.now()});LW("outbox",o);syncSoon();return id}catch(e){}};
 async function authedApi(path,body){
  let a=LS("auth",null);if(!a)return{ok:false,status:0,data:{}};
  if(a.exp-Date.now()<60000){if(!(await sessionRefresh()))return{ok:false,status:0,data:{}};a=LS("auth",null);if(!a)return{ok:false,status:0,data:{}}}
@@ -352,7 +371,7 @@ async function syncNow(){
    const r=await authedApi("/sync",{deviceId:devId(),events:sent,baseline:bl||undefined});
    if(!r.ok||LS("stats_ns","guest")!==ns)break;
    const ids=new Set(sent.map(e=>e.id)),rest=LS("outbox",[]).filter(e=>!ids.has(e.id));
-   LW("outbox",rest);
+   LW("outbox",rest);coinCredits(r.data);
    if(bl&&typeof r.data.baselineApplied==="boolean"){LW("bl_done",1);LW("bl_go","");if(!r.data.baselineApplied)alert("These guest stats could not be transferred (already transferred from this device).")}
    if(!rest.length){applySnap(r.data);break}
   }

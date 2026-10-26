@@ -1,12 +1,16 @@
 window.WN_TXT=(function(){/*
-## v2.1 | 25 Oct 2026
+## v2.1 | 26 Oct 2026
 New:
 + Premium new Home screen with a "Ready to Prove Yourself?" hero section and a cleaner top bar.
 + 50 new Grammar questions
 + 10 new WWE questions
 + Coin balance (🪙) now shows on the Home screen for logged-in accounts and stays in sync across your devices.
++ Coins earned in a round show instantly on the result screen, even offline, and fly to your balance when you tap Home.
 Improved:
 + What's New is now inside the Menu.
++ Offline coins are saved on your device and added to your balance automatically when you are back online.
++ Guests now see a hint to log in to earn coins.
++ About section now explains coins, themes and where What's New lives.
 
 ## v2.0 | 25 Oct 2026
 New:
