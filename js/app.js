@@ -340,7 +340,7 @@ let syncT=null,syncBusy=false;
 function syncSoon(){if(LS("auth_mode","")!=="account")return;clearTimeout(syncT);syncT=setTimeout(syncNow,1500)}
 addEventListener("online",syncSoon);
 // end() se call hota hai; koi bhi error quiz ko nahi todta
-const evAdd=(m,n,r,w,s)=>{try{if(LS("auth_mode","")!=="account")return;const o=LS("outbox",[]);o.const id=uuid();o.push({id,m,n,r,w,s,t:Date.now()});LW("outbox",o);syncSoon();return id}catch(e){}};
+const evAdd=(m,n,r,w,s)=>{try{if(LS("auth_mode","")!=="account")return;const o=LS("outbox",[]);const id=uuid();o.push({id,m,n,r,w,s,t:Date.now()});LW("outbox",o);syncSoon();return id}catch(e){}};
 async function authedApi(path,body){
  let a=LS("auth",null);if(!a)return{ok:false,status:0,data:{}};
  if(a.exp-Date.now()<60000){if(!(await sessionRefresh()))return{ok:false,status:0,data:{}};a=LS("auth",null);if(!a)return{ok:false,status:0,data:{}}}
