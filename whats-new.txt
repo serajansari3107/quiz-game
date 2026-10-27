@@ -1,4 +1,12 @@
 window.WN_TXT=(function(){/*
+## v2.2 | 27 Oct 2026
+New:
++ Daily Challenge: 10 new mixed questions every day, resetting at 12:00 AM India time.
++ Logged-in accounts earn +10 coins for completing it and +10 bonus coins for a perfect 10/10 (once per day).
++ New Daily Challenge card on the Home screen shows today's challenge, the reward, your completed status and the time left for the next one.
+Improved:
++ If the reward cannot be saved (offline or server problem), your result stays on your device and you can claim it later from the Home card.
+
 ## v2.1 | 26 Oct 2026
 New:
 + Premium new Home screen with a "Ready to Prove Yourself?" hero section and a cleaner top bar.

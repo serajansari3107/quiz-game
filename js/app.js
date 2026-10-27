@@ -11,7 +11,7 @@ const bestKey=(k,n)=>"best_"+k+(n===20?"":"_"+n);
 const $=s=>document.querySelector(s),app=$("#app");
 const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 let qs,i,score,right,mode,locked,tm,tl,ll,skipped,wrong;
-const TIME=20,MAXW=3;
+const TIME=20;let MAXW=3;
 const LS=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
 const LW=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const stopT=()=>{clearInterval(tm)};
@@ -87,11 +87,20 @@ function aboutScr(){
  +sec("🔀 Fair Question Rotation",["Questions are shuffled in every round.","The app remembers which questions you have already seen in each category and avoids repeating them until you have seen them all."])
  +sec("📊 Stats",["Open <b>Menu → Stats</b> to see your progress. It has 3 tabs: <b>Best</b>, <b>History</b> and <b>Summary</b>.","<b>Best:</b> your highest scores.","<b>History:</b> your last 10 rounds.","<b>Summary:</b> Total Rounds Played, Questions Played, Correct Answers, Wrong Answers, Points Secured, Accuracy Rate, Perfect Rounds, Longest Perfect Streak and User Since. You can filter it by category and quiz size.","A <b>Perfect Round</b> means you answered every question of the round correctly. <b>Longest Perfect Streak</b> is the most perfect rounds in a row."])
  +sec("🪙 Coins",["Coins are a reward you earn by playing. Only <b>logged-in accounts</b> earn coins. Guests do not.","Every correct answer gives <b>1 coin</b>.","A <b>perfect round</b> (every question correct) gives a bonus: <b>5</b> coins in a 5-question quiz, <b>10</b> in a 10-question quiz and <b>20</b> in a 20-question quiz.","You can earn up to <b>500 coins per day</b>. The limit resets at <b>12:00 AM India time (IST)</b>. If a round would cross the limit, you get only the coins that are left for the day.","Your balance (🪙) is shown on the Home screen next to the Menu button. It is saved safely on the server, so it is the same on every device where you log in.","On the result screen you see the coins you earned. Tap <b>Home</b> and the coins fly to your balance.","Offline? You still see your coins right away and your balance shows a small dot. The coins are confirmed automatically when you are back online. In rare cases, for example when the daily limit is reached, the final number can be a little different and the app tells you.","The real balance lives on the server, so it cannot be changed from your phone."])
- +sec("👤 Guest &amp; Account",["<b>Guest:</b> play without an account. Your stats are saved only on this device.","<b>Account:</b> create an account with your full name, a username and a password. Your stats are saved to your account and appear on any device where you log in.","On one device, the guest and every account keep their stats separately.","If you play without internet, your rounds are synced to your account when you are online again.","You can transfer your guest stats to your account <b>one time per device</b>. The app asks for your confirmation first.","Your old guest stats are never deleted by logging in.","Only logged-in accounts earn coins (see the Coins section). A guest sees a small hint to log in on the result screen."])
+ +sec("📅 Daily Challenge",[
+"Every day there is one <b>Daily Challenge</b> with 10 questions mixed from all categories: 3 Easy, 4 Medium and 3 Hard (50 marks in total).",
+"The 10 questions are chosen by the date, so they are the same on all your devices. A new challenge starts every day at <b>12:00 AM India time (IST)</b>.",
+"You can use Swap, 50-50 and Skip once each, and every question has the usual 20-second timer. There are no lives, so all 10 questions are played.",
+"<b>Reward (accounts only):</b> <b>+10 coins</b> for completing the challenge and <b>+10 bonus coins</b> for a perfect 10/10 score. That is up to <b>20 coins</b> a day.",
+"You can get the reward only <b>once per day</b>. These coins are extra and do not count toward the 500 daily round limit.",
+"The reward is checked and saved on the server using India time, so changing the clock on your phone does not help.",
+"Accounts need internet to start the challenge and to save the reward. If saving fails, your result stays on this device and the Home card shows <b>Claim</b> so you can try again (before the next daily reset).",
+"Guests can play it for fun, but guests do not earn coins. Daily Challenge rounds are not added to Stats, Best Score or History."
+])+sec("👤 Guest &amp; Account",["<b>Guest:</b> play without an account. Your stats are saved only on this device.","<b>Account:</b> create an account with your full name, a username and a password. Your stats are saved to your account and appear on any device where you log in.","On one device, the guest and every account keep their stats separately.","If you play without internet, your rounds are synced to your account when you are online again.","You can transfer your guest stats to your account <b>one time per device</b>. The app asks for your confirmation first.","Your old guest stats are never deleted by logging in.","Only logged-in accounts earn coins (see the Coins section). A guest sees a small hint to log in on the result screen."])
  +sec("🔐 My Account &amp; Security",["Open <b>Menu → My Account</b> after login to see your details.","<b>Change Password:</b> enter your current password and a new one. You will stay logged in on this device, and your other devices are logged out.","<b>Recovery Code:</b> a secret code that lets you reset your password if you forget it. Keep it safe.","<b>Generate New Recovery Code:</b> needs your password. The old code stops working, and the new code is shown only once, so copy it with the 📋 button.","<b>Forgot Password:</b> use your username, your recovery code and a new password.","Passwords are stored in a protected (hashed) form, never as plain text. For this reason, the app can never show your current password or your old recovery code."])
  +sec("⚙️ Settings",["Open <b>Menu → Settings</b> to turn <b>Sound</b> and <b>Vibration</b> ON or OFF.","Open <b>Menu → Switch Theme</b> to change between the <b>Dark Theme</b> and the <b>Light Theme</b> (Soft Lavender). Your choice is saved on your device."])
  +sec("🆕 Updates",["Open <b>Menu → What’s New</b> to see the latest features, fixes and the app version.","After an update, a popup shows only the new changes. If <b>Update now</b> cannot finish (for example because of a weak internet connection), the button changes to <b>Try again</b> and your data stays safe."])
- +sec("🌐 Internet &amp; Offline",["Quizzes, stats and settings work without internet.","Internet is needed only for sign up, login, password changes and syncing your stats and coins."])
+ +sec("🌐 Internet &amp; Offline",["Quizzes, stats and settings work without internet.","Internet is needed only for sign up, login, password changes, syncing your stats and coins, and the Daily Challenge for accounts."])
  +sec("💡 Tips",["Save <b>Swap</b> and <b>50-50</b> for hard questions.","Read the explanation after every answer. It helps you remember, especially in the Grammar Quiz.","Watch the timer. Time-up costs a life, just like a wrong answer.","Play perfect rounds for bonus coins, but remember the daily limit of 500."])
  +'</div></div>';
  $("#sb").onclick=toMenu;
@@ -115,11 +124,11 @@ function build(m){
  ss(m,seen.concat(out.map(x=>x[0])));
  return shuf(out);
 }
-function home(){if(!BOOTED){BOOTED=1;return welcome()}stopT();
- app.innerHTML=`<div class="hm"><div class="hm-in"><div class="hm-bar"><div class="hm-brand"><span class="hm-bl">🎯</span><b>Quiz Arena</b></div><div class="hm-right">${coinPill()}<button id="mn" class="hm-chip hm-menu" aria-label="Menu">☰</button></div></div><div class="hm-hero2"><div class="hm-hl">Ready to Prove Yourself?</div><p class="hm-sub">Play smart. Build your streak. Earn your glory.</p></div><div class="hm-label">Choose a category</div><div class="hm-grid">`+
+function home(){if(!BOOTED){BOOTED=1;return welcome()}stopT();dcLeave();
+ app.innerHTML=`<div class="hm"><div class="hm-in"><div class="hm-bar"><div class="hm-brand"><span class="hm-bl">🎯</span><b>Quiz Arena</b></div><div class="hm-right">${coinPill()}<button id="mn" class="hm-chip hm-menu" aria-label="Menu">☰</button></div></div><div class="hm-hero2"><div class="hm-hl">Ready to Prove Yourself?</div><p class="hm-sub">Play smart. Build your streak. Earn your glory.</p></div>${dcCard()}<div class="hm-label">Choose a category</div><div class="hm-grid">`+
  Object.keys(BANK).map(k=>{const nm=BANK[k].name,e=nm.match(/^(\p{Extended_Pictographic}\S*)\s+(.+)$/u);return`<button class="hm-card" data-m="${k}"><span class="hm-ic">${e?e[1]:"📚"}</span><span class="hm-tx"><b>${e?e[2]:nm}</b><small>${BANK[k].q.length} questions</small></span><span class="hm-go">›</span></button>`}).join("")+`</div></div></div>`;
  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>selMode(b.dataset.m));
- $("#mn").onclick=openMenu;
+ $("#mn").onclick=openMenu;dcWire();
  app.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{setQN(+b.dataset.n);LW("qn",QN);home()});
  $(".hm-in").insertAdjacentHTML("beforeend",`<div class="ver">${VER?"Version "+VER:""}</div>`);
 }
@@ -134,9 +143,9 @@ function selMode(m){
 }
 function start(m){unlockA();mode=m;qs=build(m);i=0;score=0;right=0;skipped=0;wrong=0;ll={f:1,s:1,c:1};show()}
 function show(){
- const d=qs[i];locked=false;stopT();tl=TIME;
+ const d=qs[i];if(DC&&DC.cat.get(d))mode=DC.cat.get(d);locked=false;stopT();tl=TIME;
  const opts=shuf([d[1],...d[2]]);
- app.innerHTML=`<div class="qz"><div class="qz-in"><div class="qz-top"><button id="qt" class="hm-chip">✕ Quit</button><div class="qz-st"><span class="qz-pill">Marks ${score}</span><span class="qz-pill">${"❤️".repeat(MAXW-wrong)}</span></div></div>
+ app.innerHTML=`<div class="qz"><div class="qz-in"><div class="qz-top"><button id="qt" class="hm-chip">✕ Quit</button><div class="qz-st"><span class="qz-pill">Marks ${score}</span><span class="qz-pill">${"❤️".repeat(DC?0:MAXW-wrong)}${DC?"📅 Daily":""}</span></div></div>
  <div class="bar"><i style="width:${i/qs.length*100}%"></i></div>
  <div class="qz-prog"><span>Question ${i+1}/${qs.length}</span><span class="badge">${LB[d[4]]} · ${MK[d[4]]} mark${MK[d[4]]>1?"s":""}</span></div>
  <div class="qz-card"><small class="qz-cat">${BANK[mode].name}</small><div class="q">${d[0]}</div></div>`+`<div class="ll"><span class="tmt" id="tmt">⏱ ${TIME}s</span><button id="lc" ${ll.c?"":"disabled"} style="padding:7px 10px">🔄</button><button id="l5" ${ll.f?"":"disabled"}>50-50</button><button id="ls" ${ll.s?"":"disabled"}>Skip</button></div>`+
@@ -145,7 +154,7 @@ function show(){
  $("#qt").onclick=()=>{if(confirm("Want to quit? Scores will not be saved."))home()};
  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pick(b,d));
  tm=setInterval(()=>{tl--;const t=$("#tmt");if(t){t.textContent="⏱ "+tl+"s";if(tl<=5){t.classList.add("low");if(tl>0)SFX.tick()}}if(tl<=0){stopT();timeUp(d)}},1000);
- $("#lc").onclick=()=>{if(locked||!ll.c)return;const used=gs(mode),cand=BANK[mode].q.filter(x=>x[4]===d[4]&&!qs.includes(x));let p=cand.filter(x=>!used.includes(x[0]));if(!p.length)p=cand;if(!p.length)return;ll.c=0;const n=p[Math.floor(Math.random()*p.length)];qs[i]=n;ss(mode,used.concat(n[0]));show()};
+ $("#lc").onclick=()=>{if(locked||!ll.c)return;const used=gs(mode),cand=BANK[mode].q.filter(x=>x[4]===d[4]&&!qs.includes(x));let p=cand.filter(x=>!used.includes(x[0]));if(!p.length)p=cand;if(!p.length)return;ll.c=0;const n=p[Math.floor(Math.random()*p.length)];qs[i]=n;if(DC)DC.cat.set(n,mode);else ss(mode,used.concat(n[0]));show()};
  $("#l5").onclick=()=>{if(locked||!ll.f)return;ll.f=0;$("#l5").disabled=true;shuf([...app.querySelectorAll(".opt")].filter(o=>o.textContent!==d[1])).slice(0,2).forEach(o=>{o.style.display="none"})};
  $("#ls").onclick=()=>{if(locked||!ll.s)return;ll.s=0;skipped++;stopT();i++;i<qs.length?show():end()};
 }
@@ -170,7 +179,7 @@ function pick(b,d){stopT();
  nx.onclick=()=>{i++;(wrong>=MAXW||i>=qs.length)?end():show()};
  nx.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
-function end(){stopT();wrong>=MAXW?SFX.over():SFX.win();
+function end(){stopT();if(DC)return dcEnd();wrong>=MAXW?SFX.over():SFX.win();
  const p=Math.round(score/MAX*100);
  {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,n:QN,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));{const S=LS("sum",{}),sk=mode+"_"+QN,a=S[sk]||{r:0,q:0,c:0,w:0,p:0};a.r++;a.q+=right+wrong;a.c+=right;a.w+=wrong;a.p+=score;a.f=(a.f||0)+(right===QN?1:0);S[sk]=a;LW("sum",S)}upStr(mode,QN,right===QN);const bk=bestKey(mode,QN);if(score>LS(bk,0))LW(bk,score)}const eid=evAdd(mode,QN,right,wrong,score),est=coinEst(QN,right);if(eid){coinPendAdd(eid,est);syncNow()}
  app.innerHTML=`<div class="rs"><div class="rs-in"><h1>${wrong>=MAXW?"Game Over 💀":"Round khatam!"}</h1><div class="rs-hero"><div class="rs-score">${score}<small>/${MAX}</small></div><div class="rs-bar"><i style="width:${Math.min(100,p)}%"></i></div><div class="rs-pc">${p}% marks</div></div><div class="rs-grid"><div class="rs-c"><small>Accuracy</small><b>${right+wrong?Math.round(right/(right+wrong)*100):0}%</b></div><div class="rs-c"><small>Points</small><b>${score}</b></div><div class="rs-c ok"><small>Correct</small><b>${right}/${QN}</b></div><div class="rs-c bad"><small>Wrong</small><b>${wrong}</b></div></div>
@@ -290,6 +299,160 @@ async function applyUpdOld(){
  const h=await (await fetch(q("index.html"),{cache:"reload"})).text();
  const u=[...h.matchAll(/(?:src|href)="([^":#]+)"/g)].map(m=>m[1]);
  await Promise.all([...new Set(["./","index.html","whats-new.txt","manifest.json","assets/qa-icon-192.png","assets/qa-icon-512.png","assets/qa-icon-maskable-512.png","assets/qa-apple-180.png",...u])].map(f=>fetch(q(f),{cache:"reload"}).then(r=>{if(r.ok)return c.put(f,r)})));
+}
+// ---- Step 3: Daily Challenge ----
+// Account: din, status aur reward server (IST) se aate hain; device ki clock kuch decide nahi karti.
+// Guest: sirf is device par, koi coin nahi, koi sync nahi.
+const DC_BASE=10,DC_PERF=10; // sirf guest ko dikhane ke liye; account ke liye server ka number final hai
+let DC=null,dcSt=null,dcBusy=0,dcErr="",dcTm=null,dcView=0,dcRs=null;
+const dcRng=a=>()=>{a=(a+0x6D2B79F5)|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const dcGDay=()=>new Date(Date.now()+19800000).toISOString().slice(0,10);
+const dcGSecs=()=>Math.max(1,Math.ceil((864e5-(Date.now()+19800000)%864e5)/1000));
+const dcFmtDay=d=>{try{return new Date(d+"T00:00:00Z").toLocaleDateString("en-GB",{day:"2-digit",month:"short",timeZone:"UTC"})}catch(e){return d}};
+const dcLeft=s=>{const m=Math.max(1,Math.ceil(s/60));return Math.floor(m/60)+"h "+(m%60)+"m"};
+const dcAcc=()=>{const a=LS("auth",null);return LS("auth_mode","")==="account"&&a&&a.user?a.user.id:null};
+const dcRemain=s=>s.secs-(s.t0!==undefined?(performance.now()-s.t0)/1000:Math.max(0,(Date.now()-s.at)/1000));
+const dcGet=()=>{const u=dcAcc();if(!u)return null;const s=dcSt&&dcSt.u===u?dcSt:LS("dcs",null);return s&&s.u===u&&typeof s.day==="string"&&dcRemain(s)>0?s:null};
+const dcPend=()=>{const u=dcAcc(),p=LS("dcpend",null);return u&&p&&p.u===u&&typeof p.day==="string"?p:null};
+const dcFresh=()=>{const s=dcSt;return !!s&&s.u===dcAcc()&&s.t0!==undefined&&dcRemain(s)>0&&(s.done||performance.now()-s.t0<120000)};
+const dcSave=(u,d)=>{dcSt={u,day:d.day,done:!!d.done,r:d.r|0,w:d.w|0,coins:d.coins|0,base:d.base|0,perf:d.perf|0,secs:d.secs|0,at:Date.now(),t0:performance.now()};const c=Object.assign({},dcSt);delete c.t0;LW("dcs",c)};
+const dcGuest=()=>{const g=LS("dcg",null);return g&&g.day===dcGDay()?g:null};
+// Din ke 10 sawal: har device par same (din se tay), 3 Easy + 4 Medium + 3 Hard, saari categories mix.
+// Pool fixed order mein shuffle hota hai aur har din agla hissa liya jata hai, isliye din-ba-din repeat nahi hote.
+function dcPick(day){
+ const p=day.split("-").map(Number),dn=Math.floor(Date.UTC(p[0],p[1]-1,p[2])/864e5);let out=[];
+ for(const t of "emh"){
+  const n=MODES[10].n[t],pool=[];
+  Object.keys(BANK).sort().forEach(k=>BANK[k].q.forEach(x=>{if(x[4]===t)pool.push({k,q:x})}));
+  pool.sort((a,b)=>a.q[0]<b.q[0]?-1:a.q[0]>b.q[0]?1:0);
+  const rnd=dcRng(t.charCodeAt(0)*7919);
+  for(let j=pool.length-1;j>0;j--){const k=Math.floor(rnd()*(j+1));[pool[j],pool[k]]=[pool[k],pool[j]]}
+  const st=pool.length?(dn*n)%pool.length:0;
+  for(let j=0;j<n&&j<pool.length;j++)out.push(pool[(st+j)%pool.length]);
+ }
+ const r2=dcRng(dn);
+ for(let j=out.length-1;j>0;j--){const k=Math.floor(r2()*(j+1));[out[j],out[k]]=[out[k],out[j]]}
+ return out;
+}
+function dcStart(day){
+ unlockA();const all=dcPick(day);if(!all.length)return;
+ DC={day,cat:new Map(all.map(x=>[x.q,x.k])),pQN:QN,pW:MAXW};
+ setQN(10);MAXW=99; // 10 sawal ke marks; Daily Challenge mein lives nahi, saare 10 sawal khelte hain
+ qs=all.map(x=>x.q);i=0;score=0;right=0;skipped=0;wrong=0;ll={f:1,s:1,c:1};dcView=0;show();
+}
+function dcLeave(){dcView=0;if(!DC)return;setQN(DC.pQN);MAXW=DC.pW;DC=null}
+function dcEnd(){
+ const day=DC.day,o={day,r:right,w:wrong,sc:score,mx:MODES[10].max},u=dcAcc();
+ dcLeave();SFX.win();
+ if(u)LW("dcpend",{u,day,r:o.r,w:o.w});else LW("dcg",{day,r:o.r,w:o.w,s:o.sc});
+ dcRs={o,u,ph:u?"saving":"guest",aw:0};
+ dcResScr();
+ if(u)dcSubmit();
+}
+async function dcClaim(){
+ const a=LS("auth",null),p=LS("dcpend",null);
+ if(!a||!a.user||!p||p.u!==a.user.id)return null;
+ const r=await authedApi("/daily/claim",{day:p.day,r:p.r,w:p.w,deviceId:devId()});
+ if(r.ok&&r.data&&typeof r.data.day==="string"){
+  LW("dcpend","");dcSave(a.user.id,r.data);
+  if(Number.isInteger(r.data.balance)&&r.data.balance>=0)LW("coins",{id:a.user.id,b:r.data.balance});
+  coinShow();syncSoon();
+ }else if(r.status===409||r.status===400)LW("dcpend","");
+ return r;
+}
+async function dcSubmit(){
+ dcRs.ph="saving";dcRewardPaint();
+ const r=await dcClaim();
+ if(!dcRs||!$("#dcrw"))return;
+ if(r&&r.ok&&r.data&&r.data.day){dcRs.ph=r.data.already?"already":"ok";dcRs.aw=r.data.awarded|0;dcRs.base=r.data.base|0;dcRs.perf=r.data.perf|0}
+ else dcRs.ph=r&&r.status===409?"expired":"fail";
+ dcRewardPaint();
+}
+function dcRewardPaint(){
+ const b=$("#dcrw");if(!b||!dcRs)return;
+ const ph=dcRs.ph,card=(id,cl,t,m)=>'<div class="rs-coin'+cl+'"'+(id?' id="rc"':'')+'><span class="rc-i">🪙</span><div class="rc-t"><small>Daily reward</small><b>'+t+'</b><em>'+m+'</em></div></div>';
+ coinRes=null;coinWait=null;
+ if(ph==="guest")b.innerHTML='<div class="rs-coin rs-coin-g"><span class="rc-i">🪙</span><span>Login to earn coins</span></div>';
+ else if(ph==="saving")b.innerHTML=card(0," sync","Saving…","Saving your reward to your account");
+ else if(ph==="ok"){coinRes={n:dcRs.aw};b.innerHTML=card(1,"","+"+dcRs.aw,dcRs.aw>=(dcRs.base||0)+(dcRs.perf||0)&&dcRs.perf?"Completed +"+dcRs.base+" · Perfect bonus +"+dcRs.perf:"Challenge completed +"+dcRs.aw)}
+ else if(ph==="already")b.innerHTML=card(0,"","Claimed","Today’s reward was already saved for your account");
+ else if(ph==="expired")b.innerHTML=card(0,"","Not counted","The daily reset happened before your result was saved");
+ else b.innerHTML=card(0,"","Not saved","Couldn’t reach the server. Your result is kept on this device.")+'<button class="rs-b2" id="dcrt">Try again</button>';
+ const t=$("#dcrt");if(t)t.onclick=dcSubmit;
+}
+function dcResScr(){
+ const o=dcRs.o,p=Math.round(o.sc/o.mx*100),s=dcGet(),secs=s?dcRemain(s):dcGSecs();
+ app.innerHTML='<div class="rs"><div class="rs-in"><h1>'+(o.r===10?"Perfect Challenge! 👑":"Challenge Complete 📅")+'</h1><div class="rs-hero"><div class="rs-score">'+o.sc+'<small>/'+o.mx+'</small></div><div class="rs-bar"><i style="width:'+Math.min(100,p)+'%"></i></div><div class="rs-pc">'+p+'% marks</div></div><div class="rs-grid"><div class="rs-c"><small>Accuracy</small><b>'+(o.r+o.w?Math.round(o.r/(o.r+o.w)*100):0)+'%</b></div><div class="rs-c"><small>Points</small><b>'+o.sc+'</b></div><div class="rs-c ok"><small>Correct</small><b>'+o.r+'/10</b></div><div class="rs-c bad"><small>Wrong</small><b>'+o.w+'</b></div></div><div id="dcrw"></div><div class="rs-msg">'+(o.r===10?"PERFECT! You nailed today’s challenge! 👑":o.r>=7?"Great run! Come back tomorrow for a new one 🔥":o.r>=4?"Good effort! A new challenge arrives tomorrow 👍":"Keep practicing, a new challenge arrives tomorrow 💪")+'</div><p class="dc-note">⏳ Next challenge in '+dcLeft(secs)+' (12:00 AM IST)</p><button class="rs-b1" id="dch">Home</button></div></div>';
+ dcRewardPaint();
+ $("#dch").onclick=()=>{const f=coinFlyStart();home();coinFlyRun(f)};
+}
+async function dcFetch(){
+ const u=dcAcc();if(!u||dcBusy)return;
+ dcBusy=1;dcErr="";dcPaint();dcDraw();
+ let r={ok:false,status:0,data:{}},got=0;
+ try{
+  if(dcPend()){const c=await dcClaim();if(c&&c.ok&&c.data&&typeof c.data.day==="string"){got=1;r=c}}
+  if(!got)r=await authedApi("/daily/status",{});
+ }catch(e){}
+ dcBusy=0;
+ if(dcAcc()!==u)return;
+ if(!got&&r.ok&&r.data&&typeof r.data.day==="string")dcSave(u,r.data);
+ else if(!got)dcErr=authMsg(r);
+ dcPaint();dcDraw();
+}
+const dcCard=()=>'<button class="dc-card" id="dcc" type="button"><span class="dc-ic">📅</span><span class="dc-tx"><b>Daily Challenge</b><small id="dcsb"></small><span class="dc-rw" id="dcrr"></span></span><span class="dc-ft"><span id="dct"></span><span class="dc-bd" id="dcbd"></span></span></button>';
+function dcPaint(){
+ const c=$("#dcc");if(!c)return;
+ const u=dcAcc(),s=u?dcGet():null,pd=u?dcPend():null,g=u?null:dcGuest();
+ let day=dcGDay(),secs=dcGSecs(),rw,bd,cl="dc-card";
+ if(s){day=s.day;secs=dcRemain(s)}
+ if(u){
+  if(s&&s.done){rw="🪙 +"+s.coins+" earned · "+s.r+"/10 correct";bd="✓ Done";cl+=" done"}
+  else if(pd){rw="⚠️ Reward not saved yet · tap to claim";bd="Claim";cl+=" warn"}
+  else if(s){rw="🪙 +"+s.base+" · +"+s.perf+" perfect bonus";bd="Play ›"}
+  else if(dcBusy){rw="Checking today’s challenge…";bd="…";cl+=" load";secs=0}
+  else if(dcErr){rw="⚠️ Couldn’t load · tap to retry";bd="Retry";cl+=" warn";secs=0}
+  else{rw="Tap to load today’s challenge";bd="Play ›";secs=0}
+ }else if(g){rw=g.r+"/10 correct · Login to earn coins";bd="✓ Done";cl+=" done"}
+ else{rw="Play free · Login to earn coins";bd="Play ›"}
+ c.className=cl;
+ $("#dcsb").textContent="Today · "+dcFmtDay(day);
+ $("#dcrr").textContent=rw;$("#dcbd").textContent=bd;
+ $("#dct").textContent=secs>0?"⏳ Resets in "+dcLeft(secs)+" · 12 AM IST":"New challenge daily · 12 AM IST";
+}
+function dcWire(){
+ const c=$("#dcc");if(!c)return;
+ c.onclick=dcScr;dcPaint();clearInterval(dcTm);
+ dcTm=setInterval(()=>{if(!$("#dcc")){clearInterval(dcTm);return}dcPaint();if(dcAcc()&&!dcBusy&&!dcGet()&&!dcErr&&navigator.onLine)dcFetch()},30000);
+ if(dcAcc()&&navigator.onLine&&!dcBusy&&(!dcFresh()||dcPend()))dcFetch();
+}
+function dcScr(){dcView=1;if(!dcBusy)dcErr="";dcDraw();if(dcAcc()&&!dcBusy&&(!dcFresh()||dcPend()))dcFetch()}
+function dcDraw(){
+ if(!dcView)return;
+ const u=dcAcc(),s=u?dcGet():null,pd=u?dcPend():null,g=u?null:dcGuest();
+ const day=s?s.day:dcGDay(),secs=s?dcRemain(s):dcGSecs();
+ const row=(a,b)=>'<div class="ma-row"><span>'+a+'</span><b>'+b+'</b></div>',sec=(h,x)=>'<div class="ma-sec"><h2 class="ma-h">'+h+'</h2>'+x+'</div>';
+ let body="",btn="",dis=0,act=null,msg="";
+ if((u&&s&&s.done)||g){
+  const r=u?s.r:g.r;
+  body=sec("✅ Completed Today",row("Correct",r+"/10")+(u?row("Coins earned","🪙 +"+s.coins):row("Coins","Guests don’t earn coins"))+row("Next challenge in",dcLeft(secs)))+'<p class="dc-note">A new challenge starts every day at 12:00 AM IST.</p>';
+ }else if(u&&pd){
+  body=sec("⚠️ Reward Not Saved Yet","<p class=\"ma-p\">You finished today’s challenge, but your reward could not be saved. Your result is kept on this device. Tap the button to try again.</p>");
+  btn=dcBusy?"Saving…":"Claim Reward";dis=dcBusy;act=()=>dcFetch();msg=dcErr;
+ }else if(u&&!(s&&dcFresh())){
+  body=sec(dcBusy?"⏳ Loading":"📡 Can’t Load","<p class=\"ma-p\">"+(dcBusy?"Checking today’s challenge… The first request can take up to a minute if the server is waking up.":!navigator.onLine?"You’re offline. Connect to the internet to start today’s challenge, so your reward can be saved.":"Today’s challenge could not be loaded. Please try again.")+"</p>");
+  btn=dcBusy?"Loading…":"Try Again";dis=dcBusy;act=()=>dcFetch();if(!dcBusy)msg=dcErr;
+ }else{
+  const b=u?s.base:DC_BASE,p=u?s.perf:DC_PERF;
+  body=sec("🎯 Today’s Challenge",row("Questions","10")+row("Categories","All mixed")+row("Mix","3 Easy · 4 Medium · 3 Hard")+row("Marks","50")+row("Timer","20 seconds each")+row("Lifelines","Swap · 50-50 · Skip")+row("Lives","None, all 10 are played"))
+  +(u?sec("🪙 Rewards",row("Complete the challenge","+"+b)+row("Perfect score (10/10) bonus","+"+p)+row("Maximum today","+"+(b+p))+row("Resets in",dcLeft(secs)))+'<p class="dc-note">You can earn this reward once per day. These coins are extra and do not count toward the 500 daily round limit. A new challenge starts at 12:00 AM IST.</p>'
+  :'<p class="dc-note dc-g">🪙 Guests don’t earn coins. Login to earn up to '+(b+p)+' coins from every Daily Challenge.</p>');
+  btn="▶ Start Challenge";act=()=>dcStart(u?s.day:dcGDay());
+ }
+ app.innerHTML='<div class="sm"><div class="sm-in"><div class="sm-bar"><button class="hm-chip" id="sb">← Home</button><span class="sm-cat">📅 Daily Challenge</span></div><div class="sm-hd"><h1>Daily Challenge</h1><p>'+dcFmtDay(day)+' · 10 questions</p></div>'+body+(btn?'<button class="sm-go" id="dcgo"'+(dis?' disabled':'')+'>'+btn+'</button>':'')+'<p class="sm-info" id="dcmsg"></p></div></div>';
+ $("#dcmsg").textContent=msg;
+ $("#sb").onclick=home;
+ if(btn)$("#dcgo").onclick=act;
 }
 // ---- Step 8 Part 6: Backend connect (signup / login / session refresh) ----
 const API_URL="https://quiz-arena-api-goc7.onrender.com";

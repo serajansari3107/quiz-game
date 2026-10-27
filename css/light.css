@@ -280,3 +280,7 @@ html[data-theme="light"] .hm-brand b{color:#312E81}
 html[data-theme="light"] .hm-grid .hm-card{background:linear-gradient(160deg,#FFFFFF,#F5F3FF);box-shadow:0 8px 22px rgba(139,92,246,.12)}
 html[data-theme="light"] .hm-grid .hm-ic{box-shadow:0 0 18px rgba(139,92,246,.20)}
 html[data-theme="light"] .st select{background:#FFFFFF!important;color:#312E81!important;border-color:#DDD6FE!important;color-scheme:light}
+/* ---- Daily Challenge ---- */
+html[data-theme="light"] .dc-card{box-shadow:0 12px 30px rgba(91,33,182,.28),inset 0 1px 0 rgba(255,255,255,.14)}
+html[data-theme="light"] .dc-note{color:#6B67A8}
+html[data-theme="light"] .dc-g{border:1px dashed #C4B5FD}

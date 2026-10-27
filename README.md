@@ -52,9 +52,10 @@ quiz-game/
         ├── server.js, app.js, config.js, db.js
         ├── routes/
         │   ├── auth.js   Signup, login, logout, password, recovery code
-        │   └── sync.js   Stats + coins sync (rounds, best, history, streak, coins)
+        │   ├── sync.js   Stats + coins sync (rounds, best, history, streak, coins)
+        │   └── daily.js  Daily Challenge status + reward claim
         ├── middleware/   auth.js (login check), cors.js
-        └── lib/          password.js, tokens.js, rateLimit.js, coins.js (coin rules)
+        └── lib/          password.js, tokens.js, rateLimit.js, coins.js (coin rules), daily.js (Daily Challenge rules)
 ```
 
 ---
@@ -73,6 +74,7 @@ quiz-game/
 | Login / password ka logic | `backend/src/routes/auth.js` |
 | Stats / coins sync ka logic | `backend/src/routes/sync.js` |
 | Coins ke rules (kitne coins, daily cap) | `backend/src/lib/coins.js` |
+| Daily Challenge ke rules / logic (reward, claim) | `backend/src/lib/daily.js`, `backend/src/routes/daily.js` |
 | Database ka structure | `backend/db/schema.sql` (aur Neon mein SQL chalani padti hai) |
 
 ---
@@ -85,6 +87,7 @@ quiz-game/
 - **Menu:** Stats, Settings, My Account, What's New, About, Switch Theme
 - **Themes:** Dark (default) aur Light (Soft Lavender). Choice device par save hoti hai
 - **Coins:** account walon ko milte hain (neeche detail)
+- **Daily Challenge:** roz 10 mixed sawal, IST raat 12:00 baje naya. Account ko din mein ek baar reward (neeche detail)
 - Guest mode, Login, Signup, Forgot Password (recovery code se)
 - My Account: naam/username, password change, naya recovery code, logout
 - Guest stats ko account mein ek baar transfer karna
@@ -107,6 +110,20 @@ quiz-game/
 
 ---
 
+## Daily Challenge
+
+- Home par premium purple card. Roz **10 sawal** (saari categories mix: 3 Easy + 4 Medium + 3 Hard = 50 marks), 20 sec timer, lifelines (Swap / 50-50 / Skip). **Lives nahi**, saare 10 sawal khelte hain.
+- Sawal **din (IST) se tay** hote hain, har device par same. Pool fixed order mein shuffle hota hai aur roz agla hissa liya jata hai (abhi Easy ~50, Medium ~53, Hard ~61 din tak repeat nahi; sawal badhne par aur zyada).
+- Reward (sirf account): **+10** complete karne par, **+10 bonus** 10/10 par = max **20 coins/din**. Ye coins **extra** hain, 500 daily cap mein nahi gine jaate.
+- **Ek account + ek IST din = ek reward**: `daily_challenge_runs` ka `PRIMARY KEY (user_id, day)`. Din aur status server (DB clock, Asia/Kolkata) se aate hain, device clock kuch decide nahi karta. Claim par user ki `user_coins` row lock hoti hai, to do devices ek saath claim karein tab bhi ek hi reward.
+- Client sirf `r` (sahi) aur `w` (galat) bhejta hai, coins server nikalta hai. Limit: sawal client mein hain, isliye server jawab verify nahi kar sakta (purane coin rounds jaisa hi trust). Worst case 20 coins/din.
+- Daily Challenge Stats / History / Best mein nahi judta.
+- **Guest:** sirf device par khel sakta hai (local key `dcg`), coin nahi, sync nahi.
+- **Offline / API fail:** account ko start karne ke liye net chahiye. Reward save na ho to result device par (`dcpend`) rehta hai, result par "Not saved" + "Try again", Home card par "Claim". Fake coins kabhi nahi dikhte. Din badal gaya ho to server 409 deta hai ("Not counted").
+- Local keys `dcs`, `dcpend`, `dcg` sirf dikhane / retry ke liye hain. Inhe edit karne se coins nahi milte.
+
+---
+
 ## Backend ke API endpoints
 
 | Endpoint | Kaam |
@@ -119,13 +136,15 @@ quiz-game/
 | `POST /auth/change-password` | Password badalna (login chahiye) |
 | `POST /auth/recovery/regenerate` | Naya recovery code (login chahiye) |
 | `POST /sync` | Rounds bhejna aur stats, streak, since, coins wapas lena (login chahiye) |
+| `POST /daily/status` | Aaj ka Daily Challenge status + reward rules (login chahiye) |
+| `POST /daily/claim` | Challenge ka result bhejna; ek din mein ek hi reward (login chahiye) |
 | `GET /health`, `GET /health/db` | Server aur database chal rahe hain ya nahi |
 
 ---
 
 ## Database tables (Neon)
 
-`users`, `refresh_tokens`, `recovery_codes`, `rounds`, `baselines`, `user_stats`, `login_attempts`, `user_coins`, `coin_ledger`.
+`users`, `refresh_tokens`, `recovery_codes`, `rounds`, `baselines`, `user_stats`, `login_attempts`, `user_coins`, `coin_ledger`, `daily_challenge_runs`.
 Naya table ya column ho to pehle `backend/db/schema.sql` mein jodo, aur wahi SQL Neon ke SQL Editor mein chalao. Kabhi purana data delete ya reset mat karo.
 
 ---
