@@ -113,4 +113,16 @@ CREATE TABLE IF NOT EXISTS coin_ledger (
 );
 CREATE INDEX IF NOT EXISTS coin_ledger_user_day_idx ON coin_ledger (user_id, earn_day);
 
+-- 10) daily_challenge_runs (Daily Challenge: ek account + ek IST din = ek hi row = ek hi reward)
+CREATE TABLE IF NOT EXISTS daily_challenge_runs (
+  user_id      uuid        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  day          date        NOT NULL,                 -- IST din
+  right_cnt    integer     NOT NULL CHECK (right_cnt BETWEEN 0 AND 10),
+  wrong_cnt    integer     NOT NULL CHECK (wrong_cnt BETWEEN 0 AND 10),
+  coins        integer     NOT NULL CHECK (coins >= 0),
+  completed_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (user_id, day),
+  CHECK (right_cnt + wrong_cnt <= 10)
+);
+
 COMMIT;

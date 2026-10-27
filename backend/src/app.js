@@ -3,6 +3,7 @@ const cors = require("./middleware/cors");
 const { getPool } = require("./db");
 const authRoutes = require("./routes/auth");
 const syncRoutes = require("./routes/sync");
+const dailyRoutes = require("./routes/daily");
 
 const app = express();
 app.disable("x-powered-by");
@@ -28,6 +29,7 @@ app.get("/health/db", async (req, res) => {
 
 app.use("/auth", authRoutes);
 app.use("/sync", syncRoutes);
+app.use("/daily", dailyRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: "Not found" });
