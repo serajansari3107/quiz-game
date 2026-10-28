@@ -1,22 +1,32 @@
 // CACHE sirf cache folder ka naam hai, ise badalne ki zaroorat nahi. App version whats-new.txt ke sabse upar wale block se aata hai.
 const CACHE="quiz-v1.4";
 const CORE=["./","index.html","css/style.css","js/app.js","js/questions/cricket-questions.js","js/questions/wwe-questions.js","whats-new.txt","manifest.json","assets/qa-icon-192.png","assets/qa-icon-512.png","assets/qa-icon-maskable-512.png","assets/qa-apple-180.png"];
+async function qaFill(c){
+ let r=await c.match("index.html");
+ if(!r){await c.add(new Request("index.html",{cache:"reload"}));r=await c.match("index.html")}
+ const t=await r.text(),u=[...t.matchAll(/(?:src|href)="([^":#]+)"/g)].map(m=>m[1]);
+ let bad=0;
+ for(const f of new Set([...CORE,...u])){
+  if(await c.match(f,{ignoreSearch:true}))continue;
+  try{await c.add(new Request(f,{cache:"reload"}))}catch(err){bad++}
+ }
+ return bad;
+}
+// Install tabhi poora maana jaata hai jab saari files cache mein hon. Adhoora ho to install fail hota hai aur purana SW/cache chalta rehta hai.
 self.addEventListener("install",e=>{
  e.waitUntil((async()=>{
   const c=await caches.open(CACHE);
-  try{
-   let r=await c.match("index.html");
-   if(!r){await c.add(new Request("index.html",{cache:"reload"}));r=await c.match("index.html")}
-   const t=await r.text(),u=[...t.matchAll(/(?:src|href)="([^":#]+)"/g)].map(m=>m[1]);
-   for(const f of new Set([...CORE,...u])){
-    if(!(await c.match(f,{ignoreSearch:true})))await c.add(new Request(f,{cache:"reload"})).catch(()=>{});
-   }
-  }catch(err){}
+  if(await qaFill(c))throw new Error("precache-incomplete");
   self.skipWaiting();
  })());
 });
+// Sirf Quiz Arena ke purane "quiz-" caches hatate hain (CACHE aur update ka "quiz-stage" chhodkar). Activate tabhi chalta hai jab naya install poora ho chuka ho.
 self.addEventListener("activate",e=>{
- e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
+ e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith("quiz-")&&k!==CACHE&&k!=="quiz-stage").map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
+});
+// App online khulne par cache mein koi file gum ho to chupchap dobara bhar deta hai (self-heal).
+self.addEventListener("message",e=>{
+ if(e.data&&e.data.type==="qa-heal")e.waitUntil(caches.open(CACHE).then(qaFill).catch(()=>{}));
 });
 self.addEventListener("fetch",e=>{
  const u=new URL(e.request.url);
@@ -31,7 +41,7 @@ self.addEventListener("fetch",e=>{
    return r;
   }
   try{const n=await fetch(e.request);if(n.ok)c.put(e.request,n.clone());return n}
-  catch(err){return new Response("Offline",{status:503})}
+  catch(err){if(e.request.mode==="navigate")return new Response('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><body style="font-family:system-ui;background:#0e0e11;color:#f2f2f7;text-align:center;padding:40px 20px"><h2>Quiz Arena</h2><p>App files are not saved on this device yet. Open the app once with internet to finish setup.</p>',{status:503,headers:{"Content-Type":"text/html; charset=utf-8"}});return new Response("Offline",{status:503})}
  })());
 });
 // Background Sync: internet aate hi browser ye event deta hai. Sync app ke window mein hi chalta hai (login token aur outbox wahin hain);

@@ -114,7 +114,7 @@ function aboutScr(){
  +sec("🔐 My Account &amp; Security",["Open <b>Menu → My Account</b> after login to see your details.","<b>Change Password:</b> enter your current password and a new one. You will stay logged in on this device, and your other devices are logged out.","<b>Recovery Code:</b> a secret code that lets you reset your password if you forget it. Keep it safe.","<b>Generate New Recovery Code:</b> needs your password. The old code stops working, and the new code is shown only once, so copy it with the 📋 button.","<b>Forgot Password:</b> use your username, your recovery code and a new password.","Passwords are stored in a protected (hashed) form, never as plain text. For this reason, the app can never show your current password or your old recovery code."])
  +sec("⚙️ Settings",["Open <b>Menu → Settings</b> to turn <b>Sound</b> and <b>Vibration</b> ON or OFF.","Open <b>Menu → Switch Theme</b> to change between the <b>Dark Theme</b> and the <b>Light Theme</b> (Soft Lavender). Your choice is saved on your device."])
  +sec("🆕 Updates",["Open <b>Menu → What’s New</b> to see the latest features, fixes and the app version.","After an update, a popup shows only the new changes. If <b>Update now</b> cannot finish (for example because of a weak internet connection), the button changes to <b>Try again</b> and your data stays safe."])
- +sec("🌐 Internet &amp; Offline",["Quizzes, stats and settings work without internet.","Internet is needed only for sign up, login, password changes, syncing your stats and coins, and the Daily Challenge for accounts."])
+ +sec("🌐 Internet &amp; Offline",["Quizzes, stats and settings work without internet.","After the first successful online open, the app is saved on your device. Later you can open it and play Cricket, WWE and Grammar quizzes without internet, even after closing and reopening the app. Your offline rounds stay safely on the device until they sync.","Internet is needed to install the app the first time and to get app updates. An update is downloaded fully first, and the old working version stays untouched until the new one is ready.","Internet is needed only for sign up, login, password changes, syncing your stats and coins, and the Daily Challenge for accounts."])
  +sec("💡 Tips",["Save <b>Swap</b> and <b>50-50</b> for hard questions.","Read the explanation after every answer. It helps you remember, especially in the Grammar Quiz.","Watch the timer. Time-up costs a life, just like a wrong answer.","Play perfect rounds for bonus coins, but remember the daily limit of 500."])
  +'</div></div>';
  $("#sb").onclick=toMenu;
@@ -327,7 +327,7 @@ function checkUp2(inst){
 }
 async function applyUpd(want){
  if(!window.caches)return true;
- const cs=[];for(const k of await caches.keys()){const x=await caches.open(k);if(await x.match("index.html"))cs.push(x)}
+ const cs=[];for(const k of await caches.keys()){if(k==="quiz-stage")continue;const x=await caches.open(k);if(await x.match("index.html"))cs.push(x)}
  if(!cs.length)return true;
  const q=f=>f+(f.includes("?")?"&":"?")+"chk="+Date.now();
  const h=await (await fetch(q("index.html"),{cache:"reload"})).text();
@@ -335,9 +335,15 @@ async function applyUpd(want){
  let mi=[];try{mi=((await (await fetch(q("manifest.json"),{cache:"reload"})).json()).icons||[]).map(i=>i.src)}catch(e){}
  const fs=[...new Set(["./","index.html","whats-new.txt","manifest.json",...mi,...u])];
  const rs=await Promise.all(fs.map(f=>fetch(q(f),{cache:"reload"})));
- for(let i=0;i<fs.length;i++)if(rs[i].ok)for(const c of cs)await c.put(fs[i],rs[i].clone());
- const w=await cs[0].match("whats-new.txt"),tb=w?topB(await w.text()):null;
- return !!tb&&tb.join("\n")===want
+ if(rs.some(r=>!r.ok))return false; // ek bhi file na aaye to chalta hua cache bilkul nahi chhedte
+ try{
+  await caches.delete("quiz-stage");const st=await caches.open("quiz-stage");
+  for(let i=0;i<fs.length;i++)await st.put(fs[i],rs[i].clone()); // pehle naya set alag "quiz-stage" mein taiyar
+  const w=await st.match("whats-new.txt"),tb=w?topB(await w.text()):null;
+  if(!tb||tb.join("\n")!==want)return false;
+  for(const c of cs)for(const f of fs)await c.put(f,await st.match(f)); // taiyar hone ke baad hi chalte cache mein
+  return true;
+ }finally{await caches.delete("quiz-stage").catch(()=>{})}
 }
 async function applyUpdOld(){
  if(!window.caches)return;
@@ -843,6 +849,8 @@ window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();ip=e;
 window.addEventListener("appinstalled",()=>{const b=document.querySelector(".inst");if(b)b.remove()});
 if("serviceWorker"in navigator){
  navigator.serviceWorker.register("sw.js").then(r=>{
+ try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+ if(navigator.onLine)navigator.serviceWorker.ready.then(x=>x.active&&x.active.postMessage({type:"qa-heal"})).catch(()=>{});
   r.addEventListener("updatefound",()=>{const w=r.installing;
    w.addEventListener("statechange",()=>{if(false){
     const b=document.createElement("button");b.className="inst";b.textContent="🔄 New update available — tap to update";

@@ -6,9 +6,14 @@ New:
 + Auto Sync: your rounds, points, coins and history now sync automatically as soon as the internet is back, and again every time you reopen the app.
 + New green Sync icon on the Home screen shows Synced, Syncing, Pending or Failed. Tap it to see when the server last confirmed your data.
 + Background Sync on supported browsers (like Chrome on Android) starts the sync when the internet returns, even if the app is in the background.
++ Offline-first app: after the first successful online open, the app starts and plays Cricket, WWE and Grammar quizzes without internet, even after closing and reopening it.
 Improved:
 + The Rating Criteria popup now shows the minimum points for each rank.
 + If a sync fails, the app retries by itself. A saved Daily Challenge reward is now claimed automatically too.
++ App updates are now downloaded fully before they replace the working version, so a weak connection can never leave the app half-updated.
++ The app now repairs missing offline files by itself the next time it opens with internet.
+Fixed:
++ Fixed the app sometimes showing an offline error when opened without internet.
 
 ## v2.2 | 27 Oct 2026
 New:
