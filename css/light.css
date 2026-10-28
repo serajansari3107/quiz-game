@@ -284,3 +284,11 @@ html[data-theme="light"] .st select{background:#FFFFFF!important;color:#312E81!i
 html[data-theme="light"] .dc-card{box-shadow:0 12px 30px rgba(91,33,182,.28),inset 0 1px 0 rgba(255,255,255,.14)}
 html[data-theme="light"] .dc-note{color:#6B67A8}
 html[data-theme="light"] .dc-g{border:1px dashed #C4B5FD}
+/* ---- Result progress meters (Step 4A) ---- */
+html[data-theme="light"] .pg-c{background:linear-gradient(160deg,rgba(139,92,246,.10),#FFFFFF 72%);border:1px solid #DDD6FE}
+html[data-theme="light"] .pg-t b,html[data-theme="light"] .pg-n b{color:#312E81}
+html[data-theme="light"] .pg-t small,html[data-theme="light"] .pg-x{color:#6B67A8}
+html[data-theme="light"] .pg-n span{color:#6D28D9}
+html[data-theme="light"] .pg-bar{background:#EDE9FE}
+html[data-theme="light"] .pg-rq span{color:#6D28D9}
+html[data-theme="light"] .pg-rq span.ok{color:#15803D;background:rgba(47,211,124,.15)}

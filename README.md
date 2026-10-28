@@ -88,6 +88,7 @@ quiz-game/
 - **Themes:** Dark (default) aur Light (Soft Lavender). Choice device par save hoti hai
 - **Coins:** account walon ko milte hain (neeche detail)
 - **Daily Challenge:** roz 10 mixed sawal, IST raat 12:00 baje naya. Account ko din mein ek baar reward (neeche detail)
+- **Points & Ranks:** 6 ranks, teeno conditions zaroori (accuracy + rounds + points). Result screen par 3 progress meters (neeche detail)
 - Guest mode, Login, Signup, Forgot Password (recovery code se)
 - My Account: naam/username, password change, naya recovery code, logout
 - Guest stats ko account mein ek baar transfer karna
@@ -107,6 +108,16 @@ quiz-game/
 - `/sync` ke jawab mein `coins: { balance, today, cap, credits }` aata hai. `credits` mein har round ka exact credit hota hai.
 - **Offline:** result par turant estimate (`+N`) dikhta hai aur coins udte hain. Round outbox mein save rehta hai, Home pill par chhota dot dikhta hai. Net aate hi auto-sync hota hai aur server ka balance final hota hai. Cap ki wajah se farak aaye to card par "Adjusted" likha aata hai.
 - Local `coins` aur `cpend` keys sirf dikhane ke liye hain. Inhe edit karne se server ka balance nahi badalta.
+
+---
+
+## Points aur Ranks
+
+- **Points** = round ke marks (`sum[...].p` / server `user_stats.points`). Formula purana hi hai. Daily Challenge aur coins points mein nahi judte.
+- Rank table (`RATINGS` in `js/app.js`): Rookie 0% / 10 rounds / 100 pts, Challenger 40% / 20 / 300, Advanced 60% / 30 / 600, Expert 75% / 50 / 1,200, Master 85% / 100 / 2,500, Quiz Legend 95% / 200 / 5,000. **Teeno conditions zaroori**, sirf points se rank unlock nahi hota.
+- Accuracy = sahi / (sahi + galat) (purani definition), rounds = khele hue rounds. Stats Summary ki rating bhi isi table se aati hai (filters follow karti hai).
+- Result screen par 3 meters: **Points Progress** (all-time points / agla points milestone), **All-Time Rank** (saari categories), **Quiz Rank** (sirf usi category ke teeno sizes ka total). Bar = points, rounds aur accuracy ki progress ka average, 100% sirf jab teeno poore.
+- Koi naya data store ya backend change nahi. Account mein sync ke baad server ke totals aate hi meters refresh ho jate hain.
 
 ---
 

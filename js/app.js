@@ -87,7 +87,14 @@ function aboutScr(){
  +sec("🔀 Fair Question Rotation",["Questions are shuffled in every round.","The app remembers which questions you have already seen in each category and avoids repeating them until you have seen them all."])
  +sec("📊 Stats",["Open <b>Menu → Stats</b> to see your progress. It has 3 tabs: <b>Best</b>, <b>History</b> and <b>Summary</b>.","<b>Best:</b> your highest scores.","<b>History:</b> your last 10 rounds.","<b>Summary:</b> Total Rounds Played, Questions Played, Correct Answers, Wrong Answers, Points Secured, Accuracy Rate, Perfect Rounds, Longest Perfect Streak and User Since. You can filter it by category and quiz size.","A <b>Perfect Round</b> means you answered every question of the round correctly. <b>Longest Perfect Streak</b> is the most perfect rounds in a row."])
  +sec("🪙 Coins",["Coins are a reward you earn by playing. Only <b>logged-in accounts</b> earn coins. Guests do not.","Every correct answer gives <b>1 coin</b>.","A <b>perfect round</b> (every question correct) gives a bonus: <b>5</b> coins in a 5-question quiz, <b>10</b> in a 10-question quiz and <b>20</b> in a 20-question quiz.","You can earn up to <b>500 coins per day</b>. The limit resets at <b>12:00 AM India time (IST)</b>. If a round would cross the limit, you get only the coins that are left for the day.","Your balance (🪙) is shown on the Home screen next to the Menu button. It is saved safely on the server, so it is the same on every device where you log in.","On the result screen you see the coins you earned. Tap <b>Home</b> and the coins fly to your balance.","Offline? You still see your coins right away and your balance shows a small dot. The coins are confirmed automatically when you are back online. In rare cases, for example when the daily limit is reached, the final number can be a little different and the app tells you.","The real balance lives on the server, so it cannot be changed from your phone."])
- +sec("📅 Daily Challenge",[
+ +sec("🏅 Points &amp; Ranks",[
+"<b>Points</b> are the marks you score in normal quiz rounds. They are added up for all your rounds. Daily Challenge rounds and coins do not count toward points or ranks.",
+"There are 6 ranks: Rookie, Challenger, Advanced, Expert, Master and Quiz Legend. To unlock a rank you need <b>all three</b>: the minimum accuracy, the minimum number of rounds and the minimum points.",
+"<b>Rookie:</b> 0% accuracy, 10 rounds, 100 points. <b>Challenger:</b> 40%, 20 rounds, 300 points. <b>Advanced:</b> 60%, 30 rounds, 600 points. <b>Expert:</b> 75%, 50 rounds, 1,200 points. <b>Master:</b> 85%, 100 rounds, 2,500 points. <b>Quiz Legend:</b> 95%, 200 rounds, 5,000 points.",
+"After every round, the result screen shows 3 progress cards: <b>Points Progress</b> (your total points and the next points milestone), <b>All-Time Rank</b> (your overall progress to the next rank) and a <b>Quiz Rank</b> for the category you just played (only that category’s points, accuracy and rounds).",
+"The rank progress bar is the average of your points, rounds and accuracy progress. It reaches 100% only when all three conditions are complete.",
+"Your rank in <b>Menu → Stats → Summary</b> uses the same rules and follows the category and quiz size filters you choose there."
+])+sec("📅 Daily Challenge",[
 "Every day there is one <b>Daily Challenge</b> with 10 questions mixed from all categories: 3 Easy, 4 Medium and 3 Hard (50 marks in total).",
 "The 10 questions are chosen by the date, so they are the same on all your devices. A new challenge starts every day at <b>12:00 AM India time (IST)</b>.",
 "You can use Swap, 50-50 and Skip once each, and every question has the usual 20-second timer. There are no lives, so all 10 questions are played.",
@@ -184,31 +191,64 @@ function end(){stopT();if(DC)return dcEnd();wrong>=MAXW?SFX.over():SFX.win();
  {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,n:QN,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));{const S=LS("sum",{}),sk=mode+"_"+QN,a=S[sk]||{r:0,q:0,c:0,w:0,p:0};a.r++;a.q+=right+wrong;a.c+=right;a.w+=wrong;a.p+=score;a.f=(a.f||0)+(right===QN?1:0);S[sk]=a;LW("sum",S)}upStr(mode,QN,right===QN);const bk=bestKey(mode,QN);if(score>LS(bk,0))LW(bk,score)}const eid=evAdd(mode,QN,right,wrong,score),est=coinEst(QN,right);if(eid){coinPendAdd(eid,est);syncNow()}
  app.innerHTML=`<div class="rs"><div class="rs-in"><h1>${wrong>=MAXW?"Game Over 💀":"Round khatam!"}</h1><div class="rs-hero"><div class="rs-score">${score}<small>/${MAX}</small></div><div class="rs-bar"><i style="width:${Math.min(100,p)}%"></i></div><div class="rs-pc">${p}% marks</div></div><div class="rs-grid"><div class="rs-c"><small>Accuracy</small><b>${right+wrong?Math.round(right/(right+wrong)*100):0}%</b></div><div class="rs-c"><small>Points</small><b>${score}</b></div><div class="rs-c ok"><small>Correct</small><b>${right}/${QN}</b></div><div class="rs-c bad"><small>Wrong</small><b>${wrong}</b></div></div>
  ${coinCard(eid,est)}<div class="rs-msg">${p<=20?"Don't give up, keep practicing! 💪":p<50?"Not bad, you can do better! 🙂":p<=70?"Good job, nice effort! 👍":p<=90?"Great work, almost there! 🔥":p<100?"Excellent! So close to perfect! 🏆":"PERFECT 100! You are a legend! 👑"}</div><br>
- <button class="rs-b1" id="again">New Round (New questions)</button><button class="rs-b2" id="hm">Home</button></div></div>`;
- $("#again").onclick=()=>start(mode);$("#hm").onclick=()=>{const f=coinFlyStart();home();coinFlyRun(f)};
+ ${prgHTML(mode)}<button class="rs-b1" id="again">New Round (New questions)</button><button class="rs-b2" id="hm">Home</button></div></div>`;
+ $("#again").onclick=()=>start(mode);prgAnim();$("#hm").onclick=()=>{const f=coinFlyStart();home();coinFlyRun(f)};
 }
 
 function openRT(){
  const ov=document.createElement("div");ov.className="ov rtm";
- ov.innerHTML='<div class="rtm-box"><div class="rtm-h"><h2>🏅 Rating Criteria</h2><button class="hm-chip" id="rtx">Close</button></div><div class="rtm-w"><table class="rtm-t"><thead><tr><th>Rating</th><th>Min Accuracy</th><th>Min Rounds</th></tr></thead><tbody>'+RATINGS.map(t=>"<tr><td>"+t[0]+"</td><td>"+t[1]+"%</td><td>"+t[2]+"</td></tr>").join("")+'</tbody></table></div><p class="rtm-n">You need both the minimum accuracy and the minimum rounds to earn a rating.</p></div>';
+ ov.innerHTML='<div class="rtm-box"><div class="rtm-h"><h2>🏅 Rating Criteria</h2><button class="hm-chip" id="rtx">Close</button></div><div class="rtm-w"><table class="rtm-t"><thead><tr><th>Rating</th><th>Min Accuracy</th><th>Min Rounds</th><th>Min Points</th></tr></thead><tbody>'+RATINGS.map(t=>"<tr><td>"+t[0]+"</td><td>"+t[1]+"%</td><td>"+t[2]+"</td><td>"+coinFmt(t[3])+"</td></tr>").join("")+'</tbody></table></div><p class="rtm-n">You need all three (minimum accuracy, minimum rounds and minimum points) to earn a rating.</p></div>';
  document.body.appendChild(ov);
  const cl=()=>ov.remove();
  ov.querySelector("#rtx").onclick=cl;
  ov.onclick=e=>{if(e.target===ov)cl()};
 }
+// ---- Step 4A: Points + rank progress meters (result screen) ----
+// Points = marks ("sum" ke p). Rank = RATINGS (accuracy + rounds + points, teeno zaroori). Category = sum keys "<mode>_<n>" ka total.
+let prgMode=null,prgLast="";
+const rkOk=(t,ac,r,p)=>ac>=t[1]&&r>=t[2]&&p>=t[3];
+const rkFmt=x=>coinFmt(Math.round(x*10)/10);
+const rkName=t=>t[0].replace(/^\S+\s/,"");
+function rkStat(m){
+ const S=LS("sum",{}),t={r:0,q:0,c:0,p:0};
+ Object.keys(S).forEach(k=>{if(m&&k.slice(0,k.lastIndexOf("_"))!==m)return;const a=S[k]||{};t.r+=a.r|0;t.q+=a.q|0;t.c+=a.c|0;t.p+=+a.p||0});
+ t.ac=t.q?t.c/t.q*100:0;return t;
+}
+function rkCard(ic,ti,sub,bd,mid,pct,ft){
+ return '<div class="pg-c"><div class="pg-h"><span class="pg-i">'+ic+'</span><div class="pg-t"><b>'+ti+'</b><small>'+sub+'</small></div><span class="pg-bd">'+bd+'</span></div>'+mid+'<div class="pg-bar"><i data-w="'+pct+'" style="width:0"></i></div>'+ft+'</div>';
+}
+function rkRank(ic,ti,sub,st){
+ const R=RATINGS,ci=R.findIndex(x=>rkOk(x,st.ac,st.r,st.p)),cur=ci<0?"Unranked":rkName(R[ci]);
+ if(ci===0)return rkCard(ic,ti,sub+" · "+cur,"👑 Max Rank",'<div class="pg-n"><b>100%</b></div>',100,'<div class="pg-x">Maximum Rank Reached</div>');
+ const n=R[ci<0?R.length-1:ci-1],ok=[st.p>=n[3],st.r>=n[2],st.ac>=n[1]],
+  f=[Math.min(1,st.p/n[3]),Math.min(1,st.r/n[2]),n[1]?Math.min(1,st.ac/n[1]):1],
+  pct=Math.min(99,Math.floor(f.reduce((s,x)=>s+x,0)/3*100)),
+  rq=(g,t)=>'<span'+(g?' class="ok"':'')+'>'+(g?"✓ ":"")+t+'</span>';
+ return rkCard(ic,ti,sub+" · "+cur,"Next: "+n[0],'<div class="pg-n"><b>'+pct+'%</b><span>to '+rkName(n)+'</span></div>',pct,
+  '<div class="pg-rq">'+rq(ok[0],"Points "+rkFmt(st.p)+" / "+rkFmt(n[3]))+rq(ok[1],"Rounds "+st.r+" / "+n[2])+rq(ok[2],"Accuracy "+(Math.round(st.ac*10)/10)+"% / "+n[1]+"%")+'</div><div class="pg-x">Unlocks only when all three are complete.</div>');
+}
+function prgInner(m){
+ const all=rkStat(),cat=rkStat(m),mi=RATINGS.slice().reverse().find(x=>x[3]>all.p),nm=BANK[m]?BANK[m].name:m,e=nm.match(/^(\p{Extended_Pictographic}\S*)\s+(.+)$/u);
+ const p1=mi?rkCard("🎯","Points Progress","All-time points","Next: "+mi[0],'<div class="pg-n"><b>'+rkFmt(all.p)+'</b><span>/ '+rkFmt(mi[3])+'</span></div>',Math.min(99,Math.floor(all.p/mi[3]*100)),'<div class="pg-x">'+rkFmt(mi[3]-all.p)+' points to '+rkName(mi)+'</div>')
+  :rkCard("🎯","Points Progress","All-time points","✓ Complete",'<div class="pg-n"><b>'+rkFmt(all.p)+'</b><span>points</span></div>',100,'<div class="pg-x">All points milestones reached</div>');
+ return p1+rkRank("🏆","All-Time Rank","All quizzes",all)+rkRank(e?e[1]:"📚",(e?e[2]:nm)+" Rank","This quiz only",cat);
+}
+function prgHTML(m){prgMode=m;prgLast=prgInner(m);return'<div class="pg-w" id="prg">'+prgLast+'</div>'}
+function prgAnim(){setTimeout(()=>document.querySelectorAll("#prg .pg-bar i").forEach(i=>{i.style.width=i.dataset.w+"%"}),80)}
+function prgRefresh(){try{const e=$("#prg");if(!e||!prgMode)return;const h=prgInner(prgMode);if(h===prgLast)return;prgLast=h;e.innerHTML=h;prgAnim()}catch(x){}}
 let sumQ="all",sumN="all";
 const bfStr=()=>{const H=LS("hist",[]).slice().reverse(),P={};["all"].concat(Object.keys(BANK)).forEach(q=>["all","5","10","20"].forEach(n=>{let c=0,b=0;H.forEach(x=>{const xn=x.n||20;if((q==="all"||x.m===q)&&(n==="all"||String(xn)===n)){if(x.r===xn){c++;if(c>b)b=c}else c=0}});P[q+"_"+n]={c,b}}));return P};
 const upStr=(m,n,p)=>{let P=LS("pstr",null);if(!P){LW("pstr",bfStr());return}[["all","all"],[m,"all"],["all",""+n],[m,""+n]].forEach(k=>{const e=k.join("_"),o=P[e]||{c:0,b:0};o.c=p?o.c+1:0;if(o.c>o.b)o.b=o.c;P[e]=o});LW("pstr",P)};
-const RATINGS=[["👑 Quiz Legend",95,200],["🏆 Master",85,100],["🎖️ Expert",75,50],["⭐ Advanced",60,30],["⚔️ Challenger",40,20],["🌱 Rookie",0,10]];
-const getRating=(ac,r)=>{const a=RATINGS.find(t=>ac>=t[1]&&r>=t[2]),n=RATINGS.find(t=>ac>=t[1]);return[a?a[0]:"🔒 Unranked",a===n?"":(n[2]-r)+" more rounds needed for "+n[0].replace(/^\S+\s/,"")]};
-const rateRow=(ac,r)=>{const g=getRating(ac,r);return `<div class="card hrow st-rate" id="rtc"><span>Quiz Arena Rating ⓘ</span><b>${g[0]}</b>${g[1]?`<small>${g[1]}</small>`:""}</div>`};
+const RATINGS=[["👑 Quiz Legend",95,200,5000],["🏆 Master",85,100,2500],["🎖️ Expert",75,50,1200],["⭐ Advanced",60,30,600],["⚔️ Challenger",40,20,300],["🌱 Rookie",0,10,100]]; // [name, min accuracy %, min rounds, min points]
+const getRating=(ac,r,p)=>{p=p||0;const a=RATINGS.find(t=>rkOk(t,ac,r,p)),n=RATINGS.find(t=>ac>=t[1]);if(a===n)return[a?a[0]:"🔒 Unranked",""];const need=[];if(r<n[2])need.push((n[2]-r)+" more rounds");if(p<n[3])need.push(rkFmt(n[3]-p)+" more points");return[a?a[0]:"🔒 Unranked",need.join(" and ")+" needed for "+rkName(n)]};
+const rateRow=(ac,r,p)=>{const g=getRating(ac,r,p);return `<div class="card hrow st-rate" id="rtc"><span>Quiz Arena Rating ⓘ</span><b>${g[0]}</b>${g[1]?`<small>${g[1]}</small>`:""}</div>`};
 function sumHTML(){
  const S=LS("sum",{}),t={r:0,q:0,c:0,w:0,p:0,f:0};
  Object.keys(S).forEach(k=>{const j=k.lastIndexOf("_"),m=k.slice(0,j),n=k.slice(j+1);if((sumQ==="all"||sumQ===m)&&(sumN==="all"||sumN===n))for(const f in t)t[f]+=S[k][f]||0});
  const rd=x=>Math.round(x*10)/10,acc=t.q?rd(t.c/t.q*100):0,st="flex:1;padding:12px 14px;border-radius:14px;border:1px solid #2a2a33;background:#17171c;color:#f2f2f7;font-size:15px;font-weight:600;font-family:inherit";
  const row=(a,b)=>`<div class="st-c"><small>${a}</small><b class="${parseFloat(b)===0?"z":""}">${b}</b></div>`;
  const sel=(id,v,o,w)=>`<select id="${id}" style="${st};flex:${w}">${o.map(x=>`<option value="${x[0]}"${x[0]===v?" selected":""}>${x[1]}</option>`).join("")}</select>`;
- return '<div style="display:flex;gap:8px;margin-bottom:14px">'+sel("sq",sumQ,[["all","All time"]].concat(Object.keys(BANK).map(k=>[k,BANK[k].name])),1.6)+sel("sn",sumN,[["all","All"],["5","5"],["10","10"],["20","20"]],1)+'</div><div class="st-grid">'+row("Total Rounds Played",t.r)+row("Questions Played",t.q)+row("Correct Answers",t.c)+row("Wrong Answers",t.w)+row("Points Secured",rd(t.p))+row("Accuracy Rate",acc+"%")+row("Perfect Rounds",t.f)+row("Longest Perfect Streak",Math.max(((LS("pstr",null)||bfStr())[sumQ+"_"+sumN]||{}).b||0,t.f>0?1:0))+row("User Since",(()=>{const v=LS("since",0);return v?new Date(v).toLocaleDateString("en-US",{month:"long",year:"numeric"}):"—"})())+'</div>'+rateRow(t.q?t.c/t.q*100:0,t.r);
+ return '<div style="display:flex;gap:8px;margin-bottom:14px">'+sel("sq",sumQ,[["all","All time"]].concat(Object.keys(BANK).map(k=>[k,BANK[k].name])),1.6)+sel("sn",sumN,[["all","All"],["5","5"],["10","10"],["20","20"]],1)+'</div><div class="st-grid">'+row("Total Rounds Played",t.r)+row("Questions Played",t.q)+row("Correct Answers",t.c)+row("Wrong Answers",t.w)+row("Points Secured",rd(t.p))+row("Accuracy Rate",acc+"%")+row("Perfect Rounds",t.f)+row("Longest Perfect Streak",Math.max(((LS("pstr",null)||bfStr())[sumQ+"_"+sumN]||{}).b||0,t.f>0?1:0))+row("User Since",(()=>{const v=LS("since",0);return v?new Date(v).toLocaleDateString("en-US",{month:"long",year:"numeric"}):"—"})())+'</div>'+rateRow(t.q?t.c/t.q*100:0,t.r,t.p);
 }
 let statsTab="sum",statsWait=false;
 function stats(tab){stats0(tab);statsTab=tab||"sum";statsWait=syncBusy&&LS("auth_mode","")==="account"&&!sumRounds(LS("sum",{}))&&!LS("hist",[]).length;if(statsWait){const t=$(".tabs");if(t){while(t.nextSibling)t.nextSibling.remove();const w=document.createElement("div");w.className="st-empty";w.innerHTML="<div>⏳</div><b>Syncing your account stats…</b><small>This can take up to a minute the first time.</small>";t.after(w)}}}
@@ -550,7 +590,7 @@ async function syncNow(){
    const ids=new Set(sent.map(e=>e.id)),rest=LS("outbox",[]).filter(e=>!ids.has(e.id));
    LW("outbox",rest);coinCredits(r.data);
    if(bl&&typeof r.data.baselineApplied==="boolean"){LW("bl_done",1);LW("bl_go","");if(!r.data.baselineApplied)alert("These guest stats could not be transferred (already transferred from this device).")}
-   if(!rest.length){applySnap(r.data);break}
+   if(!rest.length){applySnap(r.data);prgRefresh();break}
   }
  }catch(e){}finally{syncBusy=false;if(statsWait&&$(".st"))stats(statsTab)}
 }

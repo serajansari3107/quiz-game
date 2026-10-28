@@ -1,4 +1,11 @@
 window.WN_TXT=(function(){/*
+## v2.3 | 28 Oct 2026
+New:
++ Points & Ranks: every rank now needs minimum accuracy, minimum rounds and minimum points.
++ Result screen now shows 3 progress cards: Points Progress, All-Time Rank and a Quiz Rank for the category you just played.
+Improved:
++ The Rating Criteria popup now shows the minimum points for each rank.
+
 ## v2.2 | 27 Oct 2026
 New:
 + Daily Challenge: 10 new mixed questions every day, resetting at 12:00 AM India time.
