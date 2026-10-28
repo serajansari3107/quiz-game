@@ -87,7 +87,14 @@ function aboutScr(){
  +sec("🔀 Fair Question Rotation",["Questions are shuffled in every round.","The app remembers which questions you have already seen in each category and avoids repeating them until you have seen them all."])
  +sec("📊 Stats",["Open <b>Menu → Stats</b> to see your progress. It has 3 tabs: <b>Best</b>, <b>History</b> and <b>Summary</b>.","<b>Best:</b> your highest scores.","<b>History:</b> your last 10 rounds.","<b>Summary:</b> Total Rounds Played, Questions Played, Correct Answers, Wrong Answers, Points Secured, Accuracy Rate, Perfect Rounds, Longest Perfect Streak and User Since. You can filter it by category and quiz size.","A <b>Perfect Round</b> means you answered every question of the round correctly. <b>Longest Perfect Streak</b> is the most perfect rounds in a row."])
  +sec("🪙 Coins",["Coins are a reward you earn by playing. Only <b>logged-in accounts</b> earn coins. Guests do not.","Every correct answer gives <b>1 coin</b>.","A <b>perfect round</b> (every question correct) gives a bonus: <b>5</b> coins in a 5-question quiz, <b>10</b> in a 10-question quiz and <b>20</b> in a 20-question quiz.","You can earn up to <b>500 coins per day</b>. The limit resets at <b>12:00 AM India time (IST)</b>. If a round would cross the limit, you get only the coins that are left for the day.","Your balance (🪙) is shown on the Home screen next to the Menu button. It is saved safely on the server, so it is the same on every device where you log in.","On the result screen you see the coins you earned. Tap <b>Home</b> and the coins fly to your balance.","Offline? You still see your coins right away and your balance shows a small dot. The coins are confirmed automatically when you are back online. In rare cases, for example when the daily limit is reached, the final number can be a little different and the app tells you.","The real balance lives on the server, so it cannot be changed from your phone."])
- +sec("🏅 Points &amp; Ranks",[
+ +sec("🔄 Auto Sync",[
+"If you are logged in, your rounds, points, coins, history and a saved Daily Challenge reward are synced to the server automatically, as soon as the internet is available. You do not need to do anything.",
+"Sync also runs when you reopen the app, and if it fails it retries by itself with growing gaps (5 seconds up to 5 minutes).",
+"The green <b>Sync</b> icon on the Home screen shows the status: <b>Synced</b> (the server confirmed everything), <b>Syncing</b>, <b>Pending</b> (waiting for internet, with the number of items waiting) or <b>Failed</b> (it will retry). Tap it to see when the server last confirmed your data and to sync right away.",
+"On supported browsers (for example Chrome on Android) the installed app also uses Background Sync, so a sync can start as soon as the internet returns even if the app is in the background.",
+"Background sync is not guaranteed. If you force-stop the app or your phone restricts background work, the sync waits and runs automatically the next time you open the app. Nothing is lost, and the server never counts the same round twice.",
+"Guests have nothing to sync, so the icon is shown only for logged-in accounts."
+])+sec("🏅 Points &amp; Ranks",[
 "<b>Points</b> are the marks you score in normal quiz rounds. They are added up for all your rounds. Daily Challenge rounds and coins do not count toward points or ranks.",
 "There are 6 ranks: Rookie, Challenger, Advanced, Expert, Master and Quiz Legend. To unlock a rank you need <b>all three</b>: the minimum accuracy, the minimum number of rounds and the minimum points.",
 "<b>Rookie:</b> 0% accuracy, 10 rounds, 100 points. <b>Challenger:</b> 40%, 20 rounds, 300 points. <b>Advanced:</b> 60%, 30 rounds, 600 points. <b>Expert:</b> 75%, 50 rounds, 1,200 points. <b>Master:</b> 85%, 100 rounds, 2,500 points. <b>Quiz Legend:</b> 95%, 200 rounds, 5,000 points.",
@@ -132,10 +139,10 @@ function build(m){
  return shuf(out);
 }
 function home(){if(!BOOTED){BOOTED=1;return welcome()}stopT();dcLeave();
- app.innerHTML=`<div class="hm"><div class="hm-in"><div class="hm-bar"><div class="hm-brand"><span class="hm-bl">🎯</span><b>Quiz Arena</b></div><div class="hm-right">${coinPill()}<button id="mn" class="hm-chip hm-menu" aria-label="Menu">☰</button></div></div><div class="hm-hero2"><div class="hm-hl">Ready to Prove Yourself?</div><p class="hm-sub">Play smart. Build your streak. Earn your glory.</p></div>${dcCard()}<div class="hm-label">Choose a category</div><div class="hm-grid">`+
+ app.innerHTML=`<div class="hm"><div class="hm-in"><div class="hm-bar"><div class="hm-brand"><span class="hm-bl">🎯</span><b>Quiz Arena</b></div><div class="hm-right">${syBtn()}${coinPill()}<button id="mn" class="hm-chip hm-menu" aria-label="Menu">☰</button></div></div><div class="hm-hero2"><div class="hm-hl">Ready to Prove Yourself?</div><p class="hm-sub">Play smart. Build your streak. Earn your glory.</p></div>${dcCard()}<div class="hm-label">Choose a category</div><div class="hm-grid">`+
  Object.keys(BANK).map(k=>{const nm=BANK[k].name,e=nm.match(/^(\p{Extended_Pictographic}\S*)\s+(.+)$/u);return`<button class="hm-card" data-m="${k}"><span class="hm-ic">${e?e[1]:"📚"}</span><span class="hm-tx"><b>${e?e[2]:nm}</b><small>${BANK[k].q.length} questions</small></span><span class="hm-go">›</span></button>`}).join("")+`</div></div></div>`;
  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>selMode(b.dataset.m));
- $("#mn").onclick=openMenu;dcWire();
+ $("#mn").onclick=openMenu;dcWire();syWire();
  app.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{setQN(+b.dataset.n);LW("qn",QN);home()});
  $(".hm-in").insertAdjacentHTML("beforeend",`<div class="ver">${VER?"Version "+VER:""}</div>`);
 }
@@ -389,7 +396,9 @@ function dcEnd(){
  dcResScr();
  if(u)dcSubmit();
 }
-async function dcClaim(){
+let dcCl=null;
+const dcClaim=()=>dcCl||(dcCl=dcClaim0().finally(()=>{dcCl=null})); // ek waqt par ek hi claim (sync aur result screen dono bula sakte hain)
+async function dcClaim0(){
  const a=LS("auth",null),p=LS("dcpend",null);
  if(!a||!a.user||!p||p.u!==a.user.id)return null;
  const r=await authedApi("/daily/claim",{day:p.day,r:p.r,w:p.w,deviceId:devId()});
@@ -542,8 +551,78 @@ function nsSwitch(to){
 let syncT=null,syncBusy=false;
 function syncSoon(){if(LS("auth_mode","")!=="account")return;clearTimeout(syncT);syncT=setTimeout(syncNow,1500)}
 addEventListener("online",syncSoon);
+// ---- Step 5: Auto-sync (online / app reopen / retry / Background Sync) + Sync status icon ----
+// Server har event ko uske id se ek hi baar lagata hai (rounds + coin_ledger), isliye dobara bhejna duplicate nahi banata.
+let syErr="",syN=0,syTm=null;
+const SY_T={synced:["Synced","All your data is saved on the server."],syncing:["Syncing…","Sending your data to the server."],pending:["Pending","Waiting to sync with the server."],failed:["Sync failed","Could not sync. It will retry automatically."]};
+const SY_SVG='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M18.5 2v4h-4"/><path d="M5.5 22v-4h4"/></svg>';
+const syAcc=()=>{const a=LS("auth",null);return LS("auth_mode","")==="account"&&a&&a.user?a.user.id:null};
+function syInfo(){
+ const u=syAcc();if(!u)return null;
+ const ob=LS("outbox",[]).length,dp=dcPend()?1:0,pend=ob+dp,c=LS("syncst",null),conf=c&&c.u===u?c.t:0,on=navigator.onLine;
+ const st=syncBusy?"syncing":pend>0?(syErr&&on?"failed":"pending"):syErr&&on?"failed":conf?"synced":"pending";
+ return{st,ob,dp,pend,conf,on};
+}
+const syAgo=t=>{if(!t)return"Not yet";const m=Math.floor((Date.now()-t)/6e4);return m<1?"Just now":m<60?m+" min ago":m<1440?Math.floor(m/60)+" h ago":new Date(t).toLocaleDateString("en-GB",{day:"2-digit",month:"short"})};
+const syBtn=()=>syAcc()?'<button id="sy" type="button" class="hm-chip hm-sync sy-pending" aria-label="Sync status"><span class="sy-ic">'+SY_SVG+'</span><i class="sy-n"></i></button>':"";
+function syPaint(){
+ const i=syInfo(),b=$("#sy");
+ if(b&&i){b.className="hm-chip hm-sync sy-"+i.st;const n=b.querySelector(".sy-n");if(n)n.textContent=i.pend>0&&i.st!=="syncing"?(i.pend>9?"9+":String(i.pend)):"";const t="Sync: "+SY_T[i.st][0]+(i.pend>0?" ("+i.pend+" waiting)":"");b.title=t;b.setAttribute("aria-label",t)}
+ syPanel(i);
+}
+function syPanel(i){
+ const b=$("#syb");if(!b)return;
+ if(!i)i=syInfo();
+ if(!i){b.textContent="Sync is only for logged-in accounts.";return}
+ const T=SY_T[i.st],row=(a,v)=>'<div class="ma-row"><span>'+a+'</span><b>'+v+'</b></div>',w=[];
+ if(i.ob)w.push(i.ob+(i.ob>1?" rounds":" round"));if(i.dp)w.push("Daily Challenge reward");
+ const k=[i.st,i.ob,i.dp,i.conf?syAgo(i.conf):"",i.on,syErr].join("|");
+ if(b.dataset.k===k)return;b.dataset.k=k;
+ b.innerHTML='<div class="sy-hd sy-'+i.st+'"><span class="sy-ic">'+SY_SVG+'</span><div><b>'+T[0]+'</b><small>'+T[1]+'</small></div></div><div class="ma-sec">'+row("Server confirmed",syAgo(i.conf))+row("Waiting to sync",w.length?w.join(" + "):"Nothing")+row("Connection",i.on?"Online":"Offline")+'</div><p class="sy-er" id="syer"></p><button class="sm-go" id="syg"'+(i.st==="syncing"||!i.on?' disabled':'')+'>'+(i.st==="syncing"?"Syncing…":i.on?"Sync Now":"Waiting for internet")+'</button>';
+ $("#syer").textContent=i.st==="failed"?syErr:"";
+ $("#syg").onclick=()=>syncNow();
+}
+function syOpen(){
+ if($("#sypn"))return;
+ const ov=document.createElement("div");ov.className="ov rtm";ov.id="sypn";
+ ov.innerHTML='<div class="rtm-box"><div class="rtm-h"><h2>🔄 Sync Status</h2><button class="hm-chip" id="syx">Close</button></div><div id="syb"></div></div>';
+ document.body.appendChild(ov);
+ const cl=()=>ov.remove();$("#syx").onclick=cl;ov.onclick=e=>{if(e.target===ov)cl()};
+ syPanel();if(navigator.onLine)syncNow(); // panel khulte hi server se confirm karwate hain
+}
+function syWire(){const b=$("#sy");if(!b)return;b.onclick=syOpen;syPaint()}
+// Background Sync API (jahan supported): internet aate hi SW app ko jagata hai. Na mile to online / resume / retry kaam karte hain.
+let syRegT=0;
+// Sirf offline + pending par register (online hone par SW jagata hai). Fail hone par dobara register nahi karte, warna sync-event ka loop ban sakta hai.
+function syReg(){try{if(Date.now()-syRegT<3e4)return;syRegT=Date.now();if("serviceWorker"in navigator&&"SyncManager"in window)navigator.serviceWorker.ready.then(r=>r.sync&&r.sync.register("qa-sync")).catch(()=>{})}catch(e){}}
+function syOk(){const u=syAcc();if(u)LW("syncst",{u,t:Date.now()});syErr="";syN=0;clearTimeout(syTm)}
+function syDone(){
+ syPaint();clearTimeout(syTm);
+ if(!syAcc())return;
+ if(syErr)syTm=setTimeout(syncNow,[5,15,30,60,120,300][Math.min(syN++,5)]*1000);
+ else if(syPend()>0&&!navigator.onLine)syReg();
+}
+const syPend=()=>LS("outbox",[]).length+(dcPend()?1:0);
+// Pending Daily Challenge reward bhi sync ke saath (server ek din = ek reward, to dobara bhejna safe hai)
+async function syDaily(){
+ if(!dcPend())return;
+ const c=await dcClaim();if(!c)return;
+ if(c.ok){dcPaint();dcDraw()}else if(c.status!==409&&c.status!==400)syErr=authMsg(c)||"Daily Challenge reward not saved";
+}
+function syResume(){if(!syAcc())return;syPaint();if(!navigator.onLine||syncBusy)return;const i=syInfo();if(i&&(i.pend>0||i.st!=="synced"||Date.now()-i.conf>3e5))syncSoon()}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")syResume()});
+addEventListener("pageshow",e=>{if(e.persisted)syResume()});
+addEventListener("offline",syPaint);
+addEventListener("online",syPaint);
+setInterval(syPaint,5000);
+async function syBg(){
+ let ok=true;
+ try{await syncNow();for(let k=0;k<100&&syncBusy;k++)await new Promise(r=>setTimeout(r,300));const i=syInfo();ok=!i||(i.pend===0&&!syErr)}catch(e){ok=false}
+ try{const c=navigator.serviceWorker.controller;if(c)c.postMessage({type:"qa-sync-done",ok})}catch(e){}
+}
+if("serviceWorker"in navigator)navigator.serviceWorker.addEventListener("message",e=>{if(e.data&&e.data.type==="qa-sync")syBg()});
 // end() se call hota hai; koi bhi error quiz ko nahi todta
-const evAdd=(m,n,r,w,s)=>{try{if(LS("auth_mode","")!=="account")return;const o=LS("outbox",[]);const id=uuid();o.push({id,m,n,r,w,s,t:Date.now()});LW("outbox",o);syncSoon();return id}catch(e){}};
+const evAdd=(m,n,r,w,s)=>{try{if(LS("auth_mode","")!=="account")return;const o=LS("outbox",[]);const id=uuid();o.push({id,m,n,r,w,s,t:Date.now()});LW("outbox",o);syncSoon();syPaint();if(!navigator.onLine)syReg();return id}catch(e){}};
 async function authedApi(path,body){
  let a=LS("auth",null);if(!a)return{ok:false,status:0,data:{}};
  if(a.exp-Date.now()<60000){if(!(await sessionRefresh()))return{ok:false,status:0,data:{}};a=LS("auth",null);if(!a)return{ok:false,status:0,data:{}}}
@@ -581,18 +660,18 @@ function applySnap(d){
 }
 async function syncNow(){
  if(syncBusy||LS("auth_mode","")!=="account"||!navigator.onLine)return;
- syncBusy=true;const ns=LS("stats_ns","guest");
+ syncBusy=true;syErr="";syPaint();const ns=LS("stats_ns","guest");
  try{
   for(let i=0;i<10;i++){
    const sent=LS("outbox",[]).slice(0,20),bl=guestBaseline();
    const r=await authedApi("/sync",{deviceId:devId(),events:sent,baseline:bl||undefined});
-   if(!r.ok||LS("stats_ns","guest")!==ns)break;
+   if(!r.ok||LS("stats_ns","guest")!==ns){if(!r.ok)syErr=authMsg(r);break}
    const ids=new Set(sent.map(e=>e.id)),rest=LS("outbox",[]).filter(e=>!ids.has(e.id));
    LW("outbox",rest);coinCredits(r.data);
    if(bl&&typeof r.data.baselineApplied==="boolean"){LW("bl_done",1);LW("bl_go","");if(!r.data.baselineApplied)alert("These guest stats could not be transferred (already transferred from this device).")}
-   if(!rest.length){applySnap(r.data);prgRefresh();break}
+   if(!rest.length){applySnap(r.data);prgRefresh();syOk();break}
   }
- }catch(e){}finally{syncBusy=false;if(statsWait&&$(".st"))stats(statsTab)}
+ if(!syErr)await syDaily();}catch(e){syErr=syErr||"Sync failed"}finally{syncBusy=false;syDone();if(statsWait&&$(".st"))stats(statsTab)}
 }
 const sumRounds=S=>Object.keys(S||{}).reduce((t,k)=>t+((S[k]&&S[k].r)|0),0);
 // Login/signup ke baad: agar user "Transfer guest stats" se aaya tha to confirm popup

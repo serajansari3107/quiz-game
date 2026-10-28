@@ -89,6 +89,7 @@ quiz-game/
 - **Coins:** account walon ko milte hain (neeche detail)
 - **Daily Challenge:** roz 10 mixed sawal, IST raat 12:00 baje naya. Account ko din mein ek baar reward (neeche detail)
 - **Points & Ranks:** 6 ranks, teeno conditions zaroori (accuracy + rounds + points). Result screen par 3 progress meters (neeche detail)
+- **Auto Sync:** online aate hi, app reopen par aur Background Sync se pending data khud sync hota hai. Home par green Sync icon (neeche detail)
 - Guest mode, Login, Signup, Forgot Password (recovery code se)
 - My Account: naam/username, password change, naya recovery code, logout
 - Guest stats ko account mein ek baar transfer karna
@@ -108,6 +109,18 @@ quiz-game/
 - `/sync` ke jawab mein `coins: { balance, today, cap, credits }` aata hai. `credits` mein har round ka exact credit hota hai.
 - **Offline:** result par turant estimate (`+N`) dikhta hai aur coins udte hain. Round outbox mein save rehta hai, Home pill par chhota dot dikhta hai. Net aate hi auto-sync hota hai aur server ka balance final hota hai. Cap ki wajah se farak aaye to card par "Adjusted" likha aata hai.
 - Local `coins` aur `cpend` keys sirf dikhane ke liye hain. Inhe edit karne se server ka balance nahi badalta.
+
+---
+
+## Auto Sync
+
+- Sirf logged-in account ke liye. Guest ke paas sync karne ko kuch nahi, isliye icon bhi nahi.
+- Pending cheezein: `outbox` ke round events (stats, points, coins, history) aur Daily Challenge ka `dcpend` reward.
+- Triggers: `online` event, app reopen / resume (pending ho ya last confirm 5 min se purana), fail par retry (5s, 15s, 30s, 1m, 2m, phir 5m), aur Background Sync (`sw.js`, tag `qa-sync`).
+- **Background Sync ki limit:** SW localStorage nahi padh sakta aur refresh token rotate hota hai (reuse par poori family revoke), isliye SW khud sync/refresh nahi karta. Wo khule ya background window ko `postMessage` se jagata hai aur sync wahi chalta hai. Window na ho to SW fail karta hai (browser retry karega) aur app kholne par automatic sync hota hai. Force-stop ya OS restriction mein sync delay hota hai.
+- Duplicate safety: server har event ko `id` se ek hi baar lagata hai (`rounds` insert + `coin_ledger.event_id UNIQUE`), Daily Challenge `PRIMARY KEY (user_id, day)` se. Client mein ek waqt par ek hi `syncNow` aur ek hi Daily claim chalta hai. Backend mein koi change nahi.
+- Icon states: **Synced** (server ne confirm kiya, outbox khaali), **Syncing**, **Pending** (waiting, count badge), **Failed** (retry hoga). Icon dabane par panel khulta hai: last server confirmation, waiting items, online/offline, aur Sync Now.
+- Local keys: `syncst` (last server confirmation, per user). Ye sirf dikhane ke liye hai, isse sync ya coins par koi asar nahi.
 
 ---
 

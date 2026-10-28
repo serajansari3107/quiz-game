@@ -34,3 +34,19 @@ self.addEventListener("fetch",e=>{
   catch(err){return new Response("Offline",{status:503})}
  })());
 });
+// Background Sync: internet aate hi browser ye event deta hai. Sync app ke window mein hi chalta hai (login token aur outbox wahin hain);
+// window na mile to fail karte hain taaki browser baad mein dobara try kare. App kholne par automatic sync waise bhi chalta hai.
+self.addEventListener("sync",e=>{
+ if(e.tag!=="qa-sync")return;
+ e.waitUntil((async()=>{
+  const cs=await self.clients.matchAll({type:"window",includeUncontrolled:true});
+  if(!cs.length)throw new Error("no-window");
+  const ok=await new Promise(res=>{
+   const t=setTimeout(()=>{self.removeEventListener("message",h);res(false)},25000);
+   function h(m){if(m.data&&m.data.type==="qa-sync-done"){clearTimeout(t);self.removeEventListener("message",h);res(!!m.data.ok)}}
+   self.addEventListener("message",h);
+   cs.forEach(c=>c.postMessage({type:"qa-sync"}));
+  });
+  if(!ok)throw new Error("sync-incomplete");
+ })());
+});

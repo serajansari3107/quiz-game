@@ -292,3 +292,12 @@ html[data-theme="light"] .pg-n span{color:#6D28D9}
 html[data-theme="light"] .pg-bar{background:#EDE9FE}
 html[data-theme="light"] .pg-rq span{color:#6D28D9}
 html[data-theme="light"] .pg-rq span.ok{color:#15803D;background:rgba(47,211,124,.15)}
+/* ---- Sync status icon (Step 5) ---- */
+html[data-theme="light"] .hm .hm-sync{color:#15803D;background:linear-gradient(160deg,rgba(34,197,94,.2),#FFFFFF);border-color:rgba(34,197,94,.6);box-shadow:0 4px 14px rgba(34,197,94,.18)}
+html[data-theme="light"] .hm .hm-sync.sy-pending{color:#B45309;background:linear-gradient(160deg,rgba(251,191,36,.22),#FFFFFF);border-color:rgba(245,158,11,.6)}
+html[data-theme="light"] .hm .hm-sync.sy-failed{color:#B91C1C;background:linear-gradient(160deg,rgba(248,113,113,.2),#FFFFFF);border-color:rgba(239,68,68,.55)}
+html[data-theme="light"] .sy-hd b{color:#312E81}
+html[data-theme="light"] .sy-hd small{color:#6B67A8}
+html[data-theme="light"] .sy-hd .sy-ic{color:#15803D}
+html[data-theme="light"] .sy-hd.sy-pending .sy-ic{color:#B45309}
+html[data-theme="light"] .sy-hd.sy-failed .sy-ic,html[data-theme="light"] .sy-er{color:#B91C1C}

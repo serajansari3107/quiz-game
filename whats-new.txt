@@ -3,8 +3,12 @@ window.WN_TXT=(function(){/*
 New:
 + Points & Ranks: every rank now needs minimum accuracy, minimum rounds and minimum points.
 + Result screen now shows 3 progress cards: Points Progress, All-Time Rank and a Quiz Rank for the category you just played.
++ Auto Sync: your rounds, points, coins and history now sync automatically as soon as the internet is back, and again every time you reopen the app.
++ New green Sync icon on the Home screen shows Synced, Syncing, Pending or Failed. Tap it to see when the server last confirmed your data.
++ Background Sync on supported browsers (like Chrome on Android) starts the sync when the internet returns, even if the app is in the background.
 Improved:
 + The Rating Criteria popup now shows the minimum points for each rank.
++ If a sync fails, the app retries by itself. A saved Daily Challenge reward is now claimed automatically too.
 
 ## v2.2 | 27 Oct 2026
 New:
