@@ -60,7 +60,7 @@ const SFX={
 };
 function openMenu(){
  const ov=document.createElement("div");ov.className="ov";
- ov.innerHTML='<div class="panel mnu-d"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="mnu-i" id="m1"><span class="mnu-ic">📊</span><span class="mnu-t"><b>Stats</b><small>Summary & History</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m2"><span class="mnu-ic">⚙️</span><span class="mnu-t"><b>Settings</b><small>Sound & Vibration</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m3"><span class="mnu-ic">👤</span><span class="mnu-t"><b>My Account</b><small>Profile, Password & Logout</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m6"><span class="mnu-ic">🆕</span><span class="mnu-t"><b>What’s New</b><small>Latest updates'+(VER?' · v'+VER:'')+'</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m4"><span class="mnu-ic">ℹ️</span><span class="mnu-t"><b>About</b><small>How it works & question counts</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m5">'+thHtml()+'</button></div>';
+ ov.innerHTML='<div class="panel mnu-d"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="mnu-i" id="m1"><span class="mnu-ic">📊</span><span class="mnu-t"><b>Stats</b><small>Summary & History</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m2"><span class="mnu-ic">⚙️</span><span class="mnu-t"><b>Settings</b><small>Sound & Vibration</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m3"><span class="mnu-ic">👤</span><span class="mnu-t"><b>My Account</b><small>Profile, Password & Logout</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m7"><span class="mnu-ic">🏆</span><span class="mnu-t"><b>Achievements</b><small>Trophies & Milestones</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m6"><span class="mnu-ic">🆕</span><span class="mnu-t"><b>What’s New</b><small>Latest updates'+(VER?' · v'+VER:'')+'</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m4"><span class="mnu-ic">ℹ️</span><span class="mnu-t"><b>About</b><small>How it works & question counts</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m5">'+thHtml()+'</button></div>';
  document.body.appendChild(ov);
  ov.querySelector(".x").onclick=()=>ov.remove();
  ov.className="ov mnu";ov.onclick=e=>{if(e.target===ov)ov.remove()};
@@ -69,6 +69,7 @@ function openMenu(){
  ov.querySelector("#m3").onclick=()=>{ov.remove();accountScr()};
  ov.querySelector("#m4").onclick=()=>{ov.remove();aboutScr()};
  ov.querySelector("#m6").onclick=()=>{ov.remove();openWN()};
+ ov.querySelector("#m7").onclick=()=>{ov.remove();achScr()};
  ov.querySelector("#m5").onclick=function(){setTheme(THEME==="light"?"dark":"light");this.innerHTML=thHtml()};
 }
 const toMenu=()=>{home();openMenu()};
@@ -113,6 +114,7 @@ function aboutScr(){
 ])+sec("👤 Guest &amp; Account",["<b>Guest:</b> play without an account. Your stats are saved only on this device.","<b>Account:</b> create an account with your full name, a username and a password. Your stats are saved to your account and appear on any device where you log in.","On one device, the guest and every account keep their stats separately.","If you play without internet, your rounds are synced to your account when you are online again.","You can transfer your guest stats to your account <b>one time per device</b>. The app asks for your confirmation first.","Your old guest stats are never deleted by logging in.","Only logged-in accounts earn coins (see the Coins section). A guest sees a small hint to log in on the result screen."])
  +sec("🔐 My Account &amp; Security",["Open <b>Menu → My Account</b> after login to see your details.","<b>Change Password:</b> enter your current password and a new one. You will stay logged in on this device, and your other devices are logged out.","<b>Recovery Code:</b> a secret code that lets you reset your password if you forget it. Keep it safe.","<b>Generate New Recovery Code:</b> needs your password. The old code stops working, and the new code is shown only once, so copy it with the 📋 button.","<b>Forgot Password:</b> use your username, your recovery code and a new password.","Passwords are stored in a protected (hashed) form, never as plain text. For this reason, the app can never show your current password or your old recovery code."])
  +sec("⚙️ Settings",["Open <b>Menu → Settings</b> to turn <b>Sound</b> and <b>Vibration</b> ON or OFF.","Open <b>Menu → Switch Theme</b> to change between the <b>Dark Theme</b> and the <b>Light Theme</b> (Soft Lavender). Your choice is saved on your device."])
+ +sec("🏆 Achievements",["Open <b>Menu → Achievements</b> to see all 20 trophies. Unlocked ones are shown first, and locked ones show how close you are.","Achievements unlock from your rounds: rounds played, correct answers, perfect rounds, accuracy, points, quiz categories, Daily Challenge, daily streaks and your rank.","When you unlock something, a celebration appears after the round. If you also reach a new rank, the rank-up comes next, and then your result.","You can close a celebration with <b>Continue</b>, <b>Skip all</b> or the Esc key. Each trophy unlocks only once.","Achievements work offline. For existing players, trophies you already earned are unlocked from your saved stats without a celebration.","Streaks, Comeback Player and Daily Challenge Completed count from the day you start using this update, and they are saved on this device."])
  +sec("🆕 Updates",["Open <b>Menu → What’s New</b> to see the latest features, fixes and the app version.","After an update, a popup shows only the new changes. If <b>Update now</b> cannot finish (for example because of a weak internet connection), the button changes to <b>Try again</b> and your data stays safe."])
  +sec("🌐 Internet &amp; Offline",["Quizzes, stats and settings work without internet.","After the first successful online open, the app is saved on your device. Later you can open it and play Cricket, WWE and Grammar quizzes without internet, even after closing and reopening the app. Your offline rounds stay safely on the device until they sync.","Internet is needed to install the app the first time and to get app updates. An update is downloaded fully first, and the old working version stays untouched until the new one is ready.","Internet is needed only for sign up, login, password changes, syncing your stats and coins, and the Daily Challenge for accounts."])
  +sec("💡 Tips",["Save <b>Swap</b> and <b>50-50</b> for hard questions.","Read the explanation after every answer. It helps you remember, especially in the Grammar Quiz.","Watch the timer. Time-up costs a life, just like a wrong answer.","Play perfect rounds for bonus coins, but remember the daily limit of 500."])
@@ -193,13 +195,13 @@ function pick(b,d){stopT();
  nx.onclick=()=>{i++;(wrong>=MAXW||i>=qs.length)?end():show()};
  nx.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
-function end(){stopT();if(DC)return dcEnd();wrong>=MAXW?SFX.over():SFX.win();
+function end(){stopT();if(DC)return dcEnd();wrong>=MAXW?SFX.over():SFX.win();const aPre=achPre();
  const p=Math.round(score/MAX*100);
  {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,n:QN,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));{const S=LS("sum",{}),sk=mode+"_"+QN,a=S[sk]||{r:0,q:0,c:0,w:0,p:0};a.r++;a.q+=right+wrong;a.c+=right;a.w+=wrong;a.p+=score;a.f=(a.f||0)+(right===QN?1:0);S[sk]=a;LW("sum",S)}upStr(mode,QN,right===QN);const bk=bestKey(mode,QN);if(score>LS(bk,0))LW(bk,score)}const eid=evAdd(mode,QN,right,wrong,score),est=coinEst(QN,right);if(eid){coinPendAdd(eid,est);syncNow()}
  app.innerHTML=`<div class="rs"><div class="rs-in"><h1>${wrong>=MAXW?"Game Over 💀":"Round khatam!"}</h1><div class="rs-hero"><div class="rs-score">${score}<small>/${MAX}</small></div><div class="rs-bar"><i style="width:${Math.min(100,p)}%"></i></div><div class="rs-pc">${p}% marks</div></div><div class="rs-grid"><div class="rs-c"><small>Accuracy</small><b>${right+wrong?Math.round(right/(right+wrong)*100):0}%</b></div><div class="rs-c"><small>Points</small><b>${score}</b></div><div class="rs-c ok"><small>Correct</small><b>${right}/${QN}</b></div><div class="rs-c bad"><small>Wrong</small><b>${wrong}</b></div></div>
  ${coinCard(eid,est)}<div class="rs-msg">${p<=20?"Don't give up, keep practicing! 💪":p<50?"Not bad, you can do better! 🙂":p<=70?"Good job, nice effort! 👍":p<=90?"Great work, almost there! 🔥":p<100?"Excellent! So close to perfect! 🏆":"PERFECT 100! You are a legend! 👑"}</div><br>
  ${prgHTML(mode)}<button class="rs-b1" id="again">New Round (New questions)</button><button class="rs-b2" id="hm">Home</button></div></div>`;
- $("#again").onclick=()=>start(mode);prgAnim();$("#hm").onclick=()=>{const f=coinFlyStart();home();coinFlyRun(f)};
+ $("#again").onclick=()=>start(mode);prgAnim();achShowRound(aPre);$("#hm").onclick=()=>{const f=coinFlyStart();home();coinFlyRun(f)};
 }
 
 function openRT(){
@@ -243,6 +245,92 @@ function prgInner(m){
 function prgHTML(m){prgMode=m;prgLast=prgInner(m);return'<div class="pg-w" id="prg">'+prgLast+'</div>'}
 function prgAnim(){setTimeout(()=>document.querySelectorAll("#prg .pg-bar i").forEach(i=>{i.style.width=i.dataset.w+"%"}),80)}
 function prgRefresh(){try{const e=$("#prg");if(!e||!prgMode)return;const h=prgInner(prgMode);if(h===prgLast)return;prgLast=h;e.innerHTML=h;prgAnim()}catch(x){}}
+// ---- Step 4B: Achievements & Trophies ----
+// Zyada tar achievements stats ("sum", best score) se nikalte hain: purane users ke liye bhi sahi calculate hote hain aur sync ke baad dobara sahi ho jaate hain.
+// Streak, Comeback aur Daily Challenge ka purana record kahin save nahi tha, isliye wo sirf aaj ke baad ke khel se ban-te hain (fake progress nahi).
+const achFmt=n=>coinFmt(Math.round(n*10)/10);
+const achP=(v,t,u)=>[Math.min(1,v/t),achFmt(Math.min(v,t))+" / "+achFmt(t)+(u?" "+u:"")];
+const achR1=x=>Math.round(x*10)/10;
+const achAcc=(X,qm,am)=>[(Math.min(1,X.all.q/qm)+Math.min(1,X.all.ac/am))/2,"Accuracy "+achR1(X.all.ac)+"% / "+am+"% · "+Math.min(X.all.q,qm)+" / "+qm+" questions"];
+const achCat=m=>X=>{const s=X.cats[m]||{r:0,ac:0};return[(Math.min(1,s.r/10)+Math.min(1,s.ac/75))/2,Math.min(s.r,10)+" / 10 rounds · accuracy "+achR1(s.ac)+"% / 75%"]};
+function achVictory(){try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k||k.indexOf("best_")!==0)continue;const m=k.match(/^best_(.+?)(?:_(5|10|20))?$/);if(!m)continue;const n=+(m[2]||20),mx=MODES[n]&&MODES[n].max,v=+JSON.parse(localStorage.getItem(k));if(mx&&v>=mx*.6)return true}}catch(e){}return false}
+const ACH=[
+ {id:"win",ic:"🥇",t:"First Victory",d:"Score 60% or more marks in a round.",fl:1,g:X=>[X.win?1:0,"Score 60%+ in any round"]},
+ {id:"perf1",ic:"💯",t:"First Perfect Round",d:"Answer every question correctly in one round.",fl:1,g:X=>[X.f>=1?1:0,"Get every answer right in a round"]},
+ {id:"r10",ic:"🎯",t:"10 Rounds Completed",d:"Complete 10 rounds in any quiz.",g:X=>achP(X.all.r,10,"rounds")},
+ {id:"r25",ic:"🔥",t:"25 Rounds Completed",d:"Complete 25 rounds in any quiz.",g:X=>achP(X.all.r,25,"rounds")},
+ {id:"r50",ic:"🏅",t:"50 Rounds Completed",d:"Complete 50 rounds in any quiz.",g:X=>achP(X.all.r,50,"rounds")},
+ {id:"c100",ic:"✅",t:"100 Correct Answers",d:"Give 100 correct answers in total.",g:X=>achP(X.all.c,100,"correct")},
+ {id:"c500",ic:"🧠",t:"500 Correct Answers",d:"Give 500 correct answers in total.",g:X=>achP(X.all.c,500,"correct")},
+ {id:"perf5",ic:"⭐",t:"5 Perfect Rounds",d:"Finish 5 rounds with every answer correct.",g:X=>achP(X.f,5,"perfect")},
+ {id:"acc90",ic:"🎖️",t:"90% Accuracy",d:"Keep 90% accuracy or more over at least 100 questions.",g:X=>achAcc(X,100,90)},
+ {id:"acc95",ic:"🏹",t:"95% Accuracy",d:"Keep 95% accuracy or more over at least 200 questions.",g:X=>achAcc(X,200,95)},
+ {id:"cric",ic:"🏏",t:"Cricket Specialist",d:"Play 10 Cricket rounds with 75% accuracy or more.",g:achCat("cricket")},
+ {id:"wwe",ic:"🤼",t:"WWE Specialist",d:"Play 10 WWE rounds with 75% accuracy or more.",g:achCat("wwe")},
+ {id:"gram",ic:"📝",t:"Grammar Master",d:"Play 10 Grammar rounds with 75% accuracy or more.",g:achCat("grammar")},
+ {id:"allr",ic:"🌟",t:"All-Rounder",d:"Play at least 3 rounds in every quiz category.",g:X=>{const k=Object.keys(X.cats);return[k.length?k.reduce((s,m)=>s+Math.min(1,X.cats[m].r/3),0)/k.length:0,"Rounds per quiz: "+k.map(m=>Math.min(X.cats[m].r,3)+"/3").join(" · ")]}},
+ {id:"daily",ic:"📅",t:"Daily Challenge Completed",d:"Complete one Daily Challenge.",fl:1,g:X=>[X.A.dc?1:0,"Finish today's Daily Challenge"]},
+ {id:"back",ic:"🔁",t:"Comeback Player",d:"Play a round after being away for 7 days or more.",fl:1,g:X=>[X.A.cb?1:0,"Come back after 7+ days away"]},
+ {id:"s7",ic:"🔥",t:"7-Day Streak",d:"Play on 7 days in a row.",g:X=>achP((X.A.sk&&X.A.sk.b)|0,7,"days")},
+ {id:"s30",ic:"🌋",t:"30-Day Streak",d:"Play on 30 days in a row.",g:X=>achP((X.A.sk&&X.A.sk.b)|0,30,"days")},
+ {id:"p1k",ic:"💎",t:"1,000 Lifetime Points",d:"Earn 1,000 points in total.",g:X=>achP(X.all.p,1000,"points")},
+ {id:"leg",ic:"👑",t:"Quiz Legend",d:"Reach the Quiz Legend rank.",g:X=>{const L=RATINGS[0],p=(Math.min(1,X.all.p/L[3])+Math.min(1,X.all.r/L[2])+Math.min(1,X.all.ac/L[1]))/3;return[p,Math.floor(p*100)+"% of the way to Quiz Legend"]}}
+];
+const achGet=()=>{const A=LS("ach",null);return A&&typeof A==="object"&&!Array.isArray(A)?A:{}};
+function achCtx(A){const S=LS("sum",{}),all=rkStat(),cats={};Object.keys(BANK).forEach(m=>{cats[m]=rkStat(m)});return{A,all,cats,win:achVictory(),f:Object.keys(S).reduce((t,k)=>t+((S[k]&&S[k].f)|0),0)}}
+// Naye unlock hue achievements ki list deta hai. Har id sirf ek baar likhi jaati hai (silent=1: purane stats se, celebration ke bina).
+function achCheck(silent){const A=achGet();A.u=A.u&&typeof A.u==="object"?A.u:{};const X=achCtx(A),nw=[];ACH.forEach(a=>{if(A.u[a.id])return;if(a.g(X)[0]>=1){A.u[a.id]=silent?1:Date.now();nw.push(a)}});if(nw.length)LW("ach",A);return nw}
+const achCatch=()=>{try{achCheck(1)}catch(e){}};
+const achDay=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+// Round / Daily Challenge ke baad: day streak aur comeback (7+ din ka gap) record karta hai.
+function achEvt(A){const now=Date.now(),td=new Date(),t=achDay(td),k=A.sk&&typeof A.sk==="object"?A.sk:{l:"",c:0,b:0};
+ if(A.lp&&now>A.lp&&now-A.lp>=7*864e5)A.cb=1;
+ if(!k.l||t>k.l){const y=new Date(td);y.setDate(y.getDate()-1);k.c=(k.l&&achDay(y)===k.l)?(k.c|0)+1:1;k.l=t}
+ k.b=Math.max(k.b|0,k.c|0);A.sk=k;A.lp=Math.max(A.lp||0,now)}
+const rkIdx=st=>RATINGS.findIndex(x=>rkOk(x,st.ac,st.r,st.p));
+const rkUp=(o,n)=>n>=0&&(o<0||n<o);
+function achPre(){achCatch();try{return{a:rkIdx(rkStat()),c:rkIdx(rkStat(mode)),m:mode}}catch(e){return null}}
+function achShowRound(pre){try{
+ const A=achGet();achEvt(A);LW("ach",A);
+ const it=achCheck().map(a=>({k:"a",a}));
+ if(pre){const sp=(i,sc)=>{const r=RATINGS[i],m=r[0].match(/^(\S+)\s+(.+)$/);it.push({k:"r",ic:m?m[1]:"🏆",name:m?m[2]:r[0],scope:sc})};
+  const na=rkIdx(rkStat()),nc=rkIdx(rkStat(pre.m)),nm=BANK[pre.m]?BANK[pre.m].name.replace(/^\S+\s/,""):pre.m;
+  if(rkUp(pre.a,na))sp(na,"All-Time Rank");if(rkUp(pre.c,nc))sp(nc,nm+" Rank")}
+ achCelebrate(it)}catch(e){}}
+function achDC(){try{const A=achGet();A.dc=1;achEvt(A);LW("ach",A);achCelebrate(achCheck().map(a=>({k:"a",a})))}catch(e){}}
+function prgReplay(){document.querySelectorAll("#prg .pg-bar i").forEach(i=>{i.style.transition="none";i.style.width="0";void i.offsetWidth;i.style.transition=""});prgAnim()}
+// Celebration: pehle achievements, phir rank-up; ek-ek karke. Tap se "Next"/"Continue", "Skip all" ya Esc se band. Animation sirf ek-do baar chalti hai.
+function achCelebrate(items){
+ if(!items||!items.length)return;
+ const ov=document.createElement("div");ov.className="ach-cel";ov.setAttribute("role","dialog");ov.setAttribute("aria-modal","true");
+ let i=0;const kd=e=>{if(e.key==="Escape")fin()};
+ const fin=()=>{document.removeEventListener("keydown",kd);ov.remove();try{prgReplay()}catch(e){}};
+ const paint=()=>{
+  const it=items[i],rk=it.k==="r",last=i===items.length-1;
+  const cf=["#8b5cf6","#ec4899","#fbbf24","#4d9bff","#34d399"].map((c,j)=>[0,1,2].map(q=>'<s style="left:'+(4+(j*3+q)*6.4)+'%;animation-delay:'+((j+q)%5*.12)+'s;background:'+c+'"></s>').join("")).join("");
+  ov.innerHTML='<div class="ach-conf" aria-hidden="true">'+cf+'</div><div class="ach-cd'+(rk?" rk":"")+'"><div class="ach-kick">'+(rk?"RANK UP":"ACHIEVEMENT UNLOCKED")+'</div><div class="ach-bg"><span class="ach-ring"></span><span class="ach-em"></span></div><h2 class="ach-ct"></h2><p class="ach-cs"></p>'+(items.length>1?'<div class="ach-cn">'+(i+1)+' of '+items.length+'</div>':'')+'<button class="ach-go" id="acn" type="button">'+(last?"Continue":"Next")+'</button>'+(last?'':'<button class="ach-sk" id="acs" type="button">Skip all</button>')+'</div>';
+  ov.querySelector(".ach-em").textContent=rk?it.ic:it.a.ic;
+  ov.querySelector(".ach-ct").textContent=rk?it.name:it.a.t;
+  ov.querySelector(".ach-cs").textContent=rk?"You reached "+it.name+" in "+it.scope+".":it.a.d;
+  ov.querySelector("#acn").onclick=()=>{if(last)fin();else{i++;paint()}};
+  const s=ov.querySelector("#acs");if(s)s.onclick=fin;
+  try{SFX.ok();vib(rk?[40,30,40]:40)}catch(e){}
+  ov.querySelector("#acn").focus();
+ };
+ document.body.appendChild(ov);document.addEventListener("keydown",kd);paint();
+}
+function achScr(){
+ achCatch();const A=achGet(),U=A.u||{},X=achCtx(A),on=[],off=[];
+ ACH.forEach(a=>(U[a.id]?on:off).push(a));
+ const dt=t=>t>1e6?new Date(t).toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}):"";
+ const card=(a,u)=>{const g=a.g(X),p=Math.floor(Math.min(1,g[0])*100);return'<div class="ac-c'+(u?" on":"")+'"><span class="ac-ic">'+(u?a.ic:"🔒")+'</span><div class="ac-t"><b>'+a.t+'</b><p>'+a.d+'</p>'+(u?'<div class="ac-st">✓ Unlocked'+(dt(U[a.id])?" · "+dt(U[a.id]):"")+'</div>':(a.fl?'<div class="ac-st">'+g[1]+'</div>':'<div class="pg-bar"><i style="width:'+p+'%"></i></div><div class="ac-st">'+g[1]+'</div>'))+'</div></div>'};
+ const pc=Math.round(on.length/ACH.length*100);
+ app.innerHTML='<div class="se"><div class="se-in ac-in"><div class="st-bar"><button class="hm-chip" id="sb">← Back</button><span class="sm-cat">🏆 Achievements</span></div><div class="ac-sum"><b>'+on.length+' / '+ACH.length+'</b><span>unlocked</span><div class="pg-bar"><i style="width:'+pc+'%"></i></div></div>'
+  +(on.length?'<h3 class="ac-h">Unlocked ('+on.length+')</h3><div class="ac-l">'+on.map(a=>card(a,1)).join("")+'</div>':'')
+  +(off.length?'<h3 class="ac-h">Locked ('+off.length+')</h3><div class="ac-l">'+off.map(a=>card(a,0)).join("")+'</div>':'')+'</div></div>';
+ $("#sb").onclick=toMenu;
+}
+setTimeout(achCatch,2500);
 let sumQ="all",sumN="all";
 const bfStr=()=>{const H=LS("hist",[]).slice().reverse(),P={};["all"].concat(Object.keys(BANK)).forEach(q=>["all","5","10","20"].forEach(n=>{let c=0,b=0;H.forEach(x=>{const xn=x.n||20;if((q==="all"||x.m===q)&&(n==="all"||String(xn)===n)){if(x.r===xn){c++;if(c>b)b=c}else c=0}});P[q+"_"+n]={c,b}}));return P};
 const upStr=(m,n,p)=>{let P=LS("pstr",null);if(!P){LW("pstr",bfStr());return}[["all","all"],[m,"all"],["all",""+n],[m,""+n]].forEach(k=>{const e=k.join("_"),o=P[e]||{c:0,b:0};o.c=p?o.c+1:0;if(o.c>o.b)o.b=o.c;P[e]=o});LW("pstr",P)};
@@ -401,6 +489,7 @@ function dcEnd(){
  dcRs={o,u,ph:u?"saving":"guest",aw:0};
  dcResScr();
  if(u)dcSubmit();
+ achDC();
 }
 let dcCl=null;
 const dcClaim=()=>dcCl||(dcCl=dcClaim0().finally(()=>{dcCl=null})); // ek waqt par ek hi claim (sync aur result screen dono bula sakte hain)
@@ -545,7 +634,7 @@ const uuid=()=>(self.crypto&&crypto.randomUUID)?crypto.randomUUID():"xxxxxxxx-xx
 function nsSwitch(to){
  const from=LS("stats_ns","guest");if(from===to)return;
  try{
-  const ks=["hist","sum","pstr","outbox"];
+  const ks=["hist","sum","pstr","outbox","ach"];
   for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf("best_")===0)ks.push(k)}
   ks.forEach(k=>{const v=localStorage.getItem(k);if(v!==null)localStorage.setItem("ns:"+from+":"+k,v);localStorage.removeItem(k)});
   const pre="ns:"+to+":",mv=[];
@@ -675,7 +764,7 @@ async function syncNow(){
    const ids=new Set(sent.map(e=>e.id)),rest=LS("outbox",[]).filter(e=>!ids.has(e.id));
    LW("outbox",rest);coinCredits(r.data);
    if(bl&&typeof r.data.baselineApplied==="boolean"){LW("bl_done",1);LW("bl_go","");if(!r.data.baselineApplied)alert("These guest stats could not be transferred (already transferred from this device).")}
-   if(!rest.length){applySnap(r.data);prgRefresh();syOk();break}
+   if(!rest.length){applySnap(r.data);achCatch();prgRefresh();syOk();break}
   }
  if(!syErr)await syDaily();}catch(e){syErr=syErr||"Sync failed"}finally{syncBusy=false;syDone();if(statsWait&&$(".st"))stats(statsTab)}
 }

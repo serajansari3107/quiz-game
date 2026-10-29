@@ -301,3 +301,12 @@ html[data-theme="light"] .sy-hd small{color:#6B67A8}
 html[data-theme="light"] .sy-hd .sy-ic{color:#15803D}
 html[data-theme="light"] .sy-hd.sy-pending .sy-ic{color:#B45309}
 html[data-theme="light"] .sy-hd.sy-failed .sy-ic,html[data-theme="light"] .sy-er{color:#B91C1C}
+html[data-theme="light"] .ac-sum{background:linear-gradient(160deg,rgba(139,92,246,.14),#FFFFFF 72%);border:1px solid #DDD6FE}
+html[data-theme="light"] .ac-sum b,html[data-theme="light"] .ac-t b{color:#312E81}
+html[data-theme="light"] .ac-sum span,html[data-theme="light"] .ac-st{color:#6D28D9}
+html[data-theme="light"] .ac-h,html[data-theme="light"] .ac-t p{color:#6B67A8}
+html[data-theme="light"] .ac-c{background:#FFFFFF;border:1px solid #DDD6FE}
+html[data-theme="light"] .ac-c.on{background:linear-gradient(160deg,rgba(139,92,246,.12),#FFFFFF 72%);border-color:#C4B5FD}
+html[data-theme="light"] .ac-c:not(.on) .ac-ic{background:#EDE9FE;border-color:#DDD6FE}
+html[data-theme="light"] .ac-c.on .ac-st{color:#15803D}
+html[data-theme="light"] .ac-sum .pg-bar,html[data-theme="light"] .ac-t .pg-bar{background:#EDE9FE}

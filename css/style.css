@@ -475,3 +475,42 @@ body:not(:has(.hm)) .inst,body:has(.ov) .inst{display:none}
 #sypn .sm-go{margin-top:14px}
 @media (max-width:360px){.hm .hm-sync{width:40px;height:40px;min-height:40px}}
 @media (prefers-reduced-motion:reduce){.hm-sync.sy-syncing .sy-ic svg,.sy-hd.sy-syncing .sy-ic svg{animation:none}}
+/* Step 4B: Achievements & Trophies */
+.ac-in{max-width:520px;margin:0 auto}
+.ac-sum{margin-top:18px;padding:16px;border-radius:20px;background:linear-gradient(160deg,rgba(139,92,246,.2),#17171c 72%);border:1px solid rgba(139,92,246,.4)}
+.ac-sum b{font-size:26px;font-weight:800;color:#fff}
+.ac-sum span{font-size:13px;font-weight:700;color:#c4b5fd;margin-left:6px}
+.ac-h{margin:22px 2px 10px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9a9aa8}
+.ac-l{display:flex;flex-direction:column;gap:10px}
+.ac-c{display:flex;gap:12px;align-items:flex-start;min-width:0;padding:13px 14px;border-radius:18px;background:#17171c;border:1px solid #2a2a33}
+.ac-c.on{background:linear-gradient(160deg,rgba(139,92,246,.18),#17171c 72%);border-color:rgba(139,92,246,.5);box-shadow:0 8px 22px rgba(139,92,246,.12)}
+.ac-ic{flex:none;width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:23px;background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.35)}
+.ac-c:not(.on) .ac-ic{background:#1f1f26;border-color:#2f2f3a;opacity:.7}
+.ac-t{flex:1;min-width:0}
+.ac-t b{display:block;font-size:15px;font-weight:800;color:#f2f2f7;overflow-wrap:anywhere}
+.ac-t p{margin:2px 0 0;font-size:12.5px;line-height:1.4;color:#9a9aa8;overflow-wrap:anywhere}
+.ac-st{margin-top:8px;font-size:12px;font-weight:700;color:#c4b5fd;overflow-wrap:anywhere}
+.ac-c.on .ac-st{color:#34d399}
+.ac-t .pg-bar{height:7px;margin-top:8px}
+.ac-sum .pg-bar{margin-top:12px}
+.ach-cel{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;background:radial-gradient(120% 70% at 50% 30%,rgba(139,92,246,.35),transparent 70%),rgba(8,6,16,.96);animation:achFade .25s both}
+.ach-conf{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.ach-conf s{position:absolute;top:-16px;width:8px;height:14px;border-radius:2px;opacity:0;animation:achFall 1.9s ease-in forwards}
+.ach-cd{position:relative;width:100%;max-width:340px;box-sizing:border-box;text-align:center;padding:24px 20px 20px;border-radius:26px;background:linear-gradient(160deg,rgba(139,92,246,.28),#17171c 70%);border:1px solid rgba(139,92,246,.55);box-shadow:0 20px 60px rgba(139,92,246,.35);animation:achPop .55s cubic-bezier(.2,1.3,.4,1) both}
+.ach-kick{font-size:12px;font-weight:800;letter-spacing:.14em;color:#c4b5fd}
+.ach-cd.rk .ach-kick{color:#fbbf24}
+.ach-bg{position:relative;width:104px;height:104px;margin:18px auto 14px;display:flex;align-items:center;justify-content:center}
+.ach-em{position:relative;width:88px;height:88px;border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:44px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);box-shadow:0 10px 30px rgba(139,92,246,.55);animation:achBadge .7s .15s cubic-bezier(.2,1.4,.4,1) both}
+.ach-cd.rk .ach-em{background:linear-gradient(135deg,#f59e0b,#ec4899)}
+.ach-ring{position:absolute;inset:0;border-radius:32px;border:2px solid rgba(196,181,253,.7);opacity:0;animation:achRing 1.2s .3s ease-out 2}
+.ach-ct{margin:0 0 6px;font-size:22px;font-weight:800;color:#fff;overflow-wrap:anywhere}
+.ach-cs{margin:0 0 14px;font-size:14px;line-height:1.45;color:#cfcfe0;overflow-wrap:anywhere}
+.ach-cn{margin-bottom:12px;font-size:12px;font-weight:700;color:#9a9aa8}
+.ach-go{display:block;width:100%;min-height:48px;border:0;border-radius:16px;padding:14px;font-family:inherit;font-size:16px;font-weight:800;color:#fff;cursor:pointer;background:linear-gradient(135deg,#8b5cf6,#6d28d9);box-shadow:0 8px 22px rgba(139,92,246,.4)}
+.ach-sk{display:block;width:100%;min-height:44px;margin-top:6px;border:0;background:none;font-family:inherit;font-size:14px;font-weight:600;color:#9a9aa8;cursor:pointer}
+.ach-go:focus-visible,.ach-sk:focus-visible{outline:2px solid #c4b5fd;outline-offset:2px}
+@keyframes achFade{from{opacity:0}}
+@keyframes achPop{from{opacity:0;transform:scale(.85) translateY(14px)}}
+@keyframes achBadge{0%{transform:scale(.3) rotate(-14deg);opacity:0}100%{transform:none;opacity:1}}
+@keyframes achRing{0%{transform:scale(.8);opacity:.9}100%{transform:scale(1.5);opacity:0}}
+@keyframes achFall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(540deg);opacity:0}}

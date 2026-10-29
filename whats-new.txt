@@ -1,4 +1,11 @@
 window.WN_TXT=(function(){/*
+## v2.4 | 29 Oct 2026
+New:
++ Achievements & Trophies: 20 trophies to unlock (open Menu → Achievements).
++ Unlock celebration after a round, followed by a rank-up animation when you reach a new rank.
+Improved:
++ Trophies you already earned from your saved stats unlock automatically, without a celebration.
+
 ## v2.3 | 28 Oct 2026
 New:
 + Points & Ranks: every rank now needs minimum accuracy, minimum rounds and minimum points.

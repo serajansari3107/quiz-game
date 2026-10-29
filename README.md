@@ -110,6 +110,16 @@ quiz-game/
 - Agar cache bilkul na mile aur net bhi na ho, to chhota "Open the app once with internet" page dikhta hai.
 - Daily Challenge: guest offline khel sakta hai; account ko start/claim ke liye net chahiye (pehle jaisa).
 
+## Achievements & Trophies (Step 4B)
+
+- Menu → **Achievements**: 20 trophies, upar Unlocked aur neeche Locked. Locked par progress bar ya hint dikhta hai. Home par koi extra card nahi.
+- Zyada tar trophies `sum` (rounds, sahi jawab, perfect rounds, accuracy, points, category) aur `best_*` scores se nikalte hain, isliye purane users ke liye bhi sahi calculate hote hain aur sync ke baad dobara sahi ho jaate hain. Purane stats se mile trophies chupchap (celebration ke bina) unlock hote hain.
+- Streak, Comeback Player aur Daily Challenge Completed ka purana record kahin save nahi tha, isliye ye sirf update ke baad ke khel se banta hai. Ye `localStorage` key `ach` mein, is device par save hota hai (account sync ke saath nahi jaata).
+- `ach` = `{u:{id:time}, sk:{l,c,b}, lp, cb, dc}`. Har id sirf ek baar likhi jaati hai, isliye dobara sync ya dobara check par repeat nahi hota. `ach` ko namespace switch (guest/account) mein `nsSwitch` ke saath rakha gaya hai.
+- Round khatam hone par result screen pehle ki tarah banti hai, uske upar celebration aati hai: pehle naye achievements (ek-ek karke), phir rank-up (All-Time, phir us quiz ka), uske baad result dikhta hai. Continue / Next / Skip all / Esc se band hota hai. Animation sirf 1-2 baar chalti hai.
+- Daily Challenge poora hone par "Daily Challenge Completed" ki celebration aati hai. Daily Challenge Stats/History mein pehle ki tarah nahi judta.
+- Backend, Neon SQL aur `sw.js` mein koi change nahi.
+
 ## Coins
 
 - Har sahi jawab = **1 coin**. Perfect round (saare sawal sahi) par bonus: 5Q = **5**, 10Q = **10**, 20Q = **20**.
