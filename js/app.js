@@ -97,8 +97,8 @@ function aboutScr(){
 "Guests have nothing to sync, so the icon is shown only for logged-in accounts."
 ])+sec("🏅 Points &amp; Ranks",[
 "<b>Points</b> are the marks you score in normal quiz rounds. They are added up for all your rounds. Daily Challenge rounds and coins do not count toward points or ranks.",
-"There are 6 ranks: Rookie, Challenger, Advanced, Expert, Master and Quiz Legend. To unlock a rank you need <b>all three</b>: the minimum accuracy, the minimum number of rounds and the minimum points.",
-"<b>Rookie:</b> 0% accuracy, 10 rounds, 100 points. <b>Challenger:</b> 40%, 20 rounds, 300 points. <b>Advanced:</b> 60%, 30 rounds, 600 points. <b>Expert:</b> 75%, 50 rounds, 1,200 points. <b>Master:</b> 85%, 100 rounds, 2,500 points. <b>Quiz Legend:</b> 95%, 200 rounds, 5,000 points.",
+"There are 7 ranks: Rookie, Challenger, Advanced, Expert, Master, Quiz Legend and Quiz Conqueror. To unlock a rank you need <b>all three</b>: the minimum accuracy, the minimum number of rounds and the minimum points.",
+"<b>Rookie:</b> 0% accuracy, 10 rounds, 100 points. <b>Challenger:</b> 40%, 20 rounds, 300 points. <b>Advanced:</b> 60%, 30 rounds, 600 points. <b>Expert:</b> 75%, 50 rounds, 1,200 points. <b>Master:</b> 85%, 100 rounds, 2,500 points. <b>Quiz Legend:</b> 95%, 200 rounds, 5,000 points. <b>Quiz Conqueror:</b> 95%, 500 rounds, 10,000 points.",
 "After every round, the result screen shows 3 progress cards: <b>Points Progress</b> (your total points and the next points milestone), <b>All-Time Rank</b> (your overall progress to the next rank) and a <b>Quiz Rank</b> for the category you just played (only that category’s points, accuracy and rounds).",
 "The rank progress bar is the average of your points, rounds and accuracy progress. It reaches 100% only when all three conditions are complete.",
 "Your rank in <b>Menu → Stats → Summary</b> uses the same rules and follows the category and quiz size filters you choose there."
@@ -228,7 +228,7 @@ function rkCard(ic,ti,sub,bd,mid,pct,ft){
 }
 function rkRank(ic,ti,sub,st){
  const R=RATINGS,ci=R.findIndex(x=>rkOk(x,st.ac,st.r,st.p)),cur=ci<0?"Unranked":rkName(R[ci]);
- if(ci===0)return rkCard(ic,ti,sub+" · "+cur,"👑 Max Rank",'<div class="pg-n"><b>100%</b></div>',100,'<div class="pg-x">Maximum Rank Reached</div>');
+ if(ci===0)return rkCard(ic,ti,sub+" · "+cur,"🔱 Max Rank",'<div class="pg-n"><b>100%</b></div>',100,'<div class="pg-x">Maximum Rank Reached</div>');
  const n=R[ci<0?R.length-1:ci-1],ok=[st.p>=n[3],st.r>=n[2],st.ac>=n[1]],
   f=[Math.min(1,st.p/n[3]),Math.min(1,st.r/n[2]),n[1]?Math.min(1,st.ac/n[1]):1],
   pct=Math.min(99,Math.floor(f.reduce((s,x)=>s+x,0)/3*100)),
@@ -274,7 +274,7 @@ const ACH=[
  {id:"s7",ic:"🔥",t:"7-Day Streak",d:"Play on 7 days in a row.",g:X=>achP((X.A.sk&&X.A.sk.b)|0,7,"days")},
  {id:"s30",ic:"🌋",t:"30-Day Streak",d:"Play on 30 days in a row.",g:X=>achP((X.A.sk&&X.A.sk.b)|0,30,"days")},
  {id:"p1k",ic:"💎",t:"1,000 Lifetime Points",d:"Earn 1,000 points in total.",g:X=>achP(X.all.p,1000,"points")},
- {id:"leg",ic:"👑",t:"Quiz Legend",d:"Reach the Quiz Legend rank.",g:X=>{const L=RATINGS[0],p=(Math.min(1,X.all.p/L[3])+Math.min(1,X.all.r/L[2])+Math.min(1,X.all.ac/L[1]))/3;return[p,Math.floor(p*100)+"% of the way to Quiz Legend"]}}
+ {id:"leg",ic:"👑",t:"Quiz Legend",d:"Reach the Quiz Legend rank.",g:X=>{const L=RATINGS.find(t=>t[0].indexOf("Quiz Legend")>-1),p=(Math.min(1,X.all.p/L[3])+Math.min(1,X.all.r/L[2])+Math.min(1,X.all.ac/L[1]))/3;return[p,Math.floor(p*100)+"% of the way to Quiz Legend"]}}
 ];
 const achGet=()=>{const A=LS("ach",null);return A&&typeof A==="object"&&!Array.isArray(A)?A:{}};
 function achCtx(A){const S=LS("sum",{}),all=rkStat(),cats={};Object.keys(BANK).forEach(m=>{cats[m]=rkStat(m)});return{A,all,cats,win:achVictory(),f:Object.keys(S).reduce((t,k)=>t+((S[k]&&S[k].f)|0),0)}}
@@ -334,7 +334,7 @@ setTimeout(achCatch,2500);
 let sumQ="all",sumN="all";
 const bfStr=()=>{const H=LS("hist",[]).slice().reverse(),P={};["all"].concat(Object.keys(BANK)).forEach(q=>["all","5","10","20"].forEach(n=>{let c=0,b=0;H.forEach(x=>{const xn=x.n||20;if((q==="all"||x.m===q)&&(n==="all"||String(xn)===n)){if(x.r===xn){c++;if(c>b)b=c}else c=0}});P[q+"_"+n]={c,b}}));return P};
 const upStr=(m,n,p)=>{let P=LS("pstr",null);if(!P){LW("pstr",bfStr());return}[["all","all"],[m,"all"],["all",""+n],[m,""+n]].forEach(k=>{const e=k.join("_"),o=P[e]||{c:0,b:0};o.c=p?o.c+1:0;if(o.c>o.b)o.b=o.c;P[e]=o});LW("pstr",P)};
-const RATINGS=[["👑 Quiz Legend",95,200,5000],["🏆 Master",85,100,2500],["🎖️ Expert",75,50,1200],["⭐ Advanced",60,30,600],["⚔️ Challenger",40,20,300],["🌱 Rookie",0,10,100]]; // [name, min accuracy %, min rounds, min points]
+const RATINGS=[["🔱 Quiz Conqueror",95,500,10000],["👑 Quiz Legend",95,200,5000],["🏆 Master",85,100,2500],["🎖️ Expert",75,50,1200],["⭐ Advanced",60,30,600],["⚔️ Challenger",40,20,300],["🌱 Rookie",0,10,100]]; // [name, min accuracy %, min rounds, min points]
 const getRating=(ac,r,p)=>{p=p||0;const a=RATINGS.find(t=>rkOk(t,ac,r,p)),n=RATINGS.find(t=>ac>=t[1]);if(a===n)return[a?a[0]:"🔒 Unranked",""];const need=[];if(r<n[2])need.push((n[2]-r)+" more rounds");if(p<n[3])need.push(rkFmt(n[3]-p)+" more points");return[a?a[0]:"🔒 Unranked",need.join(" and ")+" needed for "+rkName(n)]};
 const rateRow=(ac,r,p)=>{const g=getRating(ac,r,p);return `<div class="card hrow st-rate" id="rtc"><span>Quiz Arena Rating ⓘ</span><b>${g[0]}</b>${g[1]?`<small>${g[1]}</small>`:""}</div>`};
 function sumHTML(){

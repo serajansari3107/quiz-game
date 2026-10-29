@@ -291,6 +291,7 @@ body{position:relative}
 .rtm-t td:first-child{color:#f2f2f7}
 .rtm-t tr:last-child td{border-bottom:0}
 .rtm-n{margin:14px 2px 0;color:#9a9aa8;font-size:13px;line-height:1.5;text-align:center}
+@media (max-width:420px){.rtm-t th{padding:12px 8px;font-size:9.5px;letter-spacing:.05em}.rtm-t td{padding:13px 8px;font-size:13px}}
 @media (max-width:360px){.ov.rtm{padding:10px}.rtm-box{padding:14px}.rtm-h h2{font-size:17px}.rtm-t th{padding:10px 6px;font-size:9.5px;letter-spacing:.05em}.rtm-t td{padding:11px 6px;font-size:13px}}
 /* ===== Menu drawer & Settings ===== */
 .ov.mnu{background:rgba(6,6,10,.72);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);padding:0;overflow:hidden}
