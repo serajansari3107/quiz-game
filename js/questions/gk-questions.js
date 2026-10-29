@@ -1,0 +1,29 @@
+// 🌍 GK Quiz — format: [question, correct, [3 wrong], detail, level e/m/h]
+window.QUIZ_DATA=window.QUIZ_DATA||{};
+QUIZ_DATA.gk={name:"🌍 GK Quiz",q:[
+  ["Bharat ki rajdhani kya hai?","New Delhi",["Mumbai","Kolkata","Chennai"],"Bharat ki rajdhani New Delhi hai. Yahin Rashtrapati Bhavan aur Sansad Bhavan hain.","e"],
+  ["Bharat ka rashtriya pashu kaun sa hai?","Bengal Tiger (Baagh)",["Sher (Lion)","Haathi","Gaindaa"],"Bharat ka rashtriya pashu Bengal Tiger (Baagh) hai.","e"],
+  ["Bharat ka rashtriya pakshi kaun sa hai?","Mor (Peacock)",["Tota","Kabootar","Koyal"],"Mor (Peacock) ko Bharat ka rashtriya pakshi 1963 mein ghoshit kiya gaya tha.","e"],
+  ["Taj Mahal kis shehar mein hai?","Agra",["Delhi","Jaipur","Lucknow"],"Taj Mahal Agra mein Yamuna nadi ke kinare hai. Ise Shah Jahan ne Mumtaz Mahal ki yaad mein banwaya tha.","e"],
+  ["Bharat ka Swatantrata Diwas (Independence Day) kis tarikh ko manaya jata hai?","15 August",["26 January","2 October","14 November"],"Bharat 15 August 1947 ko azaad hua tha, isliye har saal 15 August ko Swatantrata Diwas manaya jata hai.","e"],
+  ["Paani ka rasayanik formula (chemical formula) kya hai?","H2O",["CO2","O2","NaCl"],"Paani ke ek anu (molecule) mein hydrogen ke 2 aur oxygen ka 1 atom hota hai, isliye formula H2O hai.","e"],
+  ["Azaad Bharat ke pehle Pradhan Mantri kaun the?","Jawaharlal Nehru",["Sardar Patel","Mahatma Gandhi","Dr. Rajendra Prasad"],"Jawaharlal Nehru Azaad Bharat ke pehle Pradhan Mantri bane.","e"],
+  ["Duniya ka sabse bada mahasagar (ocean) kaun sa hai?","Prashant Mahasagar (Pacific)",["Atlantic Mahasagar","Hind Mahasagar","Arctic Mahasagar"],"Pacific (Prashant) Mahasagar duniya ka sabse bada aur sabse gehra mahasagar hai.","e"],
+  ["Mahabharat ke rachyita kise mana jata hai?","Ved Vyas",["Valmiki","Tulsidas","Kalidas"],"Mahabharat Ved Vyas ne rachi mani jaati hai. Ramayan ke rachyita Valmiki hain.","e"],
+  ["Bharat ke Samvidhan ki Drafting Committee ke Chairman kaun the?","Dr. B. R. Ambedkar",["Mahatma Gandhi","Jawaharlal Nehru","Sardar Patel"],"Dr. B. R. Ambedkar Drafting Committee ke Chairman the, isliye unhe Samvidhan ka mukhya shilpkar kaha jata hai.","m"],
+  ["Africa mein behne wali kaun si nadi aksar duniya ki sabse lambi nadi maani jaati hai?","Nile",["Amazon","Congo","Zambezi"],"Nile (Neel) nadi lagbhag 6,650 km lambi hai aur aam taur par duniya ki sabse lambi nadi maani jaati hai.","m"],
+  ["Area ke hisaab se Bharat ka sabse bada rajya kaun sa hai?","Rajasthan",["Madhya Pradesh","Maharashtra","Uttar Pradesh"],"Rajasthan area mein Bharat ka sabse bada rajya hai. Population mein sabse bada rajya Uttar Pradesh hai.","m"],
+  ["Photosynthesis ke dauran paudhe hawa se kaun si gas lete hain?","Carbon dioxide",["Oxygen","Nitrogen","Hydrogen"],"Paudhe sunlight ki madad se carbon dioxide aur paani se khana (glucose) banate hain aur oxygen chhodte hain.","m"],
+  ["Bharat ke 'Lauh Purush' (Iron Man) kise kaha jata hai?","Sardar Vallabhbhai Patel",["Subhas Chandra Bose","Lal Bahadur Shastri","Bhagat Singh"],"Sardar Patel ne 500 se zyada riyasaton ko Bharat mein milaya, isliye unhe Lauh Purush kaha jata hai.","m"],
+  ["Chandrayaan-3 ka lander Chand ke kis hisse ke paas utra tha?","Dakshini dhruv (South Pole) ke paas",["Uttari dhruv (North Pole) ke paas","Chand ke beech (equator) mein","Chand ke us hisse mein jo Dharti se kabhi nahi dikhta"],"Chandrayaan-3 ne 23 August 2023 ko Chand ke dakshini dhruv ke paas safe landing ki. Bharat aisa karne wala pehla desh bana.","m"],
+  ["Rabindranath Tagore ko kis rachna ke liye Nobel Puraskar mila tha?","Gitanjali",["Godan","Anandamath","Madhushala"],"Tagore ko 1913 mein 'Gitanjali' ke liye Literature ka Nobel Puraskar mila. Wo ye puraskar jeetne wale pehle Asian the.","m"],
+  ["Ek vayask (adult) insaan ke sharir mein kitni haddiyan (bones) hoti hain?","206",["106","256","306"],"Bachhe ke sharir mein lagbhag 300 haddiyan hoti hain, jo badi hone par jud kar 206 reh jaati hain.","m"],
+  ["Azaad Bharat ke pehle Rashtrapati kaun the?","Dr. Rajendra Prasad",["Dr. S. Radhakrishnan","Dr. Zakir Husain","Jawaharlal Nehru"],"Dr. Rajendra Prasad 1950 mein Bharat ke pehle Rashtrapati bane aur lagbhag 12 saal is pad par rahe.","m"],
+  ["Plassey ki ladai kis saal hui thi?","1757",["1707","1764","1857"],"Plassey ki ladai 1757 mein Robert Clive aur Nawab Siraj-ud-Daulah ke beech hui. Isse Bengal mein British raj ki neev padi.","h"],
+  ["Bharat ka Samvidhan kis tarikh ko lagu hua tha?","26 January 1950",["15 August 1947","26 November 1949","2 October 1950"],"Samvidhan 26 November 1949 ko apnaya gaya tha, lekin 26 January 1950 ko lagu hua. Isi din Ganatantra Diwas manaya jata hai.","h"],
+  ["Periodic table mein Sone (Gold) ka symbol kya hai?","Au",["Ag","Go","Gd"],"Gold ka symbol Au Latin shabd 'Aurum' se aaya hai. Ag Silver ka symbol hai.","h"],
+  ["Rakesh Sharma antariksh mein jane wale pehle Bharatiya kis saal gaye the?","1984",["1975","1992","1998"],"Rakesh Sharma April 1984 mein Soviet mission ke saath antariksh mein gaye the.","h"],
+  ["Mahatma Gandhi ki Dandi March (Namak Satyagraha) kis saal shuru hui thi?","1930",["1919","1920","1942"],"Dandi March 12 March 1930 ko Sabarmati Ashram se shuru hui thi, namak kanoon todne ke liye.","h"],
+  ["'Vande Mataram' geet ke rachyita kaun hain?","Bankim Chandra Chattopadhyay",["Rabindranath Tagore","Muhammad Iqbal","Subramania Bharati"],"Vande Mataram Bankim Chandra Chattopadhyay ke upanyas 'Anandamath' mein shaamil tha.","h"],
+  ["Bharat ka pehla satellite 'Aryabhata' kis saal chhoda gaya tha?","1975",["1969","1980","1984"],"Aryabhata 19 April 1975 ko launch hua tha. Ye Bharat ka pehla satellite tha.","h"]
+]};

@@ -1,0 +1,29 @@
+// 📖 Word Quiz — English word ka Hinglish meaning. Format: [question, correct, [3 wrong], detail, level e/m/h]
+window.QUIZ_DATA=window.QUIZ_DATA||{};
+QUIZ_DATA.word={name:"📖 Word Quiz",q:[
+  ["'Happy' ka matlab kya hai?","Khush",["Udaas","Gussa","Thaka hua"],"Happy = Khush. Example: She is happy today.","e"],
+  ["'Brave' ka matlab kya hai?","Bahadur",["Dara hua","Aalsi","Lalchi"],"Brave = Bahadur. Example: The brave soldier saved many lives.","e"],
+  ["'Quick' ka matlab kya hai?","Tez",["Dheema","Bhaari","Naram"],"Quick = Tez. Example: He gave a quick answer.","e"],
+  ["'Silent' ka matlab kya hai?","Chup (khamosh)",["Shor machane wala","Tez daudne wala","Mazedaar"],"Silent = Chup ya khamosh. Example: Please stay silent in the library.","e"],
+  ["'Gift' ka matlab kya hai?","Tohfa",["Karz","Saza","Chori"],"Gift = Tohfa. Example: She gave me a gift on my birthday.","e"],
+  ["'Angry' ka matlab kya hai?","Gussa (naraz)",["Khush","Dara hua","Bhookha"],"Angry = Gussa. Example: He was angry about the delay.","e"],
+  ["'Begin' ka matlab kya hai?","Shuru karna",["Khatam karna","Rokna","Bhoolna"],"Begin = Shuru karna. Example: Let us begin the lesson.","e"],
+  ["'Ancient' ka matlab kya hai?","Prachin (bahut purana)",["Naya","Aadhunik","Chhota"],"Ancient = Prachin. Example: India has many ancient temples.","e"],
+  ["'Honest' ka matlab kya hai?","Imandar",["Beimaan","Chaalak","Sust"],"Honest = Imandar. Example: An honest person always tells the truth.","e"],
+  ["'Generous' ka matlab kya hai?","Udaar (dil kholkar dene wala)",["Kanjoos","Ghamandi","Dar-pok"],"Generous = Udaar. Example: He is generous and often helps the poor.","m"],
+  ["'Reluctant' ka matlab kya hai?","Anichhuk (mann na hona)",["Utsuk","Taiyaar","Khush"],"Reluctant = Anichhuk. Example: She was reluctant to speak in public.","m"],
+  ["'Fragile' ka matlab kya hai?","Nazuk (aasani se tootne wala)",["Majboot","Bhaari","Chamakdaar"],"Fragile = Nazuk. Example: Handle the glass with care, it is fragile.","m"],
+  ["'Abundant' ka matlab kya hai?","Prachur (bahut zyada)",["Kam","Nakli","Purana"],"Abundant = Prachur. Example: The region has abundant water.","m"],
+  ["'Hesitate' ka matlab kya hai?","Jhijhakna",["Daud lagana","Chillana","Jeetna"],"Hesitate = Jhijhakna. Example: Do not hesitate to ask a question.","m"],
+  ["'Obstacle' ka matlab kya hai?","Rukavat",["Madad","Inaam","Raasta"],"Obstacle = Rukavat. Example: Fear is the biggest obstacle to success.","m"],
+  ["'Humble' ka matlab kya hai?","Vinamr (namra)",["Ghamandi","Gussail","Chaalak"],"Humble = Vinamr. Example: Despite his fame, he stayed humble.","m"],
+  ["'Postpone' ka matlab kya hai?","Aage taalna (sthagit karna)",["Jaldi karna","Dohrana","Khareedna"],"Postpone = Aage taalna. Example: The match was postponed due to rain.","m"],
+  ["'Vacant' ka matlab kya hai?","Khaali",["Bhara hua","Ganda","Mehenga"],"Vacant = Khaali. Example: There is a vacant seat in the front row.","m"],
+  ["'Ephemeral' ka matlab kya hai?","Kshanik (thodi der ka)",["Amar","Bahut bada","Gussail"],"Ephemeral = Kshanik. Example: The beauty of a rainbow is ephemeral.","h"],
+  ["'Meticulous' ka matlab kya hai?","Bahut dhyan se, bareeki se kaam karne wala",["Laaparwah","Jaldbaaz","Daravna"],"Meticulous = Har chhoti baat par dhyan dene wala. Example: She is meticulous about her notes.","h"],
+  ["'Candid' ka matlab kya hai?","Saaf-saaf bolne wala (khula aur imandar)",["Chhupa hua","Jhootha","Sharmila"],"Candid = Saaf aur seedha bolne wala. Example: He gave a candid opinion.","h"],
+  ["'Benevolent' ka matlab kya hai?","Dayalu (doosron ka bhala chahne wala)",["Krur","Lalchi","Aalsi"],"Benevolent = Dayalu. Example: A benevolent king helped his people.","h"],
+  ["'Ambiguous' ka matlab kya hai?","Aspasht (jiske do arth nikal sakein)",["Bilkul saaf","Mazedaar","Khatarnak"],"Ambiguous = Aspasht ya dohre arth wala. Example: His answer was ambiguous.","h"],
+  ["'Frugal' ka matlab kya hai?","Kifayati (soch-samajh kar kharch karne wala)",["Fizool-kharch","Ameer","Bimar"],"Frugal = Kifayati. Example: She is frugal and saves money every month.","h"],
+  ["'Eloquent' ka matlab kya hai?","Prabhavshali dhang se bolne wala",["Haklaane wala","Hamesha chup rehne wala","Gussail"],"Eloquent = Vaak-patu, achhe se bolne wala. Example: She gave an eloquent speech.","h"]
+]};

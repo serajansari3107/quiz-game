@@ -1,6 +1,6 @@
 # Quiz Arena
 
-Ek offline-first quiz game (PWA). Topics: **Cricket**, **WWE** aur **Grammar** (Hinglish sawal, English options).
+Ek offline-first quiz game (PWA). Topics: **Cricket**, **WWE**, **Grammar** (Hinglish sawal, English options), **GK** (Hinglish sawal) aur **Word Quiz** (English word, 4 Hinglish meaning options).
 Phone/desktop par install ho sakta hai, bina internet ke bhi chalta hai.
 Account banao to stats aur coins kisi bhi device par sync hote hain.
 
@@ -40,7 +40,9 @@ quiz-game/
 │   └── questions/
 │       ├── cricket-questions.js   Cricket ke sawal
 │       ├── wwe-questions.js       WWE ke sawal
-│       └── grammar-questions.js   Grammar ke sawal
+│       ├── grammar-questions.js   Grammar ke sawal
+│       ├── gk-questions.js        GK ke sawal
+│       └── word-questions.js      Word Quiz ke sawal
 ├── assets/               PWA icons: qa-icon-192/512, qa-icon-maskable-512, qa-apple-180
 └── backend/              Server (Render par deploy hota hai)
     ├── package.json
@@ -81,7 +83,7 @@ quiz-game/
 
 ## Features
 
-- Cricket, WWE aur Grammar quiz (5 / 10 / 20 questions ke modes)
+- Cricket, WWE, Grammar, GK aur Word quiz (5 / 10 / 20 questions ke modes)
 - Score, accuracy, timer, 3 lives, lifelines (Swap, 50-50, Skip), history (last 10), best scores, perfect streak
 - **Home screen:** top bar mein logo + coin balance + Menu, "Ready to Prove Yourself?" hero, 2-column category cards
 - **Menu:** Stats, Settings, My Account, What's New, About, Switch Theme
@@ -109,6 +111,15 @@ quiz-game/
 - Sirf same-origin GET files cache hoti hain. API (Render) responses, tokens ya account data kabhi cache mein nahi jaate; wo `localStorage` mein hi rehte hain.
 - Agar cache bilkul na mile aur net bhi na ho, to chhota "Open the app once with internet" page dikhta hai.
 - Daily Challenge: guest offline khel sakta hai; account ko start/claim ke liye net chahiye (pehle jaisa).
+
+## GK Quiz & Word Quiz
+
+- Do nayi categories: **🌍 GK Quiz** (id `gk`, Hinglish sawal) aur **📖 Word Quiz** (id `word`: ek English word aata hai, 4 Hinglish meaning options mein se sahi chunna hai).
+- Dono mein abhi 25-25 sawal: 9 Easy + 9 Medium + 7 Hard (20-question mode ke liye kam se kam 7 / 7 / 6 chahiye). Files: `js/questions/gk-questions.js`, `js/questions/word-questions.js`; `index.html` mein `grammar-questions.js` ke baad load hoti hain.
+- Sawal format wahi: `[question, correct, [3 wrong], detail, level e/m/h]`. Nayi category jodne par Home, Mode select, Stats, History, About ginti, ranks aur sync apne aap handle kar lete hain (backend mein mode id sirf `a-z0-9_` honi chahiye).
+- **Daily Challenge** abhi bhi sirf Cricket + WWE + Grammar se banta hai (pehle jaisa). GK/Word ko usme jodna ho to `dcPick` mein filter hatana hoga.
+- **All-Rounder** achievement ab saari categories (5) mein 3-3 rounds maangta hai. Jo pehle se unlock hai wo unlock hi rehta hai.
+- Naye users ko ye files pehli online load par cache ho jaati hain. Purane installed users ko ye update popup (What's New ka naya top block) ke zariye milti hain.
 
 ## Achievements & Trophies (Step 4B)
 
@@ -157,7 +168,7 @@ quiz-game/
 
 ## Daily Challenge
 
-- Home par premium purple card. Roz **10 sawal** (saari categories mix: 3 Easy + 4 Medium + 3 Hard = 50 marks), 20 sec timer, lifelines (Swap / 50-50 / Skip). **Lives nahi**, saare 10 sawal khelte hain.
+- Home par premium purple card. Roz **10 sawal** (Cricket + WWE + Grammar mix, GK/Word abhi shaamil nahi: 3 Easy + 4 Medium + 3 Hard = 50 marks), 20 sec timer, lifelines (Swap / 50-50 / Skip). **Lives nahi**, saare 10 sawal khelte hain.
 - Sawal **din (IST) se tay** hote hain, har device par same. Pool fixed order mein shuffle hota hai aur roz agla hissa liya jata hai (abhi Easy ~50, Medium ~53, Hard ~61 din tak repeat nahi; sawal badhne par aur zyada).
 - Reward (sirf account): **+10** complete karne par, **+10 bonus** 10/10 par = max **20 coins/din**. Ye coins **extra** hain, 500 daily cap mein nahi gine jaate.
 - **Ek account + ek IST din = ek reward**: `daily_challenge_runs` ka `PRIMARY KEY (user_id, day)`. Din aur status server (DB clock, Asia/Kolkata) se aate hain, device clock kuch decide nahi karta. Claim par user ki `user_coins` row lock hoti hai, to do devices ek saath claim karein tab bhi ek hi reward.
