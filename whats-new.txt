@@ -4,8 +4,8 @@ New:
 + Achievements & Trophies: 20 trophies to unlock (open Menu → Achievements).
 + Unlock celebration after a round, followed by a rank-up animation when you reach a new rank.
 + The app now has 5 quiz categories: Cricket, WWE, Grammar, GK and Word.
-+ GK Quiz: 50 general knowledge questions in Hinglish.
-+ Word Quiz: see an English word and pick its meaning from 4 Hinglish options (50 words).
++ GK Quiz: 100 general knowledge questions in Hinglish.
++ Word Quiz: see an English word and pick its meaning from 4 Hinglish options (100 questions).
 + New top rank: Quiz Conqueror (95% accuracy, 500 rounds and 10,000 points), above Quiz Legend.
 Improved:
 + Trophies you already earned from your saved stats unlock automatically, without a celebration.

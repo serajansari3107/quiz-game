@@ -115,7 +115,7 @@ quiz-game/
 ## GK Quiz & Word Quiz
 
 - Do nayi categories: **🌍 GK Quiz** (id `gk`, Hinglish sawal) aur **📖 Word Quiz** (id `word`: ek English word aata hai, 4 Hinglish meaning options mein se sahi chunna hai).
-- Dono mein abhi 50-50 sawal: 18 Easy + 18 Medium + 14 Hard (20-question mode ke liye kam se kam 7 / 7 / 6 chahiye). Files: `js/questions/gk-questions.js`, `js/questions/word-questions.js`; `index.html` mein `grammar-questions.js` ke baad load hoti hain.
+- Dono mein abhi 100-100 sawal: 36 Easy + 36 Medium + 28 Hard (20-question mode ke liye kam se kam 7 / 7 / 6 chahiye). Files: `js/questions/gk-questions.js`, `js/questions/word-questions.js`; `index.html` mein `grammar-questions.js` ke baad load hoti hain.
 - Sawal format wahi: `[question, correct, [3 wrong], detail, level e/m/h]`. Nayi category jodne par Home, Mode select, Stats, History, About ginti, ranks aur sync apne aap handle kar lete hain (backend mein mode id sirf `a-z0-9_` honi chahiye).
 - **Daily Challenge** abhi bhi sirf Cricket + WWE + Grammar se banta hai (pehle jaisa). GK/Word ko usme jodna ho to `dcPick` mein filter hatana hoga.
 - **All-Rounder** achievement ab saari categories (5) mein 3-3 rounds maangta hai. Jo pehle se unlock hai wo unlock hi rehta hai.
