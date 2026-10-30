@@ -275,6 +275,18 @@ body{position:relative}
 .ov.upd .ucard ul{color:#d6d6e4}
 .ov.upd .ucard .btn{background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;border:0;border-radius:16px;padding:16px;font-size:17px;font-weight:800;font-family:inherit;box-shadow:0 10px 30px rgba(139,92,246,.4),inset 0 1px 0 rgba(255,255,255,.25)}
 .ov.upd .later{color:#9a9aa8;font-family:inherit;font-weight:600}
+.ov.upd{transition:opacity .3s ease}.ov.upd.uout{opacity:0}
+.ov.upd .ucard.ux>*{animation:ufade .35s ease both}
+@keyframes ufade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.ov.upd .upb{height:10px;border-radius:999px;background:rgba(139,92,246,.2);overflow:hidden;margin:16px 0 12px}
+.ov.upd .upb i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#8b5cf6,#c4b5fd)}
+.ov.upd .upp{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:14px;color:#b9b9cc;margin-bottom:6px}
+.ov.upd .upp b{font-size:22px;font-weight:800;color:#ede9fe;font-variant-numeric:tabular-nums}
+.ov.upd .ump{margin:0 0 14px;font-size:14px;line-height:1.5;color:#b9b9cc}
+.ov.upd .uck{display:block;width:76px;height:76px;margin:0 auto 4px;fill:none;stroke:#2fd37c;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.ov.upd .uck circle{stroke-dasharray:152;stroke-dashoffset:152;animation:ukd .55s ease forwards}
+.ov.upd .uck path{stroke-dasharray:44;stroke-dashoffset:44;animation:ukd .35s .45s ease forwards}
+@keyframes ukd{to{stroke-dashoffset:0}}
 /* ===== Rating criteria popup ===== */
 .st .card.st-rate{cursor:pointer}
 .st .card.st-rate:active{transform:scale(.99)}

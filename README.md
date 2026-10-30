@@ -107,7 +107,7 @@ quiz-game/
 - Install tabhi poora maana jaata hai jab saari files cache mein aa jayein. Adhoora ho to install fail hota hai aur purana SW/cache chalta rehta hai (pehle adhoora cache bhi activate ho jata tha).
 - Activate sirf purane `quiz-*` caches hatata hai, `quiz-stage` (update ka temporary cache) nahi.
 - Self-heal: app online khulne par `sw.js` ko `qa-heal` message bhejta hai; cache mein koi file gum ho to dobara bhar di jaati hai. App `navigator.storage.persist()` bhi maangta hai taaki browser cache jaldi na hataye.
-- Update (`applyUpd`): naya set pehle `quiz-stage` mein poora download hota hai, `whats-new.txt` verify hota hai, tabhi `quiz-v1.4` mein jaata hai. Koi file fail ho to chalta hua cache bilkul nahi chhua jaata aur button "Try again" ho jata hai.
+- Update (`updRun` + `applyUpd`): "Update now" dabane par progress bar + percentage dikhta hai. Naya set pehle `quiz-stage` mein poora download hota hai, `whats-new.txt` verify hota hai, tabhi `quiz-v1.4` mein jaata hai. Har file ki 12 second ki limit aur 2 koshish hai, isliye update hamesha ke liye atakta nahi. Koi file fail ho to chalta hua cache bilkul nahi chhua jaata aur "Update failed" + "Try again" dikhta hai. Success par "App Updated" screen aati hai aur app naye version ke saath restart hota hai.
 - Sirf same-origin GET files cache hoti hain. API (Render) responses, tokens ya account data kabhi cache mein nahi jaate; wo `localStorage` mein hi rehte hain.
 - Agar cache bilkul na mile aur net bhi na ho, to chhota "Open the app once with internet" page dikhta hai.
 - Daily Challenge: guest offline khel sakta hai; account ko start/claim ke liye net chahiye (pehle jaisa).
@@ -273,9 +273,10 @@ git push
 - `.env` file ya asli passwords/secrets kabhi commit mat karo.
 - Purani stats (guest ya account) ko delete ya overwrite mat karo.
 - `sw.js` mein `CACHE` ka naam (`quiz-v1.4`) mat badlo. App ka "Update now" isi par chalta hai.
-- **Update flow (important):** "Update now" (`applyUpd` in `js/app.js`) sirf us cache mein likhta hai jisme is app ka `index.html` hai, sab files pehle fetch karta hai (ek bhi fail ho to kuch nahi likhta, button "Try again" ho jata hai), likhne ke baad check karta hai ki naya `whats-new.txt` sach mein cache mein aa gaya, tabhi reload karta hai.
+- **Update flow (important):** "Update now" (`applyUpd` in `js/app.js`) sirf us cache mein likhta hai jisme is app ka `index.html` hai, sab files pehle fetch karta hai (ek bhi fail ya timeout ho to kuch nahi likhta, "Update failed" + "Try again" aata hai), likhne ke baad check karta hai ki naya `whats-new.txt` sach mein cache mein aa gaya, tabhi "App Updated" dikha kar reload karta hai. Progress bar ka UI `updRun` mein hai, CSS `.upb`, `.upp`, `.uck` `css/style.css` aur `css/light.css` mein.
 - `sw.js` page kholte waqt `index.html` ke `js/` aur `css/` links par `?v=<stamp>` jodta hai. Stamp `whats-new.txt` se banta hai. Isse reload par Chrome purani script apni memory cache se nahi uthata. **Isliye har release mein `whats-new.txt` zaroor badlo** (popup bhi usi se aata hai).
-- Agar phone par update atak jaye to app ko poori tarah band karke (recent apps se hata kar) 10-15 second baad dobara kholo.
+- Update ab ~25 second se zyada nahi atakta (timeout ke baad "Update failed"). Phir bhi na ho to app ko poori tarah band karke (recent apps se hata kar) 10-15 second baad dobara kholo.
+- Naya update code pehli baar purane (v2.4) button se install hoga, isliye usme purana "Updating…" button dikhega. Uske baad ke har update mein naya progress/percentage screen aayega.
 - Naye sawal jodne se pehle duplicate aur galat answer check karo.
 - Render ka free server kuch der baad so sakta hai, to pehli request mein thoda wait lag sakta hai.
 - **Rule:** har change ke saath **About** (`aboutScr` in `js/app.js`) aur **README.md** bhi update karo, phir git commands chalao.

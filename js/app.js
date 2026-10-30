@@ -115,7 +115,7 @@ function aboutScr(){
  +sec("🔐 My Account &amp; Security",["Open <b>Menu → My Account</b> after login to see your details.","<b>Change Password:</b> enter your current password and a new one. You will stay logged in on this device, and your other devices are logged out.","<b>Recovery Code:</b> a secret code that lets you reset your password if you forget it. Keep it safe.","<b>Generate New Recovery Code:</b> needs your password. The old code stops working, and the new code is shown only once, so copy it with the 📋 button.","<b>Forgot Password:</b> use your username, your recovery code and a new password.","Passwords are stored in a protected (hashed) form, never as plain text. For this reason, the app can never show your current password or your old recovery code."])
  +sec("⚙️ Settings",["Open <b>Menu → Settings</b> to turn <b>Sound</b> and <b>Vibration</b> ON or OFF.","Open <b>Menu → Switch Theme</b> to change between the <b>Dark Theme</b> and the <b>Light Theme</b> (Soft Lavender). Your choice is saved on your device."])
  +sec("🏆 Achievements",["Open <b>Menu → Achievements</b> to see all 20 trophies. Unlocked ones are shown first, and locked ones show how close you are.","Achievements unlock from your rounds: rounds played, correct answers, perfect rounds, accuracy, points, quiz categories, Daily Challenge, daily streaks and your rank.","When you unlock something, a celebration appears after the round. If you also reach a new rank, the rank-up comes next, and then your result.","You can close a celebration with <b>Continue</b>, <b>Skip all</b> or the Esc key. Each trophy unlocks only once.","Achievements work offline. For existing players, trophies you already earned are unlocked from your saved stats without a celebration.","Streaks, Comeback Player and Daily Challenge Completed count from the day you start using this update, and they are saved on this device."])
- +sec("🆕 Updates",["Open <b>Menu → What’s New</b> to see the latest features, fixes and the app version.","After an update, a popup shows only the new changes. If <b>Update now</b> cannot finish (for example because of a weak internet connection), the button changes to <b>Try again</b> and your data stays safe."])
+ +sec("🆕 Updates",["Open <b>Menu → What’s New</b> to see the latest features, fixes and the app version.","After an update, a popup shows only the new changes. Tap <b>Update now</b> and you will see a progress bar with a percentage, then an <b>App Updated</b> screen, and the app restarts with the new version.","If the update cannot finish (for example because of a weak internet connection), it stops after a short time and shows <b>Update failed</b> with a <b>Try again</b> button. Your data stays safe."])
  +sec("🌐 Internet &amp; Offline",["Quizzes, stats and settings work without internet.","After the first successful online open, the app is saved on your device. Later you can open it and play all the quizzes without internet, even after closing and reopening the app. Your offline rounds stay safely on the device until they sync.","Internet is needed to install the app the first time and to get app updates. An update is downloaded fully first, and the old working version stays untouched until the new one is ready.","Internet is needed only for sign up, login, password changes, syncing your stats and coins, and the Daily Challenge for accounts."])
  +sec("💡 Tips",["Save <b>Swap</b> and <b>50-50</b> for hard questions.","Read the explanation after every answer. It helps you remember, especially in the Grammar Quiz.","Watch the timer. Time-up costs a life, just like a wrong answer.","Play perfect rounds for bonus coins, but remember the daily limit of 500."])
  +'</div></div>';
@@ -410,26 +410,67 @@ function checkUp2(inst){
   ov.innerHTML='<div class="ucard"><div class="uic">🚀</div><h2>'+(va!==vb?"New version available":"New features added")+'</h2><div class="uv">'+vb+'</div><ul>'+items+'</ul><button class="btn" id="ub">Update now</button><button class="later" id="ulat">Not now</button></div>';
   document.body.appendChild(ov);
   $("#ulat").onclick=()=>ov.remove();
-  $("#ub").onclick=async()=>{const bt=$("#ub");bt.textContent="Updating…";let ok=false;try{ok=await applyUpd(b.join("\n"))}catch(e){}if(!ok){bt.textContent="Try again";return}LW("wn_ack",sg(b));location.reload()};
+  $("#ub").onclick=()=>updRun(ov,vb,b.join("\n"),()=>LW("wn_ack",sg(b)));
  }).catch(()=>{});
 }
-async function applyUpd(want){
+const updSl=ms=>new Promise(r=>setTimeout(r,ms));
+// "Update now" ke baad: progress bar + percentage, phir "App Updated" screen, phir reload.
+async function updRun(ov,ver,want,ack){
+ const card=ov.querySelector(".ucard"),V=String(ver).replace(/</g,"&lt;");
+ const show=h=>{card.classList.remove("ux");card.innerHTML=h;void card.offsetWidth;card.classList.add("ux")};
+ const go=async()=>{
+  show('<div class="uic">🚀</div><h2>Updating…</h2><div class="uv">'+V+'</div><div class="upb"><i id="upi"></i></div><div class="upp"><span id="ups">Starting…</span><b id="upn">0%</b></div>');
+  const bar=$("#upi"),nm=$("#upn"),tx=$("#ups");let tg=0,cu=0,raf=0;
+  const tick=()=>{raf=0;const d=tg-cu;cu=Math.abs(d)<.4?tg:cu+d*.2;bar.style.width=cu+"%";nm.textContent=Math.round(cu)+"%";if(cu!==tg)raf=requestAnimationFrame(tick)};
+  const on=(p,t)=>{tg=Math.max(tg,Math.min(100,p));if(t)tx.textContent=t;if(!raf)raf=requestAnimationFrame(tick)};
+  let ok=false;try{ok=await applyUpd(want,on)}catch(e){}
+  if(!ok){
+   show('<div class="uic">⚠️</div><h2>Update failed</h2><p class="ump">The update could not finish. Check your internet and try again. Your data is safe.</p><button class="btn" id="ub">Try again</button><button class="later" id="ulat">Not now</button>');
+   $("#ub").onclick=go;$("#ulat").onclick=()=>ov.remove();return;
+  }
+  ack();on(100,"Done");await updSl(600);
+  show('<svg class="uck" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M14 27l8 8 16-17"/></svg><h2>App Updated</h2><div class="uv">'+V+'</div><p class="ump">Restarting with the new version…</p>');
+  await updSl(1400);ov.classList.add("uout");await updSl(320);location.reload();
+ };
+ go();
+}
+async function applyUpd(want,on){
+ on=on||function(){};
  if(!window.caches)return true;
  const cs=[];for(const k of await caches.keys()){if(k==="quiz-stage")continue;const x=await caches.open(k);if(await x.match("index.html"))cs.push(x)}
  if(!cs.length)return true;
  const q=f=>f+(f.includes("?")?"&":"?")+"chk="+Date.now();
- const h=await (await fetch(q("index.html"),{cache:"reload"})).text();
+ // Ek file: 12 second ki limit (body bhi limit ke andar) aur 2 koshish, taaki update kabhi hamesha ke liye atke nahi.
+ const get=async f=>{
+  for(let i=0;i<2;i++){
+   const ac=new AbortController(),t=setTimeout(()=>ac.abort(),12000);
+   try{const r=await fetch(q(f),{cache:"reload",signal:ac.signal});if(r.ok){const b=await r.blob();clearTimeout(t);return{b,ct:r.headers.get("Content-Type")||""}}}catch(e){}
+   clearTimeout(t);if(i<1)await updSl(400);
+  }
+  return null;
+ };
+ on(4,"Checking for update…");
+ const [ix,mf]=await Promise.all([get("index.html"),get("manifest.json")]);
+ if(!ix)return false;
+ const h=await ix.b.text();
  const u=[...h.matchAll(/(?:src|href)="([^":#]+)"/g)].map(m=>m[1]);
- let mi=[];try{mi=((await (await fetch(q("manifest.json"),{cache:"reload"})).json()).icons||[]).map(i=>i.src)}catch(e){}
- const fs=[...new Set(["./","index.html","whats-new.txt","manifest.json",...mi,...u])];
- const rs=await Promise.all(fs.map(f=>fetch(q(f),{cache:"reload"})));
- if(rs.some(r=>!r.ok))return false; // ek bhi file na aaye to chalta hua cache bilkul nahi chhedte
+ let mi=[];try{if(mf)mi=(JSON.parse(await mf.b.text()).icons||[]).map(i=>i.src)}catch(e){}
+ const fs=[...new Set(["./","index.html","whats-new.txt","manifest.json",...mi,...u])],got={"./":ix,"index.html":ix};
+ if(mf)got["manifest.json"]=mf;
+ const tot=fs.length;let dn=fs.filter(f=>got[f]).length;
+ on(10,"Downloading "+dn+" of "+tot+" files");
+ await Promise.all(fs.filter(f=>!got[f]).map(async f=>{got[f]=await get(f);if(got[f]){dn++;on(10+Math.round(70*dn/tot),"Downloading "+dn+" of "+tot+" files")}}));
+ if(fs.some(f=>!got[f]))return false; // ek bhi file na aaye to chalta hua cache bilkul nahi chhedte
+ const mk=f=>new Response(got[f].b,{status:200,headers:got[f].ct?{"Content-Type":got[f].ct}:{}});
  try{
+  on(82,"Saving update…");
   await caches.delete("quiz-stage");const st=await caches.open("quiz-stage");
-  for(let i=0;i<fs.length;i++)await st.put(fs[i],rs[i].clone()); // pehle naya set alag "quiz-stage" mein taiyar
+  for(const f of fs)await st.put(f,mk(f)); // pehle naya set alag "quiz-stage" mein taiyar
   const w=await st.match("whats-new.txt"),tb=w?topB(await w.text()):null;
   if(!tb||tb.join("\n")!==want)return false;
-  for(const c of cs)for(const f of fs)await c.put(f,await st.match(f)); // taiyar hone ke baad hi chalte cache mein
+  on(90,"Installing update…");
+  for(const c of cs)for(const f of fs)await c.put(f,mk(f)); // taiyar hone ke baad hi chalte cache mein
+  on(99,"Finishing…");
   return true;
  }finally{await caches.delete("quiz-stage").catch(()=>{})}
 }

@@ -1,4 +1,13 @@
 window.WN_TXT=(function(){/*
+## v2.5 | 30 Oct 2026
+New:
++ Update now shows a live progress bar with a percentage while the update downloads.
++ A smooth "App Updated" screen appears when the update is done, and the app restarts with the new version.
+Improved:
++ Updates finish faster, because fewer network round trips are needed.
+Fixed:
++ The update could stay on "Updating…" for a long time with no feedback. Slow or stuck downloads now stop after a short time and show "Update failed" with a Try again button.
+
 ## v2.4 | 30 Oct 2026
 New:
 + Achievements & Trophies: 20 trophies to unlock (open Menu → Achievements).
