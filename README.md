@@ -116,14 +116,14 @@ quiz-game/
 
 - Cricket mein ab 250 sawal hain: purane 200 + 50 naye, jo sirf **IPL** par hain (finals, Orange/Purple Cap winners, records, auction, home grounds). WWE mein ab 250 sawal hain: purane 200 + 50 naye, jo **Attitude Era**, **title changes**, aur **WrestleMania / SummerSlam (2000 ke baad)** par hain.
 - Naye 50-50 mein 18 Easy + 18 Medium + 14 Hard hain. Facts Wikipedia / WWE.com / ESPN jaise sources se check kiye gaye (IPL 2025 tak, WWE ke results WM39/SummerSlam 2024 tak).
-- Daily Challenge ke sawal nahi badle (upar wali baat dekho).
+- Naye 50-50 sawal Daily Challenge mein bhi aa sakte hain (neeche Daily Challenge wala section dekho).
 
 ## GK Quiz & Word Quiz
 
 - Do nayi categories: **🌍 GK Quiz** (id `gk`, Hinglish sawal) aur **📖 Word Quiz** (id `word`: ek English word aata hai, 4 Hinglish meaning options mein se sahi chunna hai).
 - Dono mein abhi 100-100 sawal: 36 Easy + 36 Medium + 28 Hard (20-question mode ke liye kam se kam 7 / 7 / 6 chahiye). Files: `js/questions/gk-questions.js`, `js/questions/word-questions.js`; `index.html` mein `grammar-questions.js` ke baad load hoti hain.
 - Sawal format wahi: `[question, correct, [3 wrong], detail, level e/m/h]`. Nayi category jodne par Home, Mode select, Stats, History, About ginti, ranks aur sync apne aap handle kar lete hain (backend mein mode id sirf `a-z0-9_` honi chahiye).
-- **Daily Challenge** abhi bhi sirf Cricket + WWE + Grammar ke purane sawalon (200 / 200 / 150) se banta hai (pehle jaisa). GK/Word ya naye Cricket/WWE sawal usme jodne ho to `dcPick` mein filter aur `slice` hatana hoga.
+- **Daily Challenge** ab saari 5 categories (Cricket, WWE, Grammar, GK, Word) ke saare sawalon se banta hai, naye sawal bhi shaamil.
 - **All-Rounder** achievement ab saari categories (5) mein 3-3 rounds maangta hai. Jo pehle se unlock hai wo unlock hi rehta hai.
 - Naye users ko ye files pehli online load par cache ho jaati hain. Purane installed users ko ye update popup (What's New ka naya top block) ke zariye milti hain.
 
@@ -174,8 +174,8 @@ quiz-game/
 
 ## Daily Challenge
 
-- Home par premium purple card. Roz **10 sawal** (Cricket + WWE + Grammar mix, GK/Word abhi shaamil nahi: 3 Easy + 4 Medium + 3 Hard = 50 marks), 20 sec timer, lifelines (Swap / 50-50 / Skip). **Lives nahi**, saare 10 sawal khelte hain.
-- Sawal **din (IST) se tay** hote hain, har device par same. Pool fixed order mein shuffle hota hai aur roz agla hissa liya jata hai (abhi Easy ~50, Medium ~53, Hard ~61 din tak repeat nahi; sawal badhne par aur zyada).
+- Home par premium purple card. Roz **10 sawal** (saari 5 categories mix, naye sawal bhi shaamil: 3 Easy + 4 Medium + 3 Hard = 50 marks), 20 sec timer, lifelines (Swap / 50-50 / Skip). **Lives nahi**, saare 10 sawal khelte hain.
+- Sawal **din (IST) se tay** hote hain, har device par same. Pool fixed order mein shuffle hota hai aur roz agla hissa liya jata hai (abhi lagbhag 80+ din tak repeat nahi; sawal badhne par aur zyada). Dhyan rahe: jab tak kisi device par purani app version cache mein ho, uska Daily set naye sawalon wale device se alag ho sakta hai, update ke baad dono same ho jate hain.
 - Reward (sirf account): **+10** complete karne par, **+10 bonus** 10/10 par = max **20 coins/din**. Ye coins **extra** hain, 500 daily cap mein nahi gine jaate.
 - **Ek account + ek IST din = ek reward**: `daily_challenge_runs` ka `PRIMARY KEY (user_id, day)`. Din aur status server (DB clock, Asia/Kolkata) se aate hain, device clock kuch decide nahi karta. Claim par user ki `user_coins` row lock hoti hai, to do devices ek saath claim karein tab bhi ek hi reward.
 - Client sirf `r` (sahi) aur `w` (galat) bhejta hai, coins server nikalta hai. Limit: sawal client mein hain, isliye server jawab verify nahi kar sakta (purane coin rounds jaisa hi trust). Worst case 20 coins/din.

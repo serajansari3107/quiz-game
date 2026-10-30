@@ -12,6 +12,7 @@ New:
 Improved:
 + Trophies you already earned from your saved stats unlock automatically, without a celebration.
 + The Rating Criteria table now fits better on small phones.
++ Daily Challenge now picks questions from all 5 categories, including the new IPL, WWE, GK and Word questions.
 
 ## v2.3 | 28 Oct 2026
 New:
