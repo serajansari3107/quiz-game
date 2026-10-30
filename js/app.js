@@ -464,7 +464,7 @@ function dcPick(day){
  const p=day.split("-").map(Number),dn=Math.floor(Date.UTC(p[0],p[1]-1,p[2])/864e5);let out=[];
  for(const t of "emh"){
   const n=MODES[10].n[t],pool=[];
-  Object.keys(BANK).sort().filter(k=>["cricket","wwe","grammar"].includes(k)).forEach(k=>BANK[k].q.forEach(x=>{if(x[4]===t)pool.push({k,q:x})})); // Daily Challenge abhi pehle jaisi 3 categories se hi banta hai
+  Object.keys(BANK).sort().filter(k=>["cricket","wwe","grammar"].includes(k)).forEach(k=>BANK[k].q.slice(0,{cricket:200,wwe:200,grammar:150}[k]).forEach(x=>{if(x[4]===t)pool.push({k,q:x})})); // Daily Challenge abhi pehle jaisi 3 categories aur unke purane sawalon se hi banta hai
   pool.sort((a,b)=>a.q[0]<b.q[0]?-1:a.q[0]>b.q[0]?1:0);
   const rnd=dcRng(t.charCodeAt(0)*7919);
   for(let j=pool.length-1;j>0;j--){const k=Math.floor(rnd()*(j+1));[pool[j],pool[k]]=[pool[k],pool[j]]}

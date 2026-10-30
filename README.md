@@ -112,12 +112,18 @@ quiz-game/
 - Agar cache bilkul na mile aur net bhi na ho, to chhota "Open the app once with internet" page dikhta hai.
 - Daily Challenge: guest offline khel sakta hai; account ko start/claim ke liye net chahiye (pehle jaisa).
 
+## Cricket (IPL) aur WWE (Attitude Era) ke naye sawal
+
+- Cricket mein ab 250 sawal hain: purane 200 + 50 naye, jo sirf **IPL** par hain (finals, Orange/Purple Cap winners, records, auction, home grounds). WWE mein ab 250 sawal hain: purane 200 + 50 naye, jo **Attitude Era**, **title changes**, aur **WrestleMania / SummerSlam (2000 ke baad)** par hain.
+- Naye 50-50 mein 18 Easy + 18 Medium + 14 Hard hain. Facts Wikipedia / WWE.com / ESPN jaise sources se check kiye gaye (IPL 2025 tak, WWE ke results WM39/SummerSlam 2024 tak).
+- Daily Challenge ke sawal nahi badle (upar wali baat dekho).
+
 ## GK Quiz & Word Quiz
 
 - Do nayi categories: **🌍 GK Quiz** (id `gk`, Hinglish sawal) aur **📖 Word Quiz** (id `word`: ek English word aata hai, 4 Hinglish meaning options mein se sahi chunna hai).
 - Dono mein abhi 100-100 sawal: 36 Easy + 36 Medium + 28 Hard (20-question mode ke liye kam se kam 7 / 7 / 6 chahiye). Files: `js/questions/gk-questions.js`, `js/questions/word-questions.js`; `index.html` mein `grammar-questions.js` ke baad load hoti hain.
 - Sawal format wahi: `[question, correct, [3 wrong], detail, level e/m/h]`. Nayi category jodne par Home, Mode select, Stats, History, About ginti, ranks aur sync apne aap handle kar lete hain (backend mein mode id sirf `a-z0-9_` honi chahiye).
-- **Daily Challenge** abhi bhi sirf Cricket + WWE + Grammar se banta hai (pehle jaisa). GK/Word ko usme jodna ho to `dcPick` mein filter hatana hoga.
+- **Daily Challenge** abhi bhi sirf Cricket + WWE + Grammar ke purane sawalon (200 / 200 / 150) se banta hai (pehle jaisa). GK/Word ya naye Cricket/WWE sawal usme jodne ho to `dcPick` mein filter aur `slice` hatana hoga.
 - **All-Rounder** achievement ab saari categories (5) mein 3-3 rounds maangta hai. Jo pehle se unlock hai wo unlock hi rehta hai.
 - Naye users ko ye files pehli online load par cache ho jaati hain. Purane installed users ko ye update popup (What's New ka naya top block) ke zariye milti hain.
 

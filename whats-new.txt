@@ -1,5 +1,5 @@
 window.WN_TXT=(function(){/*
-## v2.4 | 29 Oct 2026
+## v2.4 | 30 Oct 2026
 New:
 + Achievements & Trophies: 20 trophies to unlock (open Menu → Achievements).
 + Unlock celebration after a round, followed by a rank-up animation when you reach a new rank.
@@ -7,6 +7,8 @@ New:
 + GK Quiz: 100 general knowledge questions in Hinglish.
 + Word Quiz: see an English word and pick its meaning from 4 Hinglish options (100 questions).
 + New top rank: Quiz Conqueror (95% accuracy, 500 rounds and 10,000 points), above Quiz Legend.
++ Cricket Quiz now has 50 new IPL questions (finals, Orange and Purple Cap winners, records and auctions).
++ WWE Quiz now has 50 new questions on the Attitude Era, title changes, and WrestleMania and SummerSlam results since 2000.
 Improved:
 + Trophies you already earned from your saved stats unlock automatically, without a celebration.
 + The Rating Criteria table now fits better on small phones.
