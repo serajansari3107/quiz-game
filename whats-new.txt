@@ -1,4 +1,11 @@
 window.WN_TXT=(function(){/*
+## v2.6 | 31 Oct 2026
+New:
++ 50 new Cricket questions from 2020 to 2026 (T20 World Cup 2026, IPL 2026, Asia Cup 2025, Women's World Cup 2025, Ashes 2025-26 and more).
++ 50 new WWE questions from 2020 to 2026 (Royal Rumble winners, WrestleMania 38 to 42, SummerSlam 2025 and more).
+Improved:
++ Cricket and WWE now have 300 questions each.
+
 ## v2.5 | 30 Oct 2026
 New:
 + Update now shows a live progress bar with a percentage while the update downloads.

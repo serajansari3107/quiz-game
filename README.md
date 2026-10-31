@@ -117,6 +117,9 @@ quiz-game/
 - Cricket mein ab 250 sawal hain: purane 200 + 50 naye, jo sirf **IPL** par hain (finals, Orange/Purple Cap winners, records, auction, home grounds). WWE mein ab 250 sawal hain: purane 200 + 50 naye, jo **Attitude Era**, **title changes**, aur **WrestleMania / SummerSlam (2000 ke baad)** par hain.
 - Naye 50-50 mein 18 Easy + 18 Medium + 14 Hard hain. Facts Wikipedia / WWE.com / ESPN jaise sources se check kiye gaye (IPL 2025 tak, WWE ke results WM39/SummerSlam 2024 tak).
 - Naye 50-50 sawal Daily Challenge mein bhi aa sakte hain (neeche Daily Challenge wala section dekho).
+- **Recent (2020-2026) sawal:** Cricket aur WWE mein 50-50 aur naye sawal jude, ab dono mein 300-300 sawal hain (Easy/Medium/Hard dono mein kaafi hain). Cricket: T20 World Cup 2026, IPL 2026 (winner, Orange/Purple Cap), Asia Cup 2025, Women's World Cup 2025, Anderson-Tendulkar Trophy 2025, Ashes 2025-26, WTC 2025, Champions Trophy 2025, Mulder 367*, Dhoni retirement (2020). WWE: Royal Rumble 2020-2026 winners, WrestleMania 38/39/40/41/42, SummerSlam 2025, King of the Ring 2025, Survivor Series 2020/2023, aur business (TKO, ESPN deal, SmackDown USA, NXT CW).
+- In sawalon ke facts web se verify kiye gaye (ESPN, WWE.com, Wikipedia, Netflix Tudum, CBS Sports, Cricinfo jaise sources) aur purane 500 sawalon ke saath duplicate check hua. Cricket facts 31 May 2026 (IPL final) / March 2026 (T20 WC) tak ke hain, WWE facts WrestleMania 42 (April 2026) tak.
+- Sawal format wahi hai: `[question, correct, [3 wrong], detail, level e/m/h]`; naye sawal `cricket-questions.js` aur `wwe-questions.js` ke end mein jude hain.
 
 ## GK Quiz & Word Quiz
 
