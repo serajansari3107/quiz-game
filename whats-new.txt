@@ -1,4 +1,11 @@
 window.WN_TXT=(function(){/*
+## v2.7 | 31 Oct 2026
+Fixed:
++ Logged-in accounts are no longer switched to Guest after an update or app refresh. If a session ever expires, you stay in your account and can tap Login again in My Account.
++ The update popup now shows "New version available" whenever the version number changes.
+Improved:
++ Fewer background session refreshes, so login stays stable.
+
 ## v2.6 | 31 Oct 2026
 New:
 + 50 new Cricket questions from 2020 to 2026 (T20 World Cup 2026, IPL 2026, Asia Cup 2025, Women's World Cup 2025, Ashes 2025-26 and more).

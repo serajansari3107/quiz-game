@@ -130,6 +130,8 @@ async function login(req, res) {
   }
 }
 
+const REFRESH_GRACE_MS = 5 * 60 * 1000; // purana token itni der tak sirf "abhi rotate hua" maana jata hai
+
 async function refresh(req, res) {
   const token = str((req.body || {}).refreshToken);
   if (token.length < 20 || token.length > 200) return res.status(401).json({ error: "Invalid session" });
@@ -150,14 +152,27 @@ async function refresh(req, res) {
       await client.query("ROLLBACK");
       return res.status(401).json({ error: "Invalid session" });
     }
+    let graceReuse = false;
     if (t.revoked_at) {
-      // Purana (already used) token dobara aaya: poori session family revoke
-      await client.query(
-        "UPDATE refresh_tokens SET revoked_at = now() WHERE family_id = $1 AND revoked_at IS NULL",
-        [t.family_id]
-      );
-      await client.query("COMMIT");
-      return res.status(401).json({ error: "Invalid session" });
+      // Token abhi-abhi rotate hua ho (response phone tak nahi pahunchi: reload / network drop / do tab) to
+      // chhoti si grace window mein ek naya token de dete hain. Logout / password change wale revoke par
+      // family ka koi live token nahi bachta, isliye wahan ye grace kaam nahi karta.
+      if (Date.now() - new Date(t.revoked_at).getTime() <= REFRESH_GRACE_MS) {
+        const live = await client.query(
+          "SELECT 1 FROM refresh_tokens WHERE family_id = $1 AND revoked_at IS NULL AND expires_at > now() LIMIT 1",
+          [t.family_id]
+        );
+        graceReuse = live.rows.length > 0;
+      }
+      if (!graceReuse) {
+        // Purana (already used) token dobara aaya: poori session family revoke
+        await client.query(
+          "UPDATE refresh_tokens SET revoked_at = now() WHERE family_id = $1 AND revoked_at IS NULL",
+          [t.family_id]
+        );
+        await client.query("COMMIT");
+        return res.status(401).json({ error: "Invalid session" });
+      }
     }
     if (new Date(t.expires_at) <= new Date()) {
       await client.query("ROLLBACK");
@@ -168,7 +183,7 @@ async function refresh(req, res) {
       await client.query("ROLLBACK");
       return res.status(401).json({ error: "Invalid session" });
     }
-    await client.query("UPDATE refresh_tokens SET revoked_at = now() WHERE id = $1", [t.id]);
+    if (!graceReuse) await client.query("UPDATE refresh_tokens SET revoked_at = now() WHERE id = $1", [t.id]);
     const refreshToken = await createRefreshToken(client, t.user_id, t.device_id, t.family_id);
     await client.query("COMMIT");
     return res.json({

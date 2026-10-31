@@ -111,7 +111,7 @@ function aboutScr(){
 "The reward is checked and saved on the server using India time, so changing the clock on your phone does not help.",
 "Accounts need internet to start the challenge and to save the reward. If saving fails, your result stays on this device and the Home card shows <b>Claim</b> so you can try again (before the next daily reset).",
 "Guests can play it for fun, but guests do not earn coins. Daily Challenge rounds are not added to Stats, Best Score or History."
-])+sec("👤 Guest &amp; Account",["<b>Guest:</b> play without an account. Your stats are saved only on this device.","<b>Account:</b> create an account with your full name, a username and a password. Your stats are saved to your account and appear on any device where you log in.","On one device, the guest and every account keep their stats separately.","If you play without internet, your rounds are synced to your account when you are online again.","You can transfer your guest stats to your account <b>one time per device</b>. The app asks for your confirmation first.","Your old guest stats are never deleted by logging in.","Only logged-in accounts earn coins (see the Coins section). A guest sees a small hint to log in on the result screen."])
+])+sec("👤 Guest &amp; Account",["<b>Guest:</b> play without an account. Your stats are saved only on this device.","<b>Account:</b> create an account with your full name, a username and a password. Your stats are saved to your account and appear on any device where you log in.","On one device, the guest and every account keep their stats separately.","If you play without internet, your rounds are synced to your account when you are online again.","You can transfer your guest stats to your account <b>one time per device</b>. The app asks for your confirmation first.","Your old guest stats are never deleted by logging in.","You are never switched to Guest automatically. If your session expires, you stay in your account and <b>My Account</b> shows a <b>Login again</b> button.","Only logged-in accounts earn coins (see the Coins section). A guest sees a small hint to log in on the result screen."])
  +sec("🔐 My Account &amp; Security",["Open <b>Menu → My Account</b> after login to see your details.","<b>Change Password:</b> enter your current password and a new one. You will stay logged in on this device, and your other devices are logged out.","<b>Recovery Code:</b> a secret code that lets you reset your password if you forget it. Keep it safe.","<b>Generate New Recovery Code:</b> needs your password. The old code stops working, and the new code is shown only once, so copy it with the 📋 button.","<b>Forgot Password:</b> use your username, your recovery code and a new password.","Passwords are stored in a protected (hashed) form, never as plain text. For this reason, the app can never show your current password or your old recovery code."])
  +sec("⚙️ Settings",["Open <b>Menu → Settings</b> to turn <b>Sound</b> and <b>Vibration</b> ON or OFF.","Open <b>Menu → Switch Theme</b> to change between the <b>Dark Theme</b> and the <b>Light Theme</b> (Soft Lavender). Your choice is saved on your device."])
  +sec("🏆 Achievements",["Open <b>Menu → Achievements</b> to see all 20 trophies. Unlocked ones are shown first, and locked ones show how close you are.","Achievements unlock from your rounds: rounds played, correct answers, perfect rounds, accuracy, points, quiz categories, Daily Challenge, daily streaks and your rank.","When you unlock something, a celebration appears after the round. If you also reach a new rank, the rank-up comes next, and then your result.","You can close a celebration with <b>Continue</b>, <b>Skip all</b> or the Esc key. Each trophy unlocks only once.","Achievements work offline. For existing players, trophies you already earned are unlocked from your saved stats without a celebration.","Streaks, Comeback Player and Daily Challenge Completed count from the day you start using this update, and they are saved on this device."])
@@ -403,14 +403,15 @@ function checkUp2(inst){
  if(!navigator.onLine)return;
  fetch("whats-new.txt?chk="+Date.now(),{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(rt=>{
   const a=topB(inst),b=topB(rt);if(!a||!b)return;
-  const sg=x=>String(x.join("\n").split("").reduce((p,c)=>(p*31+c.charCodeAt(0))|0,0)),ak=LS("wn_ack",null);if(!ak)LW("wn_ack",sg(a));if(a.join("\n")===b.join("\n")&&(ak||sg(a))===sg(b))return;
+  const sg=x=>String(x.join("\n").split("").reduce((p,c)=>(p*31+c.charCodeAt(0))|0,0)),ak=LS("wn_ack",null);if(!ak){LW("wn_ack",sg(a));LW("wn_ver",a[0].slice(3).split("|")[0].trim())}if(a.join("\n")===b.join("\n")&&(ak||sg(a))===sg(b))return;
   const va=a[0].slice(3).split("|")[0].trim(),vb=b[0].slice(3).split("|")[0].trim();
-  const nw=b.filter(l=>l.startsWith("+ ")&&(va!==vb||!a.includes(l))),items=(nw.length?nw:b.filter(l=>l.startsWith("+ "))).map(l=>"<li>"+l.slice(2).replace(/</g,"&lt;")+"</li>").join("");
+  const ov0=LS("wn_ver",""),vchg=ov0?ov0!==vb:va!==vb; // pehle ack kiya hua version vs naya version
+  const nw=b.filter(l=>l.startsWith("+ ")&&(vchg||!a.includes(l))),items=(nw.length?nw:b.filter(l=>l.startsWith("+ "))).map(l=>"<li>"+l.slice(2).replace(/</g,"&lt;")+"</li>").join("");
   const ov=document.createElement("div");ov.className="ov upd";
-  ov.innerHTML='<div class="ucard"><div class="uic">🚀</div><h2>'+(va!==vb?"New version available":"New features added")+'</h2><div class="uv">'+vb+'</div><ul>'+items+'</ul><button class="btn" id="ub">Update now</button><button class="later" id="ulat">Not now</button></div>';
+  ov.innerHTML='<div class="ucard"><div class="uic">🚀</div><h2>'+(vchg?"New version available":"New features added")+'</h2><div class="uv">'+vb+'</div><ul>'+items+'</ul><button class="btn" id="ub">Update now</button><button class="later" id="ulat">Not now</button></div>';
   document.body.appendChild(ov);
   $("#ulat").onclick=()=>ov.remove();
-  $("#ub").onclick=()=>updRun(ov,vb,b.join("\n"),()=>LW("wn_ack",sg(b)));
+  $("#ub").onclick=()=>updRun(ov,vb,b.join("\n"),()=>{LW("wn_ack",sg(b));LW("wn_ver",vb)});
  }).catch(()=>{});
 }
 const updSl=ms=>new Promise(r=>setTimeout(r,ms));
@@ -430,7 +431,7 @@ async function updRun(ov,ver,want,ack){
   }
   ack();on(100,"Done");await updSl(600);
   show('<svg class="uck" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M14 27l8 8 16-17"/></svg><h2>App Updated</h2><div class="uv">'+V+'</div><p class="ump">Restarting with the new version…</p>');
-  await updSl(1400);ov.classList.add("uout");await updSl(320);location.reload();
+  await updSl(1400);ov.classList.add("uout");await updSl(320);try{if(rfP)await Promise.race([rfP,updSl(8000)])}catch(e){}location.reload();
  };
  go();
 }
@@ -651,16 +652,25 @@ async function api(path,body,tok){
  }catch(e){return{ok:false,status:0,data:{}}}
  finally{clearTimeout(t)}
 }
-const authSave=d=>{LW("auth",{user:d.user,access:d.accessToken,refresh:d.refreshToken,exp:Date.now()+d.expiresIn*1000});LW("auth_mode","account");nsSwitch("u:"+d.user.id)};
+const authSave=d=>{LW("auth",{user:d.user,access:d.accessToken,refresh:d.refreshToken,exp:Date.now()+d.expiresIn*1000});LW("auth_mode","account");LW("auth_bad",0);nsSwitch("u:"+d.user.id)};
 const authMsg=r=>r.status===0?"Can't reach server. Check your connection and try again.":(r.data&&r.data.error)||"Something went wrong. Try again.";
 let rfP=null;
 const sessionRefresh=()=>rfP||(rfP=sessionRefresh0().finally(()=>{rfP=null}));
 async function sessionRefresh0(){
- const a=LS("auth",null);if(!a||!a.refresh)return;
- const r=await api("/auth/refresh",{refreshToken:a.refresh});
- if(r.ok){authSave(r.data);return true}
- if(r.status===401){LW("auth","");LW("auth_mode","");nsSwitch("guest")}
- return false
+ const a0=LS("auth",null);if(!a0||!a0.refresh)return false;
+ if(LS("auth_bad",0))return false; // session pehle hi expire ho chuka: server ko dobara mat chhedo, user se login maango
+ const go=async()=>{
+  const a=LS("auth",null);if(!a||!a.refresh)return false;
+  // doosre tab/window ne abhi refresh kar diya ho to uska naya token use karo (purana token dobara bhejna session todta hai)
+  if(a.refresh!==a0.refresh&&a.exp-Date.now()>60000)return true;
+  const r=await api("/auth/refresh",{refreshToken:a.refresh});
+  if(r.ok){authSave(r.data);return true}
+  // 401: account/stats/login ko KABHI nahi hatate aur guest par nahi bhejte; sirf "login again" ka flag lagate hain
+  if(r.status===401)LW("auth_bad",1);
+  return false
+ };
+ try{if(navigator.locks&&navigator.locks.request)return await navigator.locks.request("qa-auth-refresh",go)}catch(e){}
+ return go()
 }
 function recoveryScr(d){
  app.innerHTML='<div class="wl"><div class="wl-in wl-form"><div class="wl-logo">🛡️</div><h1>Save Your Recovery Code</h1><p>This code is the only way to reset your password if you forget it. It is shown only once, so write it down or save it somewhere safe.</p><div class="wl-code" id="rcd"></div><button class="wl-b2" id="rcp" style="margin:0 0 16px">Copy Code</button><label class="wl-chk"><input type="checkbox" id="rck"><span>I have saved my recovery code</span></label><button class="wl-b1" id="rgo" disabled>Continue</button></div></div>';
@@ -761,7 +771,8 @@ if("serviceWorker"in navigator)navigator.serviceWorker.addEventListener("message
 const evAdd=(m,n,r,w,s)=>{try{if(LS("auth_mode","")!=="account")return;const o=LS("outbox",[]);const id=uuid();o.push({id,m,n,r,w,s,t:Date.now()});LW("outbox",o);syncSoon();syPaint();if(!navigator.onLine)syReg();return id}catch(e){}};
 async function authedApi(path,body){
  let a=LS("auth",null);if(!a)return{ok:false,status:0,data:{}};
- if(a.exp-Date.now()<60000){if(!(await sessionRefresh()))return{ok:false,status:0,data:{}};a=LS("auth",null);if(!a)return{ok:false,status:0,data:{}}}
+ const bad=()=>LS("auth_bad",0)?{ok:false,status:401,data:{error:"Session expired. Open Menu > My Account and tap Login again to keep syncing."}}:{ok:false,status:0,data:{}};
+ if(a.exp-Date.now()<60000){if(!(await sessionRefresh()))return bad();a=LS("auth",null);if(!a)return{ok:false,status:0,data:{}}}
  let r=await api(path,body,a.access);
  if(r.status===401&&await sessionRefresh()){a=LS("auth",null);if(a)r=await api(path,body,a.access)}
  return r;
@@ -842,11 +853,12 @@ function myAccScr(a){
  const pf=(id,l,ph)=>'<div class="wl-fld"><label for="'+id+'">'+l+'</label><div class="wl-pw"><input id="'+id+'" type="password" placeholder="'+ph+'" autocomplete="off"><button type="button" class="wl-eye" data-for="'+id+'" aria-label="Show password">Show</button></div></div>';
  const eyes=root=>root.querySelectorAll(".wl-eye").forEach(b=>b.onclick=()=>{const f=$("#"+b.dataset.for),s=f.type==="password";f.type=s?"text":"password";b.textContent=s?"Hide":"Show";b.setAttribute("aria-label",s?"Hide password":"Show password")});
  app.innerHTML='<div class="wl"><div class="wl-in wl-form"><button class="hm-chip wl-back" id="ab">← Back</button><div class="wl-logo">👤</div><h1>My Account</h1><p>Manage your profile and security</p>'
+ +(LS("auth_bad",0)?'<div class="ma-sec"><h2 class="ma-h">Session expired</h2><p class="ma-p">Please login again to keep syncing. Your stats and coins on this device are safe and you are still in your account.</p><button class="wl-b1" id="mrl" style="margin-top:12px">Login again</button></div>':'')
  +'<div class="ma-sec"><h2 class="ma-h">Personal Details</h2><div class="ma-row"><span>Full name</span><b id="mfn"></b></div><div class="ma-row"><span>User ID</span><b id="mun"></b></div></div>'
  +'<div class="ma-sec"><h2 class="ma-h">Privacy &amp; Security</h2><div class="ma-sub">Change Password</div>'+pf("mcp","Current Password","Enter current password")+pf("mnp","New Password","Enter new password")+pf("mrp","Re-enter New Password","Re-enter new password")+'<div class="wl-hint">Password must have at least 8 characters, 1 uppercase letter and 1 special character. You will be logged out on your other devices.</div><button class="wl-b1" id="mpb">Change Password</button><div class="wl-note" id="mpm"></div></div>'
  +'<div class="ma-sec"><h2 class="ma-h">Recover Your Account</h2><p class="ma-p">Your recovery code is the only way to reset a forgotten password. For safety it cannot be shown again, but you can create a new one any time. The old code then stops working.</p><div id="mrbox"></div><div class="wl-note" id="mrm"></div></div>'
  +'<button class="wl-b1" id="alo" style="margin-top:22px">Logout</button><div class="wl-note" id="wnt"></div></div></div>';
- $("#mfn").textContent=a.user.fullName;$("#mun").textContent="@"+a.user.username;
+ $("#mfn").textContent=a.user.fullName;$("#mun").textContent="@"+a.user.username;if($("#mrl"))$("#mrl").onclick=loginScr;
  eyes(app);
  $("#ab").onclick=home;
  $("#alo").onclick=doLogout;
@@ -892,7 +904,7 @@ async function doLogout(){
 let BOOTED=0;
 function welcome(){
  app.innerHTML='<div class="wl"><div class="wl-in"><div class="wl-logo">🎯</div><h1>Quiz Arena</h1><p>Cricket · WWE</p></div></div>';
- setTimeout(()=>{if(LS("auth_mode","")){home();if(LS("auth_mode","")==="account"&&navigator.onLine)sessionRefresh().then(ok=>{if(ok)syncNow()})}else authChoice()},1600);
+ setTimeout(()=>{if(LS("auth_mode","")){home();if(LS("auth_mode","")==="account"&&navigator.onLine)syncNow()}else authChoice()},1600);
 }
 function authChoice(){
  app.innerHTML='<div class="wl"><div class="wl-in"><div class="wl-logo">🎯</div><h1>Quiz Arena</h1><p>Choose how you want to continue</p><div class="wl-btns"><button class="wl-b1" id="wg">Play as Guest</button><button class="wl-b2" id="wlg">Already have an account? Login</button><button class="wl-b2" id="wca">Create Account</button></div><div class="wl-note" id="wnt"></div></div></div>';
