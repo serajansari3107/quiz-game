@@ -1,4 +1,12 @@
 window.WN_TXT=(function(){/*
+## v2.8 | 1 Nov 2026
+New:
++ 50 new GK questions (India geography, history, polity, science, space, sports and world GK).
++ 50 new Word Quiz words, from easy to hard.
+Improved:
++ GK and Word Quiz now have 150 questions each.
++ Word Quiz options no longer show extra hints in brackets, so the correct answer is harder to guess.
+
 ## v2.7 | 31 Oct 2026
 Fixed:
 + Logged-in accounts are no longer switched to Guest after an update or app refresh. If a session ever expires, you stay in your account and can tap Login again in My Account.
