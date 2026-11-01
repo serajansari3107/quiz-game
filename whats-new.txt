@@ -1,11 +1,13 @@
 window.WN_TXT=(function(){/*
 ## v2.8 | 1 Nov 2026
 New:
++ New Food Quiz category with 100 questions: food names in English and Hindi, and which country, state or city a dish is famous from.
 + 50 new GK questions (India geography, history, polity, science, space, sports and world GK).
 + 50 new Word Quiz words, from easy to hard.
 Improved:
 + GK and Word Quiz now have 150 questions each.
 + Word Quiz options no longer show extra hints in brackets, so the correct answer is harder to guess.
++ Daily Challenge now also includes Food Quiz questions.
 
 ## v2.7 | 31 Oct 2026
 Fixed:

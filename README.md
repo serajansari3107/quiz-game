@@ -1,6 +1,6 @@
 # Quiz Arena
 
-Ek offline-first quiz game (PWA). Topics: **Cricket**, **WWE**, **Grammar** (Hinglish sawal, English options), **GK** (Hinglish sawal) aur **Word Quiz** (English word, 4 Hinglish meaning options).
+Ek offline-first quiz game (PWA). Topics: **Cricket**, **WWE**, **Grammar** (Hinglish sawal, English options), **GK** (Hinglish sawal), **Word Quiz** (English word, 4 Hinglish meaning options) aur **Food Quiz** (khane ki cheezon ke English/Hindi naam aur famous dishes).
 Phone/desktop par install ho sakta hai, bina internet ke bhi chalta hai.
 Account banao to stats aur coins kisi bhi device par sync hote hain.
 
@@ -42,7 +42,8 @@ quiz-game/
 │       ├── wwe-questions.js       WWE ke sawal
 │       ├── grammar-questions.js   Grammar ke sawal
 │       ├── gk-questions.js        GK ke sawal
-│       └── word-questions.js      Word Quiz ke sawal
+│       ├── word-questions.js      Word Quiz ke sawal
+│       └── food-questions.js      Food Quiz ke sawal
 ├── assets/               PWA icons: qa-icon-192/512, qa-icon-maskable-512, qa-apple-180
 └── backend/              Server (Render par deploy hota hai)
     ├── package.json
@@ -128,9 +129,17 @@ quiz-game/
 - **Word Quiz options mein ( ) hint nahi:** pehle 92 sahi answers ke aage bracket mein extra meaning likha hota tha (jaise `Chup (khamosh)`), jisse sahi option aasani se pehchaan mein aa jata tha. Ab saare options mein sirf chhota meaning hai (`Chup`). Bracket wali detail ab sirf answer ke baad dikhne wale explanation (detail) mein rehti hai. Sawal ke text ya level mein koi badlav nahi, 150 sawal wahi hain.
 - **Naye 50-50 (GK + Word):** GK mein India ke geography/history/polity/science, space (Mangalyaan, Aditya-L1, INS Vikrant), sports aur world GK ke naye sawal jude. Word Quiz mein 18 Easy + 18 Medium + 14 Hard naye English words jude (Hard mein Aloof, Capricious, Diffident, Fastidious, Impeccable, Lethargic, Magnanimous, Obstinate, Placid, Sycophant, Venerable, Verbose, Callous, Sporadic). GK ke facts (ISRO, Bharat Ratna, polity, geography, history dates) aur Hard words ke meaning web se verify kiye gaye, aur purane sawalon ke saath duplicate check hua. Format wahi: `[question, correct, [3 wrong], detail, level e/m/h]`.
 - Sawal format wahi: `[question, correct, [3 wrong], detail, level e/m/h]`. Nayi category jodne par Home, Mode select, Stats, History, About ginti, ranks aur sync apne aap handle kar lete hain (backend mein mode id sirf `a-z0-9_` honi chahiye).
-- **Daily Challenge** ab saari 5 categories (Cricket, WWE, Grammar, GK, Word) ke saare sawalon se banta hai, naye sawal bhi shaamil.
-- **All-Rounder** achievement ab saari categories (5) mein 3-3 rounds maangta hai. Jo pehle se unlock hai wo unlock hi rehta hai.
+- **Daily Challenge** ab saari 6 categories (Cricket, WWE, Grammar, GK, Word, Food) ke saare sawalon se banta hai, naye sawal bhi shaamil.
+- **All-Rounder** achievement ab saari categories (6, Food ke saath) mein 3-3 rounds maangta hai. Jo pehle se unlock hai wo unlock hi rehta hai.
 - Naye users ko ye files pehli online load par cache ho jaati hain. Purane installed users ko ye update popup (What's New ka naya top block) ke zariye milti hain.
+
+## Food Quiz
+
+- Nayi category **🍛 Food Quiz** (id `food`), file `js/questions/food-questions.js`, `index.html` mein `word-questions.js` ke baad load hoti hai. Sawal Hinglish mein, options English ya Hinglish mein. **100 sawal: 36 Easy + 36 Medium + 28 Hard.**
+- 4 tarah ke sawal: (1) Hindi naam se English naam (`'Bhindi' ka English name kya hai?`), (2) English naam se Hindi naam (`'Pomegranate' ko Hindi mein kya kehte hain?`), (3) dish kis desh / Indian rajya / shehar ki famous hai, (4) shehar ki famous dish kaun si hai. Indian sabziyan, phal, masale, dal, anaaj aur Indian dishes shaamil hain.
+- Options mein `( )` wala hint nahi hota. Galat options bhi sahi option jaise milte-julte rakhe gaye hain (sahi answer sabse lamba option sirf 22/100 sawalon mein hai).
+- Naya category apne aap Home, Stats, History, Achievements (All-Rounder) aur Daily Challenge mein aa jata hai (kyunki sab `BANK` ke keys se banta hai). Backend / Neon mein koi change nahi: sync `mode_n` keys ko `^[a-z0-9_]{1,30}_(5|10|20)$` se check karta hai aur ek baar mein maximum 30 keys leta hai (6 categories x 3 = 18).
+- Facts web se verify kiye gaye (vegetable / fruit / spice names, Indian rajya aur shehar ki dishes, desh ki dishes).
 
 ## Achievements & Trophies (Step 4B)
 
@@ -182,7 +191,7 @@ quiz-game/
 
 ## Daily Challenge
 
-- Home par premium purple card. Roz **10 sawal** (saari 5 categories mix, naye sawal bhi shaamil: 3 Easy + 4 Medium + 3 Hard = 50 marks), 20 sec timer, lifelines (Swap / 50-50 / Skip). **Lives nahi**, saare 10 sawal khelte hain.
+- Home par premium purple card. Roz **10 sawal** (saari 6 categories mix, naye sawal bhi shaamil: 3 Easy + 4 Medium + 3 Hard = 50 marks), 20 sec timer, lifelines (Swap / 50-50 / Skip). **Lives nahi**, saare 10 sawal khelte hain.
 - Sawal **din (IST) se tay** hote hain, har device par same. Pool fixed order mein shuffle hota hai aur roz agla hissa liya jata hai (abhi lagbhag 80+ din tak repeat nahi; sawal badhne par aur zyada). Dhyan rahe: jab tak kisi device par purani app version cache mein ho, uska Daily set naye sawalon wale device se alag ho sakta hai, update ke baad dono same ho jate hain.
 - Reward (sirf account): **+10** complete karne par, **+10 bonus** 10/10 par = max **20 coins/din**. Ye coins **extra** hain, 500 daily cap mein nahi gine jaate.
 - **Ek account + ek IST din = ek reward**: `daily_challenge_runs` ka `PRIMARY KEY (user_id, day)`. Din aur status server (DB clock, Asia/Kolkata) se aate hain, device clock kuch decide nahi karta. Claim par user ki `user_coins` row lock hoti hai, to do devices ek saath claim karein tab bhi ek hi reward.
