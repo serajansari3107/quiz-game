@@ -10,7 +10,7 @@ const modeInfo=()=>`${QN} questions · ${NN.e} Easy (${MK.e}) · ${NN.m} Medium 
 const bestKey=(k,n)=>"best_"+k+(n===20?"":"_"+n);
 const $=s=>document.querySelector(s),app=$("#app");
 const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-let qs,i,score,right,mode,locked,tm,tl,ll,skipped,wrong;
+let qs,i,score,right,mode,locked,tm,tl,ll,skipped,wrong,ssk=0;
 const TIME=20;let MAXW=3;
 const LS=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
 const LW=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
@@ -23,20 +23,26 @@ const setTheme=t=>{THEME=t==="light"?"light":"dark";LW("theme",THEME);applyTheme
 const coinFmt=n=>Number(n).toLocaleString("en-US");
 const coinGet=()=>{const a=LS("auth",null),c=LS("coins",null);return a&&a.user&&c&&c.id===a.user.id&&Number.isInteger(c.b)&&c.b>=0?c.b:null};
 const coinTxt=()=>coinTot()===null?"–":coinFmt(coinTot());
-const coinPill=()=>LS("auth_mode","")==="account"?'<div class="hm-coin'+(coinPendSum()>0?' pend':'')+'" id="cp" title="Your coins"><span class="hm-ci">🪙</span><b id="cn">'+coinTxt()+'</b></div>':"";
+const coinPill=()=>LS("auth_mode","")==="account"?'<div class="hm-coin'+(coinPendSum()>0?' pend':'')+'" id="cp" role="button" tabindex="0" aria-label="Open Coin Shop" title="Coin Shop"><span class="hm-ci">🪙</span><b id="cn">'+coinTxt()+'</b></div>':"";
 const coinShow=()=>{if(coinFlying)return;const n=$("#cn");if(n)n.textContent=coinTxt();const p=$("#cp");if(p)p.classList.toggle("pend",coinPendSum()>0)};
 let coinWait=null,coinRes=null,coinFlying=0;
-const coinEst=(n,r)=>r+(r===n?({5:5,10:10,20:20}[n]||0):0);
+const coinEst=(n,r,k)=>r+(r>0&&r+(k|0)===n?({5:5,10:10,20:20}[n]||0):0);
 const coinPendGet=()=>{const a=LS("auth",null),p=LS("cpend",null);return a&&a.user&&p&&p.id===a.user.id&&p.m&&typeof p.m==="object"?p.m:{}};
 const coinPendSum=()=>{const m=coinPendGet();return LS("outbox",[]).reduce((s,e)=>s+(Number.isInteger(m[e.id])&&m[e.id]>0?m[e.id]:0),0)};
 const coinPendAdd=(id,n)=>{const a=LS("auth",null);if(!a||!a.user||!id||!(n>0))return;const o=new Set(LS("outbox",[]).map(e=>e.id)),m=coinPendGet(),k={};for(const x in m)if(o.has(x))k[x]=m[x];k[id]=n;LW("cpend",{id:a.user.id,m:k})};
 const coinTot=()=>{const b=coinGet();return b===null?null:b+coinPendSum()};
+// Coin Shop items (server par rehte hain): xl = Extra Lifeline, ss = Streak Skip. Round mein use hue items RU mein, round khatam hone par outbox event (x, k) mein jaate hain.
+const SHOP_PRICE=10;
+let RU={xl:0,ss:0};
+const itemGet=k=>{const a=LS("auth",null),c=LS("items",null);return a&&a.user&&c&&c.id===a.user.id&&Number.isInteger(c[k])&&c[k]>=0?c[k]:0};
+const itemPend=k=>LS("outbox",[]).reduce((s,e)=>s+((k==="xl"?e.x:e.k)|0),0);
+const itemBal=k=>Math.max(0,itemGet(k)-itemPend(k)-RU[k]);
 const coinReduced=()=>window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
 const coinNote=t=>{const e=$("#rce");if(e&&coinWait)e.textContent=t};
 const coinCard=(id,est)=>{coinRes=null;coinWait=null;if(LS("auth_mode","")!=="account")return'<div class="rs-coin rs-coin-g"><span class="rc-i">🪙</span><span>Login to earn coins</span></div>';if(!id)return"";const card=(t,n,cl)=>'<div class="rs-coin'+cl+'" id="rc"><span class="rc-i">🪙</span><div class="rc-t"><small>Coins earned</small><b id="rcn">'+t+'</b><em id="rce">'+n+'</em></div></div>';if(!(est>0)){coinRes={n:0};return card("No coins","No correct answers this round","")}coinRes={n:est};coinWait={id,est};setTimeout(()=>{if(coinWait&&coinWait.id===id)coinNote("Still syncing…")},10000);setTimeout(()=>{const e=$("#rcn");if(e&&coinWait&&coinWait.id===id)coinCount(e,est)},0);return card("+0",navigator.onLine?"Syncing…":"Will sync when online"," sync")};
 const coinCount=(el,n)=>{delete el.dataset.fin;if(coinReduced()){el.textContent="+"+n;return}const t0=performance.now(),d=Math.min(900,300+n*25),f=t=>{if(el.dataset.fin)return;const k=Math.min(1,(t-t0)/d);el.textContent="+"+Math.round(n*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f);else el.textContent="+"+n};requestAnimationFrame(f)};
 const coinConfirm=(v,c,rej)=>{if(!coinWait)return;const est=coinWait.est;coinWait=null;const e=$("#rcn"),b=$("#rc"),m=$("#rce");if(!e||!b||!m)return;b.classList.remove("sync");e.dataset.fin=1;coinRes={n:v};e.textContent=v>0?"+"+v:"No coins";const lim=c.today>=c.cap,L="("+c.cap+" coins)";m.textContent=rej?"Round not counted for coins":v===est?(lim?"Daily limit reached "+L:""):(v===0&&lim?"Daily limit reached "+L:lim?"Adjusted to your daily limit "+L:"Adjusted by server")};
-const coinCredits=d=>{try{if(!d||!d.coins)return;const c=d.coins,a=LS("auth",null);if(Number.isInteger(c.balance)&&c.balance>=0&&a&&a.user)LW("coins",{id:a.user.id,b:c.balance});if(coinWait&&c.credits){const v=c.credits[coinWait.id];if(Number.isInteger(v)&&v>=0)coinConfirm(v,c);else if(!LS("outbox",[]).some(e=>e.id===coinWait.id))coinConfirm(0,c,1)}coinShow()}catch(e){}};
+const coinCredits=d=>{try{if(d&&d.items){const a0=LS("auth",null);if(a0&&a0.user&&Number.isInteger(d.items.xl)&&Number.isInteger(d.items.ss)&&d.items.xl>=0&&d.items.ss>=0)LW("items",{id:a0.user.id,xl:d.items.xl,ss:d.items.ss})}if(!d||!d.coins)return;const c=d.coins,a=LS("auth",null);if(Number.isInteger(c.balance)&&c.balance>=0&&a&&a.user)LW("coins",{id:a.user.id,b:c.balance});if(coinWait&&c.credits){const v=c.credits[coinWait.id];if(Number.isInteger(v)&&v>=0)coinConfirm(v,c);else if(!LS("outbox",[]).some(e=>e.id===coinWait.id))coinConfirm(0,c,1)}coinShow()}catch(e){}};
 const coinFlyStart=()=>{try{if(!coinRes||!coinRes.n||coinReduced())return null;const i=$("#rc .rc-i");if(!i)return null;const r=i.getBoundingClientRect();return{n:coinRes.n,x:r.left+r.width/2,y:r.top+r.height/2}}catch(e){return null}};
 const coinFlyRun=f=>{try{if(!f)return;const bal=coinTot(),cn=$("#cn"),cp=$("#cp"),ci=$("#cp .hm-ci");if(bal===null||!cn||!cp||!ci)return;cp.style.animation="none";coinFlying=1;let cur=Math.max(0,bal-f.n);cn.textContent=coinFmt(cur);const t=ci.getBoundingClientRect(),tx=t.left+t.width/2,ty=t.top+t.height/2,K=Math.min(f.n,12),base=Math.floor(f.n/K),extra=f.n%K;let done=0;
  for(let j=0;j<K;j++){const el=document.createElement("span");el.className="coin-fly";el.textContent="🪙";el.style.opacity=0;document.body.appendChild(el);const sx=f.x-11+(Math.random()-.5)*24,sy=f.y-11+(Math.random()-.5)*10,mx=(sx+tx-11)/2+(Math.random()-.5)*70,my=Math.min(sy,ty)-40-Math.random()*40;
@@ -58,6 +64,59 @@ const SFX={
  win(){[523,659,784,1047].forEach((f,j)=>beep(f,.2,"sine",.15,j*140))},
  over(){[400,330,260,180].forEach((f,j)=>beep(f,.25,"sawtooth",.1,j*200));vib([200,100,200])}
 };
+// ===== Coin Shop (Home par coin pill dabane par khulta hai) =====
+const SHOP=[{k:"xl",ic:"🎟️",t:"Extra Lifeline",d:"When a free lifeline (Swap, 50-50 or Skip) is used up, spend one of these to use it again."},{k:"ss",ic:"🛡️",t:"Streak Skip",d:"Skip one question with no marks. It is not counted, so your Perfect Round and Perfect streak stay alive."}];
+let shopOv=null,shopBusy=0,shopMsg=null,shopEv={};
+const shopWire=()=>{const p=$("#cp");if(!p)return;p.onclick=openShop;p.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openShop()}}};
+const qzToast=t=>{document.querySelectorAll(".qzt").forEach(x=>x.remove());const e=document.createElement("div");e.className="qzt";e.setAttribute("role","status");e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2800)};
+function shopApply(d){const a=LS("auth",null);if(!a||!a.user||!d)return;if(Number.isInteger(d.balance)&&d.balance>=0)LW("coins",{id:a.user.id,b:d.balance});if(d.items&&Number.isInteger(d.items.xl)&&Number.isInteger(d.items.ss))LW("items",{id:a.user.id,xl:d.items.xl,ss:d.items.ss});coinShow()}
+function openShop(){
+ if(LS("auth_mode","")!=="account"||shopOv)return;
+ const ov=document.createElement("div");ov.className="ov mnu shp";shopOv=ov;document.body.appendChild(ov);
+ const close=()=>{ov.remove();shopOv=null;shopMsg=null;coinShow()};
+ const paint=()=>{
+  const tot=coinTot(),on=navigator.onLine;
+  ov.innerHTML='<div class="panel mnu-d shp-d" role="dialog" aria-modal="true" aria-label="Coin Shop"><div class="ph"><h2>🪙 Coin Shop</h2><button class="x" id="sx">Close</button></div>'
+  +'<div class="shp-bal"><span>Your coins</span><b>🪙 '+(tot===null?"–":coinFmt(tot))+'</b></div>'
+  +SHOP.map(x=>{const n=itemBal(x.k),can=on&&tot!==null&&tot>=SHOP_PRICE&&!shopBusy;
+   return '<div class="shp-it"><div class="shp-ic" aria-hidden="true">'+x.ic+'</div><div class="shp-tx"><b>'+x.t+'</b><p>'+x.d+'</p><small>You have <b>'+n+'</b></small></div><button class="shp-buy" data-k="'+x.k+'"'+(can?"":" disabled")+'>Buy<span>🪙 '+SHOP_PRICE+'</span></button></div>'}).join("")
+  +'<div class="shp-msg'+(shopMsg&&shopMsg.e?" err":"")+'" id="smsg" role="status" aria-live="polite">'+(shopMsg?shopMsg.t:(!on?"You are offline. Buying needs internet.":(tot!==null&&tot<SHOP_PRICE?"Each item costs "+SHOP_PRICE+" coins. Play rounds to earn more coins.":"")))+'</div></div>';
+  ov.querySelector("#sx").onclick=close;
+  ov.querySelectorAll(".shp-buy").forEach(b=>b.onclick=()=>shopBuy(b.dataset.k,paint));
+ };
+ ov.onclick=e=>{if(e.target===ov)close()};
+ ov.onkeydown=e=>{if(e.key==="Escape")close()};
+ paint();ov.querySelector("#sx").focus();
+ if(navigator.onLine)authedApi("/shop/state",{}).then(r=>{if(r.ok&&shopOv===ov){shopApply(r.data);paint()}});
+}
+async function shopBuy(k,paint){
+ if(shopBusy)return;const it=SHOP.find(x=>x.k===k);if(!it)return;
+ shopBusy=1;shopMsg={t:"Buying…"};paint();
+ try{
+  if(LS("outbox",[]).length)await syncNow(); // pehle khele hue rounds ke coins server tak pahunchao
+  const id=shopEv[k]||(shopEv[k]=uuid()),r=await authedApi("/shop/buy",{eventId:id,item:k});
+  if(r.ok&&r.data&&r.data.items){delete shopEv[k];shopApply(r.data);shopMsg={t:"✅ "+it.t+" added. You now have "+itemBal(k)+"."}}
+  else if(r.status===402){delete shopEv[k];if(r.data&&Number.isInteger(r.data.balance))shopApply({balance:r.data.balance});shopMsg={t:"Not enough coins.",e:1}}
+  else if(r.status===401)shopMsg={t:authMsg(r),e:1};
+  else if(r.status>=400&&r.status<500){delete shopEv[k];shopMsg={t:authMsg(r),e:1}}
+  else shopMsg={t:"Could not reach the server. Please try again.",e:1}
+ }catch(e){shopMsg={t:"Something went wrong. Please try again.",e:1}}
+ finally{shopBusy=0;if(shopOv)paint()}
+}
+// Game ke andar: Extra Lifeline / Streak Skip ki 2 mini buttons (sirf account + normal round, Daily Challenge mein nahi)
+const xiOn=()=>!DC&&LS("auth_mode","")==="account";
+const xiRow=()=>{if(!xiOn())return"";const a=itemBal("xl"),b=itemBal("ss");return`<div class="ll2"><button type="button" id="lx" class="xi${a?"":" zero"}" aria-label="Extra Lifeline, ${a} left" title="Extra Lifeline"><span class="xi-i" aria-hidden="true">🎟️</span><span class="xi-t">Extra Lifeline</span><b class="xi-n">${a}</b></button><button type="button" id="lk" class="xi${b?"":" zero"}" aria-label="Streak Skip, ${b} left" title="Streak Skip"><span class="xi-i" aria-hidden="true">🛡️</span><span class="xi-t">Streak Skip</span><b class="xi-n">${b}</b></button></div>`};
+function xlMenu(list,cb){
+ const m=document.createElement("div");m.className="xlm";m.setAttribute("role","dialog");m.setAttribute("aria-label","Use Extra Lifeline");
+ m.innerHTML='<div class="xlm-in"><b>Use 1 Extra Lifeline as…</b>'+list.map((x,j)=>'<button type="button" data-j="'+j+'">'+x[1]+'</button>').join("")+'<button type="button" class="xlm-c">Cancel</button></div>';
+ document.body.appendChild(m);
+ const close=()=>m.remove();
+ m.onclick=e=>{if(e.target===m)close()};
+ m.onkeydown=e=>{if(e.key==="Escape")close()};
+ m.querySelectorAll("[data-j]").forEach(b=>b.onclick=()=>{close();cb(list[+b.dataset.j])});
+ m.querySelector(".xlm-c").onclick=close;
+ m.querySelector("[data-j]").focus();
+}
 function openMenu(){
  const ov=document.createElement("div");ov.className="ov";
  ov.innerHTML='<div class="panel mnu-d"><div class="ph"><h2>☰ Menu</h2><button class="x">Close</button></div><button class="mnu-i" id="m1"><span class="mnu-ic">📊</span><span class="mnu-t"><b>Stats</b><small>Summary & History</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m2"><span class="mnu-ic">⚙️</span><span class="mnu-t"><b>Settings</b><small>Sound & Vibration</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m3"><span class="mnu-ic">👤</span><span class="mnu-t"><b>My Account</b><small>Profile, Password & Logout</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m7"><span class="mnu-ic">🏆</span><span class="mnu-t"><b>Achievements</b><small>Trophies & Milestones</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m6"><span class="mnu-ic">🆕</span><span class="mnu-t"><b>What’s New</b><small>Latest updates'+(VER?' · v'+VER:'')+'</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m4"><span class="mnu-ic">ℹ️</span><span class="mnu-t"><b>About</b><small>How it works & question counts</small></span><span class="hm-go">›</span></button><button class="mnu-i" id="m5">'+thHtml()+'</button></div>';
@@ -84,10 +143,10 @@ function aboutScr(){
  +sec("▶️ How to Play",["<b>Step 1:</b> On the Home screen, choose a category.","<b>Step 2:</b> Choose a quiz size: 5, 10 or 20 questions.","<b>Step 3:</b> Tap <b>Start Quiz</b>.","<b>Step 4:</b> Read the question and tap one option before the timer ends.","<b>Step 5:</b> You instantly see if you were right, the correct answer and a short explanation.","<b>Step 6:</b> Tap <b>Next</b> to continue. At the end you see your result."])
  +sec("🏆 Quiz Sizes &amp; Marks",["<b>5 Questions:</b> 20 marks in total. Easy = 2, Medium = 4, Hard = 8 marks. Mix: 2 easy, 2 medium, 1 hard.","<b>10 Questions:</b> 50 marks in total. Easy = 2, Medium = 5, Hard = 8 marks. Mix: 3 easy, 4 medium, 3 hard.","<b>20 Questions:</b> 100 marks in total. Easy = 2, Medium = 5, Hard = 8.5 marks. Mix: 7 easy, 7 medium, 6 hard.","You get marks only for correct answers. Wrong answers do not reduce your marks."])
  +sec("⏱ Timer &amp; Lives",["You get <b>20 seconds</b> for each question. The timer turns red in the last 5 seconds.","You have <b>3 lives</b> (❤️❤️❤️) in every round.","A wrong answer or a time-up costs 1 life.","If you lose all 3 lives, the round ends with <b>Game Over</b>.","If you tap <b>Quit</b> and confirm, the round ends and its score is not saved."])
- +sec("🛟 Lifelines",["Each lifeline can be used <b>once per round</b>.","<b>🔄 Swap:</b> replaces the current question with a new one of the same difficulty.","<b>50-50:</b> removes 2 wrong options, so only 2 options remain.","<b>Skip:</b> moves to the next question. You do not earn marks, and you do not lose a life."])
+ +sec("🛟 Lifelines",["Each lifeline can be used <b>once per round</b>.","<b>🔄 Swap:</b> replaces the current question with a new one of the same difficulty.","<b>50-50:</b> removes 2 wrong options, so only 2 options remain.","<b>Skip:</b> moves to the next question. You do not earn marks, and you do not lose a life.","<b>🎟️ Extra Lifeline</b> (Coin Shop, 10 coins): when a free lifeline is used up, spend one to use it again. Tap the small 🎟️ button under the lifelines and choose which lifeline you want.","<b>🛡️ Streak Skip</b> (Coin Shop, 10 coins): skips a question with no marks. That question is not counted, so a Perfect Round and your Perfect streak can continue. You can use up to half of the quiz questions as Streak Skips in one round.","The small number on each button shows how many you have. If it is 0, buy more in the Coin Shop. These buttons are only for logged-in accounts and are not in the Daily Challenge."])
  +sec("🔀 Fair Question Rotation",["Questions are shuffled in every round.","The app remembers which questions you have already seen in each category and avoids repeating them until you have seen them all."])
  +sec("📊 Stats",["Open <b>Menu → Stats</b> to see your progress. It has 3 tabs: <b>Best</b>, <b>History</b> and <b>Summary</b>.","<b>Best:</b> your highest scores.","<b>History:</b> your last 10 rounds.","<b>Summary:</b> Total Rounds Played, Questions Played, Correct Answers, Wrong Answers, Points Secured, Accuracy Rate, Perfect Rounds, Longest Perfect Streak and User Since. You can filter it by category and quiz size.","A <b>Perfect Round</b> means you answered every question of the round correctly. <b>Longest Perfect Streak</b> is the most perfect rounds in a row."])
- +sec("🪙 Coins",["Coins are a reward you earn by playing. Only <b>logged-in accounts</b> earn coins. Guests do not.","Every correct answer gives <b>1 coin</b>.","A <b>perfect round</b> (every question correct) gives a bonus: <b>5</b> coins in a 5-question quiz, <b>10</b> in a 10-question quiz and <b>20</b> in a 20-question quiz.","You can earn up to <b>500 coins per day</b>. The limit resets at <b>12:00 AM India time (IST)</b>. If a round would cross the limit, you get only the coins that are left for the day.","Your balance (🪙) is shown on the Home screen next to the Menu button. It is saved safely on the server, so it is the same on every device where you log in.","On the result screen you see the coins you earned. Tap <b>Home</b> and the coins fly to your balance.","Offline? You still see your coins right away and your balance shows a small dot. The coins are confirmed automatically when you are back online. In rare cases, for example when the daily limit is reached, the final number can be a little different and the app tells you.","The real balance lives on the server, so it cannot be changed from your phone."])
+ +sec("🪙 Coins",["Coins are a reward you earn by playing. Only <b>logged-in accounts</b> earn coins. Guests do not.","Every correct answer gives <b>1 coin</b>.","A <b>perfect round</b> (every question correct) gives a bonus: <b>5</b> coins in a 5-question quiz, <b>10</b> in a 10-question quiz and <b>20</b> in a 20-question quiz.","You can earn up to <b>500 coins per day</b>. The limit resets at <b>12:00 AM India time (IST)</b>. If a round would cross the limit, you get only the coins that are left for the day.","Your balance (🪙) is shown on the Home screen next to the Menu button. It is saved safely on the server, so it is the same on every device where you log in.","On the result screen you see the coins you earned. Tap <b>Home</b> and the coins fly to your balance.","Offline? You still see your coins right away and your balance shows a small dot. The coins are confirmed automatically when you are back online. In rare cases, for example when the daily limit is reached, the final number can be a little different and the app tells you.","The real balance lives on the server, so it cannot be changed from your phone.","Tap your coin balance on the Home screen to open the <b>Coin Shop</b>. You can buy an <b>Extra Lifeline</b> or a <b>Streak Skip</b> for <b>10 coins</b> each. Buying needs internet."])
  +sec("🔄 Auto Sync",[
 "If you are logged in, your rounds, points, coins, history and a saved Daily Challenge reward are synced to the server automatically, as soon as the internet is available. You do not need to do anything.",
 "Sync also runs when you reopen the app, and if it fails it retries by itself with growing gaps (5 seconds up to 5 minutes).",
@@ -144,7 +203,7 @@ function home(){if(!BOOTED){BOOTED=1;return welcome()}stopT();dcLeave();
  app.innerHTML=`<div class="hm"><div class="hm-in"><div class="hm-bar"><div class="hm-brand"><span class="hm-bl">🎯</span><b>Quiz Arena</b></div><div class="hm-right">${syBtn()}${coinPill()}<button id="mn" class="hm-chip hm-menu" aria-label="Menu">☰</button></div></div><div class="hm-hero2"><div class="hm-hl">Ready to Prove Yourself?</div><p class="hm-sub">Play smart. Build your streak. Earn your glory.</p></div>${dcCard()}<div class="hm-label">Choose a category</div><div class="hm-grid">`+
  Object.keys(BANK).map(k=>{const nm=BANK[k].name,e=nm.match(/^(\p{Extended_Pictographic}\S*)\s+(.+)$/u);return`<button class="hm-card" data-m="${k}"><span class="hm-ic">${e?e[1]:"📚"}</span><span class="hm-tx"><b>${e?e[2]:nm}</b><small>${BANK[k].q.length} questions</small></span><span class="hm-go">›</span></button>`}).join("")+`</div></div></div>`;
  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>selMode(b.dataset.m));
- $("#mn").onclick=openMenu;dcWire();syWire();
+ $("#mn").onclick=openMenu;dcWire();syWire();shopWire();
  app.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{setQN(+b.dataset.n);LW("qn",QN);home()});
  $(".hm-in").insertAdjacentHTML("beforeend",`<div class="ver">${VER?"Version "+VER:""}</div>`);
 }
@@ -157,22 +216,44 @@ function selMode(m){
  };
  draw();
 }
-function start(m){unlockA();mode=m;qs=build(m);i=0;score=0;right=0;skipped=0;wrong=0;ll={f:1,s:1,c:1};show()}
+function start(m){unlockA();mode=m;qs=build(m);i=0;score=0;right=0;skipped=0;wrong=0;ssk=0;RU={xl:0,ss:0};ll={f:1,s:1,c:1};show()}
 function show(){
  const d=qs[i];if(DC&&DC.cat.get(d))mode=DC.cat.get(d);locked=false;stopT();tl=TIME;
  const opts=shuf([d[1],...d[2]]);
  app.innerHTML=`<div class="qz"><div class="qz-in"><div class="qz-top"><button id="qt" class="hm-chip">✕ Quit</button><div class="qz-st"><span class="qz-pill">Marks ${score}</span><span class="qz-pill">${"❤️".repeat(DC?0:MAXW-wrong)}${DC?"📅 Daily":""}</span></div></div>
  <div class="bar"><i style="width:${i/qs.length*100}%"></i></div>
  <div class="qz-prog"><span>Question ${i+1}/${qs.length}</span><span class="badge">${LB[d[4]]} · ${MK[d[4]]} mark${MK[d[4]]>1?"s":""}</span></div>
- <div class="qz-card"><small class="qz-cat">${BANK[mode].name}</small><div class="q">${d[0]}</div></div>`+`<div class="ll"><span class="tmt" id="tmt">⏱ ${TIME}s</span><button id="lc" ${ll.c?"":"disabled"} style="padding:7px 10px">🔄</button><button id="l5" ${ll.f?"":"disabled"}>50-50</button><button id="ls" ${ll.s?"":"disabled"}>Skip</button></div>`+
+ <div class="qz-card"><small class="qz-cat">${BANK[mode].name}</small><div class="q">${d[0]}</div></div>`+`<div class="ll"><span class="tmt" id="tmt">⏱ ${TIME}s</span><button id="lc" ${ll.c?"":"disabled"} style="padding:7px 10px">🔄</button><button id="l5" ${ll.f?"":"disabled"}>50-50</button><button id="ls" ${ll.s?"":"disabled"}>Skip</button></div>`+xiRow()+
  opts.map(o=>`<button class="opt">${o}</button>`).join("")+
  `<div class="info hide" id="info"></div><button class="qz-nx hide" id="nx">Next →</button></div></div>`;
- $("#qt").onclick=()=>{if(confirm("Want to quit? Scores will not be saved."))home()};
+ $("#qt").onclick=()=>{if(confirm("Want to quit? Scores will not be saved.")){RU={xl:0,ss:0};ssk=0;home()}};
  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pick(b,d));
  tm=setInterval(()=>{tl--;const t=$("#tmt");if(t){t.textContent="⏱ "+tl+"s";if(tl<=5){t.classList.add("low");if(tl>0)SFX.tick()}}if(tl<=0){stopT();timeUp(d)}},1000);
  $("#lc").onclick=()=>{if(locked||!ll.c)return;const used=gs(mode),cand=BANK[mode].q.filter(x=>x[4]===d[4]&&!qs.includes(x));let p=cand.filter(x=>!used.includes(x[0]));if(!p.length)p=cand;if(!p.length)return;ll.c=0;const n=p[Math.floor(Math.random()*p.length)];qs[i]=n;if(DC)DC.cat.set(n,mode);else ss(mode,used.concat(n[0]));show()};
  $("#l5").onclick=()=>{if(locked||!ll.f)return;ll.f=0;$("#l5").disabled=true;shuf([...app.querySelectorAll(".opt")].filter(o=>o.textContent!==d[1])).slice(0,2).forEach(o=>{o.style.display="none"})};
  $("#ls").onclick=()=>{if(locked||!ll.s)return;ll.s=0;skipped++;stopT();i++;i<qs.length?show():end()};
+ if(xiOn()){
+  document.querySelectorAll(".xlm").forEach(x=>x.remove());
+  const xiPaint=()=>{const a=itemBal("xl"),b=itemBal("ss"),x=$("#lx"),k=$("#lk");if(x){x.querySelector(".xi-n").textContent=a;x.classList.toggle("zero",!a);x.setAttribute("aria-label","Extra Lifeline, "+a+" left")}if(k){k.querySelector(".xi-n").textContent=b;k.classList.toggle("zero",!b);k.setAttribute("aria-label","Streak Skip, "+b+" left")}};
+  $("#lx").onclick=()=>{
+   if(locked)return;
+   if(itemBal("xl")<1)return qzToast("You have 0 Extra Lifelines. Buy them in the Coin Shop (tap 🪙 on Home).");
+   const used=[["c","🔄 Swap","lc"],["f","50-50","l5"],["s","Skip","ls"]].filter(x=>!ll[x[0]]);
+   if(!used.length)return qzToast("Use a free lifeline first. Extra Lifeline works when one is used up.");
+   xlMenu(used,p=>{
+    if(locked)return;
+    const b=$("#"+p[2]);if(!b)return;
+    RU.xl++;ll[p[0]]=1;b.disabled=false;b.click();
+    if(ll[p[0]]){RU.xl--;ll[p[0]]=0;b.disabled=true;qzToast("That lifeline cannot be used right now.")}else xiPaint();
+   });
+  };
+  $("#lk").onclick=()=>{
+   if(locked)return;
+   if(itemBal("ss")<1)return qzToast("You have 0 Streak Skips. Buy them in the Coin Shop (tap 🪙 on Home).");
+   const mx=Math.floor(QN/2);if(ssk>=mx)return qzToast("You can use at most "+mx+" Streak Skips in this round.");
+   RU.ss++;ssk++;stopT();i++;i<qs.length?show():end();
+  };
+ }
 }
 function timeUp(d){if(!locked){wrong++;SFX.bad()}
  if(locked)return;locked=true;
@@ -195,11 +276,11 @@ function pick(b,d){stopT();
  nx.onclick=()=>{i++;(wrong>=MAXW||i>=qs.length)?end():show()};
  nx.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
-function end(){stopT();if(DC)return dcEnd();wrong>=MAXW?SFX.over():SFX.win();const aPre=achPre();
+function end(){stopT();if(DC)return dcEnd();wrong>=MAXW?SFX.over():SFX.win();const aPre=achPre();const ssU=ssk,xlU=RU.xl,perf=right>0&&right+ssU===QN;document.querySelectorAll(".xlm,.qzt").forEach(x=>x.remove());
  const p=Math.round(score/MAX*100);
- {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,n:QN,d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));{const S=LS("sum",{}),sk=mode+"_"+QN,a=S[sk]||{r:0,q:0,c:0,w:0,p:0};a.r++;a.q+=right+wrong;a.c+=right;a.w+=wrong;a.p+=score;a.f=(a.f||0)+(right===QN?1:0);S[sk]=a;LW("sum",S)}upStr(mode,QN,right===QN);const bk=bestKey(mode,QN);if(score>LS(bk,0))LW(bk,score)}const eid=evAdd(mode,QN,right,wrong,score),est=coinEst(QN,right);if(eid){coinPendAdd(eid,est);syncNow()}
- app.innerHTML=`<div class="rs"><div class="rs-in"><h1>${wrong>=MAXW?"Game Over 💀":"Round khatam!"}</h1><div class="rs-hero"><div class="rs-score">${score}<small>/${MAX}</small></div><div class="rs-bar"><i style="width:${Math.min(100,p)}%"></i></div><div class="rs-pc">${p}% marks</div></div><div class="rs-grid"><div class="rs-c"><small>Accuracy</small><b>${right+wrong?Math.round(right/(right+wrong)*100):0}%</b></div><div class="rs-c"><small>Points</small><b>${score}</b></div><div class="rs-c ok"><small>Correct</small><b>${right}/${QN}</b></div><div class="rs-c bad"><small>Wrong</small><b>${wrong}</b></div></div>
- ${coinCard(eid,est)}<div class="rs-msg">${p<=20?"Don't give up, keep practicing! 💪":p<50?"Not bad, you can do better! 🙂":p<=70?"Good job, nice effort! 👍":p<=90?"Great work, almost there! 🔥":p<100?"Excellent! So close to perfect! 🏆":"PERFECT 100! You are a legend! 👑"}</div><br>
+ {const h=LS("hist",[]);h.unshift({m:mode,s:score,r:right,n:QN,...(ssU>0?{k:ssU}:{}),d:new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short"})});LW("hist",h.slice(0,10));{const S=LS("sum",{}),sk=mode+"_"+QN,a=S[sk]||{r:0,q:0,c:0,w:0,p:0};a.r++;a.q+=right+wrong;a.c+=right;a.w+=wrong;a.p+=score;a.f=(a.f||0)+(perf?1:0);S[sk]=a;LW("sum",S)}upStr(mode,QN,perf);const bk=bestKey(mode,QN);if(score>LS(bk,0))LW(bk,score)}const eid=evAdd(mode,QN,right,wrong,score,{k:ssU,x:xlU}),est=coinEst(QN,right,ssU);RU={xl:0,ss:0};ssk=0;if(eid){coinPendAdd(eid,est);syncNow()}
+ app.innerHTML=`<div class="rs"><div class="rs-in"><h1>${wrong>=MAXW?"Game Over 💀":"Round khatam!"}</h1><div class="rs-hero"><div class="rs-score">${score}<small>/${MAX}</small></div><div class="rs-bar"><i style="width:${Math.min(100,p)}%"></i></div><div class="rs-pc">${p}% marks</div></div><div class="rs-grid"><div class="rs-c"><small>Accuracy</small><b>${right+wrong?Math.round(right/(right+wrong)*100):0}%</b></div><div class="rs-c"><small>Points</small><b>${score}</b></div><div class="rs-c ok"><small>Correct</small><b>${right}/${QN-ssU}</b></div><div class="rs-c bad"><small>Wrong</small><b>${wrong}</b></div></div>
+ ${ssU||xlU?'<div class="rs-items">'+(ssU?'🛡️ Streak Skip used: '+ssU:'')+(ssU&&xlU?' · ':'')+(xlU?'🎟️ Extra Lifeline used: '+xlU:'')+'</div>':''}${coinCard(eid,est)}<div class="rs-msg">${p<=20?"Don't give up, keep practicing! 💪":p<50?"Not bad, you can do better! 🙂":p<=70?"Good job, nice effort! 👍":p<=90?"Great work, almost there! 🔥":p<100?"Excellent! So close to perfect! 🏆":"PERFECT 100! You are a legend! 👑"}</div><br>
  ${prgHTML(mode)}<button class="rs-b1" id="again">New Round (New questions)</button><button class="rs-b2" id="hm">Home</button></div></div>`;
  $("#again").onclick=()=>start(mode);prgAnim();achShowRound(aPre);$("#hm").onclick=()=>{const f=coinFlyStart();home();coinFlyRun(f)};
 }
@@ -332,7 +413,7 @@ function achScr(){
 }
 setTimeout(achCatch,2500);
 let sumQ="all",sumN="all";
-const bfStr=()=>{const H=LS("hist",[]).slice().reverse(),P={};["all"].concat(Object.keys(BANK)).forEach(q=>["all","5","10","20"].forEach(n=>{let c=0,b=0;H.forEach(x=>{const xn=x.n||20;if((q==="all"||x.m===q)&&(n==="all"||String(xn)===n)){if(x.r===xn){c++;if(c>b)b=c}else c=0}});P[q+"_"+n]={c,b}}));return P};
+const bfStr=()=>{const H=LS("hist",[]).slice().reverse(),P={};["all"].concat(Object.keys(BANK)).forEach(q=>["all","5","10","20"].forEach(n=>{let c=0,b=0;H.forEach(x=>{const xn=x.n||20;if((q==="all"||x.m===q)&&(n==="all"||String(xn)===n)){if(x.r>0&&x.r+(x.k|0)===xn){c++;if(c>b)b=c}else c=0}});P[q+"_"+n]={c,b}}));return P};
 const upStr=(m,n,p)=>{let P=LS("pstr",null);if(!P){LW("pstr",bfStr());return}[["all","all"],[m,"all"],["all",""+n],[m,""+n]].forEach(k=>{const e=k.join("_"),o=P[e]||{c:0,b:0};o.c=p?o.c+1:0;if(o.c>o.b)o.b=o.c;P[e]=o});LW("pstr",P)};
 const RATINGS=[["🔱 Quiz Conqueror",95,500,10000],["👑 Quiz Legend",95,200,5000],["🏆 Master",85,100,2500],["🎖️ Expert",75,50,1200],["⭐ Advanced",60,30,600],["⚔️ Challenger",40,20,300],["🌱 Rookie",0,10,100]]; // [name, min accuracy %, min rounds, min points]
 const getRating=(ac,r,p)=>{p=p||0;const a=RATINGS.find(t=>rkOk(t,ac,r,p)),n=RATINGS.find(t=>ac>=t[1]);if(a===n)return[a?a[0]:"🔒 Unranked",""];const need=[];if(r<n[2])need.push((n[2]-r)+" more rounds");if(p<n[3])need.push(rkFmt(n[3]-p)+" more points");return[a?a[0]:"🔒 Unranked",need.join(" and ")+" needed for "+rkName(n)]};
@@ -768,7 +849,7 @@ async function syBg(){
 }
 if("serviceWorker"in navigator)navigator.serviceWorker.addEventListener("message",e=>{if(e.data&&e.data.type==="qa-sync")syBg()});
 // end() se call hota hai; koi bhi error quiz ko nahi todta
-const evAdd=(m,n,r,w,s)=>{try{if(LS("auth_mode","")!=="account")return;const o=LS("outbox",[]);const id=uuid();o.push({id,m,n,r,w,s,t:Date.now()});LW("outbox",o);syncSoon();syPaint();if(!navigator.onLine)syReg();return id}catch(e){}};
+const evAdd=(m,n,r,w,s,ex)=>{try{if(LS("auth_mode","")!=="account")return;const o=LS("outbox",[]);const id=uuid(),ev={id,m,n,r,w,s,t:Date.now()};if(ex&&ex.k>0)ev.k=ex.k;if(ex&&ex.x>0)ev.x=ex.x;o.push(ev);LW("outbox",o);syncSoon();syPaint();if(!navigator.onLine)syReg();return id}catch(e){}};
 async function authedApi(path,body){
  let a=LS("auth",null);if(!a)return{ok:false,status:0,data:{}};
  const bad=()=>LS("auth_bad",0)?{ok:false,status:401,data:{error:"Session expired. Open Menu > My Account and tap Login again to keep syncing."}}:{ok:false,status:0,data:{}};
@@ -798,7 +879,7 @@ function applySnap(d){
    else localStorage.removeItem(bestKey(m,n));
   }));
   LW("sum",sum);
-  LW("hist",(d.hist||[]).slice(0,10).map(x=>({m:x.m,s:x.s,r:x.r,n:x.n,d:x.d||fmt(x.t)})));
+  LW("hist",(d.hist||[]).slice(0,10).map(x=>({m:x.m,s:x.s,r:x.r,n:x.n,...(x.k>0?{k:x.k}:{}),d:x.d||fmt(x.t)})));
   if(!LS("pstr",null))LW("pstr",bfStr());
   if(Number.isFinite(d.since)&&d.since>0&&d.since<=Date.now()){const o=LS("since",0);if(!o||d.since<o)LW("since",d.since)}
    if(d.coins&&Number.isInteger(d.coins.balance)&&d.coins.balance>=0){const a=LS("auth",null);if(a&&a.user){LW("coins",{id:a.user.id,b:d.coins.balance});coinShow()}}

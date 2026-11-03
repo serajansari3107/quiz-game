@@ -56,7 +56,8 @@ quiz-game/
         ├── routes/
         │   ├── auth.js   Signup, login, logout, password, recovery code
         │   ├── sync.js   Stats + coins sync (rounds, best, history, streak, coins)
-        │   └── daily.js  Daily Challenge status + reward claim
+        │   ├── daily.js  Daily Challenge status + reward claim
+        │   └── shop.js   Coin Shop: item khareedna (/shop/buy, /shop/state)
         ├── middleware/   auth.js (login check), cors.js
         └── lib/          password.js, tokens.js, rateLimit.js, coins.js (coin rules), daily.js (Daily Challenge rules)
 ```
@@ -132,6 +133,19 @@ quiz-game/
 - **Daily Challenge** ab saari 6 categories (Cricket, WWE, Grammar, GK, Word, Food) ke saare sawalon se banta hai, naye sawal bhi shaamil.
 - **All-Rounder** achievement ab saari categories (6, Food ke saath) mein 3-3 rounds maangta hai. Jo pehle se unlock hai wo unlock hi rehta hai.
 - Naye users ko ye files pehli online load par cache ho jaati hain. Purane installed users ko ye update popup (What's New ka naya top block) ke zariye milti hain.
+
+## Coin Shop (Extra Lifeline + Streak Skip)
+
+- Home par **coin pill dabane par Coin Shop** khulta hai (sirf logged-in account; guest ko pill hi nahi dikhta). 2 items, har ek **10 coins**: **🎟️ Extra Lifeline** (`xl`) aur **🛡️ Streak Skip** (`ss`). Jitne chaho utne khareed sakte ho (koi cap nahi).
+- **Khareedna sirf online.** `POST /shop/buy { eventId, item }`: server balance check karke 10 coins kaat'ta hai aur `user_items` mein item jodta hai. Price server tay karta hai. Same `eventId` retry karne par dobara charge nahi hota (`shop_ledger` UNIQUE `(event_id, item)`). Coins kam hon to `402`. Khareedne se pehle pending rounds `syncNow()` se sync hote hain.
+- **Game ke andar 2 mini buttons** (lifeline row ke neeche, sirf account + normal round; Daily Challenge mein nahi). Har button par balance (0, 1, 2 ...) dikhta hai; 0 ho to dhundhla dikhta hai aur dabane par toast aata hai.
+  - **Extra Lifeline:** tab kaam aata hai jab Swap / 50-50 / Skip mein se koi free lifeline use ho chuki ho. Dabane par chhota menu aata hai jisme sirf use ho chuki lifelines hoti hain; chuni hui lifeline turant chalti hai. Koi lifeline use hi nahi hui ho to toast aata hai aur kuch kat'ta nahi.
+  - **Streak Skip:** sawal bina marks ke skip hota hai, life nahi katti. Ye sawal **gina nahi jata**: accuracy mein nahi, aur Perfect Round ke liye `right + streakSkips === quizN` (aur `right > 0`). Isse Perfect streak (`pstr`) bani rehti hai. Ek round mein max `floor(quizN / 2)` Streak Skips (5Q: 2, 10Q: 5, 20Q: 10). Result par "Correct 4/4" dikhta hai (sirf gine hue sawal).
+- **Use ka hisaab:** round khatam hone par outbox event mein `k` (Streak Skips) aur `x` (Extra Lifelines) jaate hain (sirf > 0 hone par). Server `useItems()` se utne hi kaat'ta hai jitne server par the (`min(used, owned)`); jo Streak Skips server ke paas the hi nahi unhe perfect ke liye nahi maana jata. `rounds.streak_skips` mein valid ginti save hoti hai; perfect streak query `right_cnt > 0 AND right_cnt + streak_skips = quiz_n` se banti hai.
+- **Round Quit karne par** us round ke items kharch nahi hote (round save hi nahi hota).
+- Perfect bonus ka rule wahi hai (5 / 10 / 20 coins); Streak Skip se round perfect ban jaye to bonus milta hai, daily cap 500 pehle jaisa.
+- Local keys: `items` (`{id, xl, ss}` sirf dikhane ke liye; asli ginti server par). `/sync` ke jawab mein `items: { xl, ss }` aata hai.
+- **Deploy order:** pehle Neon SQL (section "11) Coin Shop" in `backend/db/schema.sql`), phir backend push (Render), phir frontend push.
 
 ## Food Quiz
 
@@ -217,13 +231,15 @@ quiz-game/
 | `POST /sync` | Rounds bhejna aur stats, streak, since, coins wapas lena (login chahiye) |
 | `POST /daily/status` | Aaj ka Daily Challenge status + reward rules (login chahiye) |
 | `POST /daily/claim` | Challenge ka result bhejna; ek din mein ek hi reward (login chahiye) |
+| `POST /shop/state` | Coin Shop: balance + items (xl, ss) (login chahiye) |
+| `POST /shop/buy` | Ek item khareedna, 10 coins (login chahiye). `eventId` se retry safe |
 | `GET /health`, `GET /health/db` | Server aur database chal rahe hain ya nahi |
 
 ---
 
 ## Database tables (Neon)
 
-`users`, `refresh_tokens`, `recovery_codes`, `rounds`, `baselines`, `user_stats`, `login_attempts`, `user_coins`, `coin_ledger`, `daily_challenge_runs`.
+`users`, `refresh_tokens`, `recovery_codes`, `rounds` (`streak_skips` column), `baselines`, `user_stats`, `login_attempts`, `user_coins`, `coin_ledger`, `daily_challenge_runs`, `user_items`, `shop_ledger`.
 Naya table ya column ho to pehle `backend/db/schema.sql` mein jodo, aur wahi SQL Neon ke SQL Editor mein chalao. Kabhi purana data delete ya reset mat karo.
 
 ---

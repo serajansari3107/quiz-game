@@ -1,4 +1,11 @@
 window.WN_TXT=(function(){/*
+## v2.9 | 3 Nov 2026
+New:
++ Coin Shop: tap your coins on the Home screen to buy an Extra Lifeline or a Streak Skip for 10 coins each.
++ Extra Lifeline: use any lifeline again after its free use is over.
++ Streak Skip: skip a question without marks. It is not counted, so your Perfect Round and Perfect streak stay alive.
++ Two small buttons in the quiz show how many Extra Lifelines and Streak Skips you have.
+
 ## v2.8 | 1 Nov 2026
 New:
 + New Food Quiz category with 100 questions: food names in English and Hindi, and which country, state or city a dish is famous from.

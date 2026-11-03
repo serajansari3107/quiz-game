@@ -125,4 +125,32 @@ CREATE TABLE IF NOT EXISTS daily_challenge_runs (
   CHECK (right_cnt + wrong_cnt <= 10)
 );
 
+-- 11) Coin Shop (additive: koi purani table / data nahi badalta)
+-- rounds: Streak Skip se hata diye gaye sawalon ki ginti (perfect round / streak ke liye)
+ALTER TABLE rounds ADD COLUMN IF NOT EXISTS streak_skips smallint NOT NULL DEFAULT 0 CHECK (streak_skips >= 0);
+
+-- user_items: har user ke paas kitne items hain (xl = Extra Lifeline, ss = Streak Skip)
+CREATE TABLE IF NOT EXISTS user_items (
+  user_id    uuid        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  item       text        NOT NULL CHECK (item IN ('xl', 'ss')),
+  qty        integer     NOT NULL DEFAULT 0 CHECK (qty >= 0),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (user_id, item)
+);
+
+-- shop_ledger: har khareed (buy) aur use ka record. UNIQUE (event_id, item) = duplicate / retry protection.
+-- (Coins ka purana coin_ledger nahi chhua: usme delta > 0 hi hota hai aur daily cap wahin se count hota hai.)
+CREATE TABLE IF NOT EXISTS shop_ledger (
+  id         bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  user_id    uuid        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  event_id   uuid        NOT NULL,
+  kind       text        NOT NULL CHECK (kind IN ('buy', 'use')),
+  item       text        NOT NULL CHECK (item IN ('xl', 'ss')),
+  qty        integer     NOT NULL CHECK (qty > 0),
+  cost       integer     NOT NULL DEFAULT 0 CHECK (cost >= 0),
+  created_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (event_id, item)
+);
+CREATE INDEX IF NOT EXISTS shop_ledger_user_idx ON shop_ledger (user_id, created_at);
+
 COMMIT;

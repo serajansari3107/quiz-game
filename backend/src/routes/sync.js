@@ -1,7 +1,7 @@
 const express = require("express");
 const { getPool } = require("../db");
 const requireAuth = require("../middleware/auth");
-const { DAILY_CAP, roundCoins } = require("../lib/coins");
+const { DAILY_CAP, roundCoins, isPerfect, maxStreakSkips } = require("../lib/coins");
 
 const router = express.Router();
 
@@ -19,10 +19,14 @@ function cleanEvent(e) {
   if (!e || typeof e !== "object" || typeof e.n !== "number" || !MAXSCORE[e.n]) return null;
   if (!UUID_RE.test(String(e.id)) || !MODE_RE.test(String(e.m))) return null;
   if (!isInt(e.r, 0, e.n) || !isInt(e.w, 0, e.n) || e.r + e.w > e.n || !isHalf(e.s, MAXSCORE[e.n])) return null;
+  // Coin Shop: k = Streak Skips, x = Extra Lifelines (dono optional; purane events mein nahi hote)
+  const k = e.k === undefined ? 0 : e.k;
+  const x = e.x === undefined ? 0 : e.x;
+  if (!isInt(k, 0, maxStreakSkips(e.n)) || !isInt(x, 0, 20) || e.r + e.w + k > e.n) return null;
   const now = Date.now();
   let t = Number(e.t);
   if (!isFinite(t) || t > now || t < now - 4e10) t = now;
-  return { id: e.id.toLowerCase(), m: e.m, n: e.n, r: e.r, w: e.w, s: e.s, t };
+  return { id: e.id.toLowerCase(), m: e.m, n: e.n, r: e.r, w: e.w, s: e.s, k, x, t };
 }
 
 // Guest baseline: poora valid ho tabhi lete hain, warna null (ignore)
@@ -56,7 +60,7 @@ function cleanBaseline(b) {
   return { rows, hist, pstr };
 }
 
-// Perfect-round streak (right_cnt = quiz_n), rounds ke time order mein. Keys: all_all, <mode>_all, all_<n>, <mode>_<n>
+// Perfect-round streak (right_cnt + streak_skips = quiz_n), rounds ke time order mein. Keys: all_all, <mode>_all, all_<n>, <mode>_<n>
 function calcStreak(rows) {
   const S = {};
   for (const x of rows) {
@@ -78,12 +82,35 @@ const UPSERT_STATS =
   "points = user_stats.points + EXCLUDED.points, perfect = user_stats.perfect + EXCLUDED.perfect, " +
   "best_score = GREATEST(user_stats.best_score, EXCLUDED.best_score), updated_at = now()";
 
+// Round mein use hue items server ke items se kaatna: jitne server ke paas hain utne hi maane jate hain
+// (client ka count purana ho to bhi extra nahi milta). Duplicate round yahan tak nahi aata (rounds insert rowCount 0).
+async function useItems(client, uid, e) {
+  const want = { xl: e.x || 0, ss: e.k || 0 };
+  const got = { xl: 0, ss: 0 };
+  for (const item of ["xl", "ss"]) {
+    if (want[item] <= 0) continue;
+    const q = await client.query("SELECT qty FROM user_items WHERE user_id = $1 AND item = $2 FOR UPDATE", [uid, item]);
+    const take = Math.min(want[item], q.rows[0] ? q.rows[0].qty : 0);
+    if (take <= 0) continue;
+    await client.query("UPDATE user_items SET qty = qty - $3, updated_at = now() WHERE user_id = $1 AND item = $2", [uid, item, take]);
+    await client.query(
+      "INSERT INTO shop_ledger (user_id, event_id, kind, item, qty, cost) VALUES ($1, $2, 'use', $3, $4, 0) ON CONFLICT (event_id, item) DO NOTHING",
+      [uid, e.id, item, take]
+    );
+    got[item] = take;
+  }
+  return got;
+}
+
 // Naya round: stats update + coins credit (caller isi transaction mein chalata hai).
 // Coins: har correct = 1, perfect par bonus; daily cap 500 (IST din). Duplicate round yahan tak aata hi nahi
 // (rounds insert ka rowCount 0 hota hai) aur coin_ledger.event_id UNIQUE hai (dusri suraksha).
 async function recordRound(client, uid, e, coin) {
-  await client.query(UPSERT_STATS, [uid, e.m, e.n, 1, e.r + e.w, e.r, e.w, e.s, e.r === e.n ? 1 : 0, e.s]);
-  const c = roundCoins(e.n, e.r);
+  const used = await useItems(client, uid, e);
+  const k = used.ss; // sirf wahi Streak Skips valid jo server par khareede hue the
+  if (k > 0) await client.query("UPDATE rounds SET streak_skips = $2 WHERE event_id = $1", [e.id, k]);
+  await client.query(UPSERT_STATS, [uid, e.m, e.n, 1, e.r + e.w, e.r, e.w, e.s, isPerfect(e.n, e.r, k) ? 1 : 0, e.s]);
+  const c = roundCoins(e.n, e.r, k);
   if (c.total <= 0) return;
   if (!coin.ready) {
     // Is user ki coin row lock: do devices ek saath sync karein to cap ek hi line mein check hota hai
@@ -166,11 +193,15 @@ async function sync(req, res) {
     });
 
     const rd = await client.query(
-      "SELECT mode, quiz_n, right_cnt, score::float8 AS score, (extract(epoch from played_at) * 1000)::float8 AS t " +
+      "SELECT mode, quiz_n, right_cnt, streak_skips, score::float8 AS score, (extract(epoch from played_at) * 1000)::float8 AS t " +
         "FROM rounds WHERE user_id = $1 ORDER BY played_at DESC, seq DESC LIMIT 10",
       [uid]
     );
-    let hist = rd.rows.map((x) => ({ m: x.mode, s: x.score, r: x.right_cnt, n: x.quiz_n, t: Math.round(x.t) }));
+    let hist = rd.rows.map((x) => {
+      const h = { m: x.mode, s: x.score, r: x.right_cnt, n: x.quiz_n, t: Math.round(x.t) };
+      if (x.streak_skips > 0) h.k = x.streak_skips;
+      return h;
+    });
     if (hist.length < 10) {
       const bl = await client.query(
         "SELECT baseline -> 'hist' AS h FROM baselines WHERE user_id = $1 ORDER BY transferred_at ASC",
@@ -183,7 +214,7 @@ async function sync(req, res) {
     }
 
     const sr = await client.query(
-      "SELECT mode, quiz_n, (right_cnt = quiz_n) AS p FROM rounds WHERE user_id = $1 ORDER BY played_at ASC, seq ASC",
+      "SELECT mode, quiz_n, (right_cnt > 0 AND right_cnt + streak_skips = quiz_n) AS p FROM rounds WHERE user_id = $1 ORDER BY played_at ASC, seq ASC",
       [uid]
     );
     const streak = calcStreak(sr.rows);
@@ -216,9 +247,12 @@ async function sync(req, res) {
     }
     
     const coins = { balance: cb.rows[0] ? cb.rows[0].balance : 0, today: ct.rows[0].n, cap: DAILY_CAP, credits };
+    const itq = await client.query("SELECT item, qty FROM user_items WHERE user_id = $1", [uid]);
+    const items = { xl: 0, ss: 0 };
+    itq.rows.forEach((r) => { if (r.item in items) items[r.item] = r.qty; });
 
     await client.query("COMMIT");
-    const out = { stats, hist, streak, since, coins };
+    const out = { stats, hist, streak, since, coins, items };
     if (baselineApplied !== undefined) out.baselineApplied = baselineApplied;
     return res.json(out);
   } catch (err) {
@@ -233,4 +267,4 @@ const wrap = (fn) => (req, res, next) => fn(req, res).catch(next);
 router.post("/", requireAuth, wrap(sync));
 
 module.exports = router;
-module.exports.handlers = { sync };
+module.exports.handlers = { sync, cleanEvent, recordRound };
