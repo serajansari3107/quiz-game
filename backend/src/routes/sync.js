@@ -1,7 +1,7 @@
 const express = require("express");
 const { getPool } = require("../db");
 const requireAuth = require("../middleware/auth");
-const { DAILY_CAP, roundCoins, isPerfect, maxStreakSkips } = require("../lib/coins");
+const { DAILY_CAP, roundCoins, isPerfect, maxItemUse } = require("../lib/coins");
 
 const router = express.Router();
 
@@ -20,9 +20,13 @@ function cleanEvent(e) {
   if (!UUID_RE.test(String(e.id)) || !MODE_RE.test(String(e.m))) return null;
   if (!isInt(e.r, 0, e.n) || !isInt(e.w, 0, e.n) || e.r + e.w > e.n || !isHalf(e.s, MAXSCORE[e.n])) return null;
   // Coin Shop: k = Streak Skips, x = Extra Lifelines (dono optional; purane events mein nahi hote)
-  const k = e.k === undefined ? 0 : e.k;
-  const x = e.x === undefined ? 0 : e.x;
-  if (!isInt(k, 0, maxStreakSkips(e.n)) || !isInt(x, 0, 20) || e.r + e.w + k > e.n) return null;
+  const k0 = e.k === undefined ? 0 : e.k;
+  const x0 = e.x === undefined ? 0 : e.x;
+  if (!isInt(k0, 0, e.n) || !isInt(x0, 0, 20)) return null;
+  // Ek round mein har item ki limit (5Q: 1, 10Q: 2, 20Q: 3). Zyada bheja gaya ho to round reject nahi hota, bas limit tak maana jata hai.
+  const k = Math.min(k0, maxItemUse(e.n));
+  const x = Math.min(x0, maxItemUse(e.n));
+  if (e.r + e.w + k > e.n) return null;
   const now = Date.now();
   let t = Number(e.t);
   if (!isFinite(t) || t > now || t < now - 4e10) t = now;

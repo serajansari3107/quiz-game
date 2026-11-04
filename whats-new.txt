@@ -1,4 +1,9 @@
 window.WN_TXT=(function(){/*
+## v3.0 | 4 Nov 2026
+Improved:
++ Extra Lifeline and Streak Skip can now be used 1 time in a 5-question quiz, 2 times in a 10-question quiz and 3 times in a 20-question quiz. After that the button is disabled, but your balance stays.
++ The result screen no longer shows the Extra Lifeline and Streak Skip lines.
+
 ## v2.9 | 3 Nov 2026
 New:
 + Coin Shop: tap your coins on the Home screen to buy an Extra Lifeline or a Streak Skip for 10 coins each.

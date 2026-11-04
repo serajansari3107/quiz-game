@@ -75,7 +75,6 @@ html[data-theme="light"] .xlm-in b{color:#312E81}
 html[data-theme="light"] .xlm-in button{background:#F5F3FF;border-color:#DDD6FE;color:#312E81}
 html[data-theme="light"] .xlm-in .xlm-c{background:transparent;color:#6B67A8}
 html[data-theme="light"] .qzt{background:#fff;border-color:#DDD6FE;color:#312E81;box-shadow:0 10px 30px rgba(76,29,149,.18)}
-html[data-theme="light"] .rs-items{color:#6D28D9}
 html[data-theme="light"] .hm-hero2{background:radial-gradient(120% 140% at 50% -10%,rgba(139,92,246,.34),transparent 62%),linear-gradient(160deg,#FFFFFF,#FFFFFF);border:1px solid rgba(139,92,246,.3);box-shadow:0 14px 40px rgba(139,92,246,.16),inset 0 1px 0 rgba(255,255,255,.06)}
 html[data-theme="light"] .hm-hero2::before{background:radial-gradient(circle,rgba(139,92,246,.45),transparent 68%)}
 html[data-theme="light"] .hm-hl{background-image:linear-gradient(90deg,#312E81,#8B5CF6,#fff)}

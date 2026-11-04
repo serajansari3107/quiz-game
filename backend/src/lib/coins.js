@@ -6,8 +6,9 @@ const PERFECT_BONUS = { 5: 5, 10: 10, 20: 20 };
 const SHOP_PRICE = 10;
 const SHOP_ITEMS = ["xl", "ss"]; // xl = Extra Lifeline, ss = Streak Skip
 
-// Ek round mein Streak Skip ki max sankhya: quiz ke sawalon ka aadha
-const maxStreakSkips = (n) => Math.floor(n / 2);
+// Ek round mein har item (Streak Skip aur Extra Lifeline) ki max use: 5 sawal = 1, 10 sawal = 2, 20 sawal = 3
+const MAX_ITEM_USE = { 5: 1, 10: 2, 20: 3 };
+const maxItemUse = (n) => MAX_ITEM_USE[n] || 0;
 
 // Perfect round: jitne sawal count hue (Streak Skip wale nahi) sab sahi. k = valid Streak Skips.
 function isPerfect(n, right, k) {
@@ -21,4 +22,4 @@ function roundCoins(n, right, k) {
   return { base, bonus, total: base + bonus };
 }
 
-module.exports = { DAILY_CAP, PERFECT_BONUS, SHOP_PRICE, SHOP_ITEMS, maxStreakSkips, isPerfect, roundCoins };
+module.exports = { DAILY_CAP, PERFECT_BONUS, SHOP_PRICE, SHOP_ITEMS, maxItemUse, isPerfect, roundCoins };
