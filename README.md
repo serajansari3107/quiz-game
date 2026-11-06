@@ -150,6 +150,8 @@ quiz-game/
 
 ## Food Quiz
 
+- **Naye 50-50 (GK + Food):** GK 150 → 200 (14 Easy + 18 Medium + 18 Hard naye: science, geography, itihaas, Nobel, Samvidhan, khel). Food Quiz 100 → 150 (14 Easy + 18 Medium + 18 Hard naye, sirf Indian khana: dish/mithai ka region, tyohaar ka prasad, masale, aam, GI Tag, Amul/Kurien). Naye sawalon ke options mein ( ) ya [ ] hint nahi. Facts web se verify kiye gaye aur purane sawalon ke saath duplicate check hua. Ye ginti ab purani GK/Food ginti se upar maani jaye. About screen mein ginti apne aap update hoti hai.
+
 - Nayi category **🍛 Food Quiz** (id `food`), file `js/questions/food-questions.js`, `index.html` mein `word-questions.js` ke baad load hoti hai. Sawal Hinglish mein, options English ya Hinglish mein. **100 sawal: 36 Easy + 36 Medium + 28 Hard.**
 - 4 tarah ke sawal: (1) Hindi naam se English naam (`'Bhindi' ka English name kya hai?`), (2) English naam se Hindi naam (`'Pomegranate' ko Hindi mein kya kehte hain?`), (3) dish kis desh / Indian rajya / shehar ki famous hai, (4) shehar ki famous dish kaun si hai. Indian sabziyan, phal, masale, dal, anaaj aur Indian dishes shaamil hain.
 - Options mein `( )` wala hint nahi hota. Galat options bhi sahi option jaise milte-julte rakhe gaye hain (sahi answer sabse lamba option sirf 22/100 sawalon mein hai).

@@ -3,6 +3,8 @@ window.WN_TXT=(function(){/*
 New:
 + 50 new Grammar questions (articles, prepositions, conditionals, passive voice, inversion and more).
 + 50 new Word Quiz questions with new English words, from easy to hard.
++ 50 new GK questions (science, geography, history, Nobel Prizes, Constitution and sports).
++ 50 new Food Quiz questions, all about Indian food, sweets, spices, mangoes and festival dishes.
 
 ## v3.0 | 4 Nov 2026
 Improved:
