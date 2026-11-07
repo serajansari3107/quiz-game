@@ -1,6 +1,8 @@
 window.WN_TXT=(function(){/*
 ## v3.2 | 7 Nov 2026
 New:
++ 50 more Cricket questions on men's cricket from 2000 to 2010 (World Cups, Champions Trophy, Ashes and star players).
++ 50 more WWE questions about Roman Reigns, The Rock, John Cena, Stone Cold, Triple H and The Undertaker.
 + 50 more GK questions (capitals, history, Constitution, science, geography and sports).
 + 50 more Food Quiz questions, all about Indian food, spices, sweets, festival dishes and Indian farm produce.
 

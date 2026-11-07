@@ -150,6 +150,8 @@ quiz-game/
 
 ## Food Quiz
 
+- **Aur 50-50 naye sawal (Cricket + WWE):** Cricket 300 → 350 (14 Easy + 18 Medium + 18 Hard naye, sirf men's cricket, 2000 se 2010 tak: World Cup, T20 World Cup, Champions Trophy, Ashes, Tendulkar/Dravid/Sehwag/Dhoni ke records). WWE Quiz 300 → 350 (14 Easy + 18 Medium + 18 Hard naye, sirf Roman Reigns, The Rock, John Cena, Stone Cold Steve Austin, Triple H aur The Undertaker se jude). Naye sawalon ke options mein ( ) ya [ ] hint nahi. Kai facts web se verify kiye gaye aur purane sawalon ke saath duplicate check hua. Ye ginti Cricket/WWE ki purani ginti se upar maani jaye. About screen mein ginti apne aap update hoti hai.
+
 - **Aur 50-50 naye sawal (GK + Food):** GK 200 → 250 (14 Easy + 18 Medium + 18 Hard naye: rajdhaniyan, itihaas, Samvidhan, vigyan, geography, khel). Food Quiz 150 → 200 (14 Easy + 18 Medium + 18 Hard naye, sirf Indian khana: ingredients, region ki dish, tyohaar/prasad, masale, chai/coffee/aam/seb ke utpadan). Naye sawalon ke options mein ( ) ya [ ] hint nahi. Kai facts web se verify kiye gaye aur purane sawalon ke saath duplicate check hua. Ye ginti pichhli GK/Food ginti se upar maani jaye. About screen mein ginti apne aap update hoti hai.
 
 - **Naye 50-50 (GK + Food):** GK 150 → 200 (14 Easy + 18 Medium + 18 Hard naye: science, geography, itihaas, Nobel, Samvidhan, khel). Food Quiz 100 → 150 (14 Easy + 18 Medium + 18 Hard naye, sirf Indian khana: dish/mithai ka region, tyohaar ka prasad, masale, aam, GI Tag, Amul/Kurien). Naye sawalon ke options mein ( ) ya [ ] hint nahi. Facts web se verify kiye gaye aur purane sawalon ke saath duplicate check hua. Ye ginti ab purani GK/Food ginti se upar maani jaye. About screen mein ginti apne aap update hoti hai.
