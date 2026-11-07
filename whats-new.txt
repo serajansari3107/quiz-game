@@ -1,4 +1,9 @@
 window.WN_TXT=(function(){/*
+## v3.2 | 7 Nov 2026
+New:
++ 50 more GK questions (capitals, history, Constitution, science, geography and sports).
++ 50 more Food Quiz questions, all about Indian food, spices, sweets, festival dishes and Indian farm produce.
+
 ## v3.1 | 6 Nov 2026
 New:
 + 50 new Grammar questions (articles, prepositions, conditionals, passive voice, inversion and more).
