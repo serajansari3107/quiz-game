@@ -13,6 +13,34 @@
 <link rel="stylesheet" href="css/light.css">
 <script>try{if(JSON.parse(localStorage.getItem("theme"))==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script>
 </head><body><div class="w" id="app"><div class="wl"><div class="wl-in"><div class="wl-logo">🎯</div><h1>Quiz Arena</h1><p>Cricket · WWE</p></div></div></div>
+<script>
+/* Auto-repair: agar app 8 second tak splash screen par atka rahe (ya script error aaye), to purani saved app files hata kar ek baar reload karta hai. Stats / coins / login (localStorage) ko haath nahi lagata. */
+(function(){
+var G="qa_heal",T=8000,tm=0;
+function stuck(){var a=document.getElementById("app");return !!a&&a.textContent.indexOf("Cricket \u00b7 WWE")>-1}
+function was(){try{return sessionStorage.getItem(G)==="1"}catch(e){return window.name===G}}
+function mark(on){try{if(on)sessionStorage.setItem(G,"1");else sessionStorage.removeItem(G)}catch(e){if(on)window.name=G;else if(window.name===G)window.name=""}}
+function heal(){
+ if(was()||navigator.onLine===false)return;
+ mark(1);
+ /* pehle confirm karo ki internet sach mein hai (sw ko bypass karke); warna cache mat hatao */
+ fetch(location.pathname+"?chk="+Date.now(),{cache:"no-store"}).then(function(r){
+  if(!r.ok)throw 0;
+  var p=[];
+  try{if(window.caches&&caches.keys)p.push(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k.indexOf("quiz-")===0}).map(function(k){return caches.delete(k)}))}))}catch(e){}
+  try{if(navigator.serviceWorker&&navigator.serviceWorker.getRegistrations)p.push(navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(x){return x.unregister()}))}))}catch(e){}
+  return Promise.all(p.map(function(x){return x.catch(function(){})}));
+ }).then(function(){
+  var u=[location.pathname,"whats-new.txt"];
+  [].forEach.call(document.querySelectorAll("script[src],link[rel=stylesheet]"),function(n){var s=n.getAttribute("src")||n.getAttribute("href");if(s&&s.indexOf("http")!==0)u.push(s)});
+  return Promise.all(u.map(function(x){return fetch(x,{cache:"reload"}).catch(function(){})}));
+ }).then(function(){location.reload()},function(){mark(0)});
+}
+function check(){if(stuck())heal();else mark(0)}
+window.addEventListener("error",function(){if(!tm&&!was())tm=setTimeout(check,3000)},true);
+setTimeout(check,T);
+})();
+</script>
 <script src="js/questions/cricket-questions.js"></script>
 <script src="js/questions/wwe-questions.js"></script>
 <script src="js/questions/grammar-questions.js"></script>

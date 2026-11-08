@@ -4,6 +4,8 @@ New:
 + 6 new Expert achievements: Cricket, WWE, Grammar, GK, Word and Food Expert. Give 200 correct answers with 85% accuracy or more in a quiz to unlock one.
 + 6 new Elite achievements: Cricket, WWE, Grammar, GK, Word and Food Elite. Give 500 correct answers with 75% accuracy or more in a quiz to unlock one.
 + A celebration screen appears when you unlock an Expert achievement.
+Improved:
++ If the app ever gets stuck on the opening screen, it now repairs its saved app files by itself and restarts once. Your stats, coins and login are not touched.
 
 ## v3.2 | 7 Nov 2026
 New:
