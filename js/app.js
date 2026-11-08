@@ -363,7 +363,7 @@ const ACH=[
  {id:"elgram",ic:"💠",t:"Grammar Elite",d:"Give 500 correct answers in Grammar with 75% accuracy or more.",ce:1,g:achEl("grammar")},
  {id:"elgk",ic:"💠",t:"GK Elite",d:"Give 500 correct answers in GK with 75% accuracy or more.",ce:1,g:achEl("gk")},
  {id:"elword",ic:"💠",t:"Word Elite",d:"Give 500 correct answers in Word Quiz with 75% accuracy or more.",ce:1,g:achEl("word")},
- {id:"elfood",ic:"💠",t:"Food Elite",d:"Give 500 correct answers in Food Quiz with 75% accuracy or more.",ce:1,g:achEl("food")}
+ {id:"elfood",ic:"💠",t:"Food Elite",d:"Give 500 correct answers in Food Quiz with 75% accuracy or more.",ce:1,g:achEl("food")},
  {id:"xcric",ic:"🏏",t:"Cricket Expert",d:"Give 200 correct answers in Cricket with 85% accuracy or more.",ce:1,g:achExp("cricket")},
  {id:"xwwe",ic:"🤼",t:"WWE Expert",d:"Give 200 correct answers in WWE with 85% accuracy or more.",ce:1,g:achExp("wwe")},
  {id:"xgram",ic:"📝",t:"Grammar Expert",d:"Give 200 correct answers in Grammar with 85% accuracy or more.",ce:1,g:achExp("grammar")},
