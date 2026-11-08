@@ -1,4 +1,9 @@
 window.WN_TXT=(function(){/*
+## v3.3 | 8 Nov 2026
+New:
++ 6 new Expert achievements: Cricket, WWE, Grammar, GK, Word and Food Expert. Give 200 correct answers with 85% accuracy or more in a quiz to unlock one.
++ A celebration screen appears when you unlock an Expert achievement.
+
 ## v3.2 | 7 Nov 2026
 New:
 + 50 more Cricket questions on men's cricket from 2000 to 2010 (World Cups, Champions Trophy, Ashes and star players).
