@@ -149,6 +149,12 @@ quiz-game/
 - Local keys: `items` (`{id, xl, ss}` sirf dikhane ke liye; asli ginti server par). `/sync` ke jawab mein `items: { xl, ss }` aata hai.
 - **Deploy order:** pehle Neon SQL (section "11) Coin Shop" in `backend/db/schema.sql`), phir backend push (Render), phir frontend push.
 
+## Question counts (latest)
+
+- Cricket 350 (104 Easy + 128 Medium + 118 Hard), WWE 350 (92 + 116 + 142), Grammar 201 (58 + 105 + 38), GK 250 (82 + 91 + 77), Word 200 (68 + 72 + 60), Food 200 (64 + 72 + 64). Kul 1,551 sawal.
+- Is README ke purane hisson mein jahan alag ginti likhi hai (jaise 150-150, 100 sawal, 300-300), wo us waqt ka record hai. Asli ginti ye section hai aur About screen (Questions Available) mein apne aap dikhti hai.
+- Cricket mein men's cricket 2000 se 2010, WWE mein Roman Reigns, The Rock, John Cena, Stone Cold, Triple H aur The Undertaker ke naye sawal hain. Food mein naye sawal sirf Indian khane ke hain.
+
 ## Food Quiz
 
 - **Aur 50-50 naye sawal (Cricket + WWE):** Cricket 300 → 350 (14 Easy + 18 Medium + 18 Hard naye, sirf men's cricket, 2000 se 2010 tak: World Cup, T20 World Cup, Champions Trophy, Ashes, Tendulkar/Dravid/Sehwag/Dhoni ke records). WWE Quiz 300 → 350 (14 Easy + 18 Medium + 18 Hard naye, sirf Roman Reigns, The Rock, John Cena, Stone Cold Steve Austin, Triple H aur The Undertaker se jude). Naye sawalon ke options mein ( ) ya [ ] hint nahi. Kai facts web se verify kiye gaye aur purane sawalon ke saath duplicate check hua. Ye ginti Cricket/WWE ki purani ginti se upar maani jaye. About screen mein ginti apne aap update hoti hai.

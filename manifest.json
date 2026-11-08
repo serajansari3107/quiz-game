@@ -1,7 +1,7 @@
 {
  "name": "Quiz Arena",
  "short_name": "Quiz Arena",
- "description": "Cricket, WWE and Grammar quizzes. Challenge Your Mind. Prove Your Knowledge.",
+ "description": "Cricket, WWE, Grammar, GK, Word and Food quizzes. Challenge Your Mind. Prove Your Knowledge.",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",

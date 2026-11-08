@@ -6,6 +6,7 @@ New:
 + A celebration screen appears when you unlock an Expert achievement.
 Improved:
 + If the app ever gets stuck on the opening screen, it now repairs its saved app files by itself and restarts once. Your stats, coins and login are not touched.
++ The About screen is updated with the new questions and achievements.
 
 ## v3.2 | 7 Nov 2026
 New:
