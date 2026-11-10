@@ -1,4 +1,9 @@
 window.WN_TXT=(function(){/*
+## v3.4 | 10 Nov 2026
+New:
++ 50 new Cricket questions about the team and player records of Australia, England, South Africa, West Indies, Pakistan, New Zealand and Sri Lanka after 2000.
++ 50 more Cricket questions on Test cricket records of all major teams and players after 2000.
+
 ## v3.3 | 8 Nov 2026
 New:
 + 6 new Expert achievements: Cricket, WWE, Grammar, GK, Word and Food Expert. Give 200 correct answers with 85% accuracy or more in a quiz to unlock one.

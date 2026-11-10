@@ -75,8 +75,7 @@ QUIZ_DATA.grammar={name:"📝 Grammar Quiz",q:[
   ["'She is married ___ a doctor.' Sahi preposition chuno.","to",["with","by","from"],"Standard English mein kisi vyakti se shaadi hone ke liye 'married to someone' use hota hai.","e"],
   ["'We arrived ___ the airport at noon.' Sahi preposition chuno.","at",["in","on","to"],"Kisi specific place, jaise airport ya station, par pahunchne ke liye aam taur par 'arrive at' use hota hai.","m"],
   ["'You had better ___ now.' Sahi word chuno.","leave",["to leave","leaving","left"],"'Had better' ke baad verb ki base form aati hai, 'to' ke bina.","m"],
-  
-  ["'You had better ___ now.' Sahi word chuno.","leave",["to leave","leaving","left"],"'Had better' ke baad verb ki base form aati hai, 'to' ke bina.","m"],
+  ["'You can stay here ___ you keep quiet.' Sahi option chuno.","as long as",["even though","as well as","in spite of"],"'As long as' ka matlab hai 'is shart par ki'. Yahan condition di gayi hai: shant rahoge, tabhi yahan ruk sakte ho.","m"],
   ["'Let's take a short break, ___?' Sahi question tag chuno.","shall we",["will we","do we","aren't we"],"'Let's' se shuru hone wale suggestion ke saath 'shall we?' question tag use hota hai.","m"],
   ["'Don't be late, ___?' Sahi question tag chuno.","will you",["do you","are you","shall we"],"Negative imperative ke saath request ya warning ko question tag mein 'will you?' se complete kiya ja sakta hai.","m"],
   ["'It's time we ___ home.' Sahi word chuno.","went",["go","will go","have gone"],"'It's time' ke baad jab kisi kaam ko ab karne ki zaroorat batate hain, to past form use ho sakti hai: 'It's time we went'.","h"],

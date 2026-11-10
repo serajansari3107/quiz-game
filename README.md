@@ -151,9 +151,13 @@ quiz-game/
 
 ## Question counts (latest)
 
-- Cricket 350 (104 Easy + 128 Medium + 118 Hard), WWE 350 (92 + 116 + 142), Grammar 201 (58 + 105 + 38), GK 250 (82 + 91 + 77), Word 200 (68 + 72 + 60), Food 200 (64 + 72 + 64). Kul 1,551 sawal.
+- Cricket 450 (132 Easy + 164 Medium + 154 Hard), WWE 350 (92 + 116 + 142), Grammar 201 (58 + 105 + 38), GK 250 (82 + 91 + 77), Word 200 (68 + 72 + 60), Food 200 (64 + 72 + 64). Kul 1,651 sawal.
 - Is README ke purane hisson mein jahan alag ginti likhi hai (jaise 150-150, 100 sawal, 300-300), wo us waqt ka record hai. Asli ginti ye section hai aur About screen (Questions Available) mein apne aap dikhti hai.
 - Cricket mein men's cricket 2000 se 2010, WWE mein Roman Reigns, The Rock, John Cena, Stone Cold, Triple H aur The Undertaker ke naye sawal hain. Food mein naye sawal sirf Indian khane ke hain.
+
+- **Cricket mein 50 naye sawal (350 → 400):** 14 Easy + 18 Medium + 18 Hard. Ye Australia, England, South Africa, West Indies, Pakistan, New Zealand aur Sri Lanka ke 2000 ke baad ke team aur player records par hain (jaise Test/ODI runs aur wickets, badi partnerships, Ashes, World Cup, T20 World Cup aur Champions Trophy ke record). Naye sawalon ke options mein ( ) ya [ ] hint nahi hai. Facts web se verify kiye gaye aur purane sawalon ke saath duplicate check hua. Ye ginti Cricket ki pichhli ginti se upar maani jaye. About screen mein ginti apne aap update hoti hai.
+
+- **Cricket mein 50 aur naye sawal (400 → 450):** 14 Easy + 18 Medium + 18 Hard. Ye sirf 2000 ke baad ke Test cricket records par hain, sab teams aur players ke liye (jaise Test runs, shatak, wickets, wicketkeeper dismissals, captaincy ke record, badi partnerships, badi chases aur calendar year ke record). Options mein ( ) ya [ ] hint nahi hai. Facts web se verify kiye gaye aur purane sawalon ke saath duplicate check hua. About screen mein ginti apne aap update hoti hai.
 
 ## Food Quiz
 
