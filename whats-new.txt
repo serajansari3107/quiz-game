@@ -1,4 +1,9 @@
 window.WN_TXT=(function(){/*
+## v3.6 | 12 Nov 2026
+New:
++ 50 new Word questions, from everyday words to advanced exam words.
++ 50 new Food questions on Indian regional dishes, GI-tagged foods, sweets, spices and farm produce.
+
 ## v3.5 | 11 Nov 2026
 New:
 + 49 new Grammar questions on articles, adjective order, gerunds and infinitives, question tags, mixed conditionals, subject-verb agreement and common sentence mistakes.
