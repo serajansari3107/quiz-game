@@ -151,13 +151,15 @@ quiz-game/
 
 ## Question counts (latest)
 
-- Cricket 450 (132 Easy + 164 Medium + 154 Hard), WWE 350 (92 + 116 + 142), Grammar 250 (72 + 122 + 56), GK 250 (82 + 91 + 77), Word 250 (82 + 90 + 78), Food 250 (78 + 90 + 82). Kul 1,800 sawal.
+- Cricket 500 (146 Easy + 182 Medium + 172 Hard), WWE 350 (92 + 116 + 142), Grammar 250 (72 + 122 + 56), GK 250 (82 + 91 + 77), Word 250 (82 + 90 + 78), Food 250 (78 + 90 + 82). Kul 1,850 sawal.
 - Is README ke purane hisson mein jahan alag ginti likhi hai (jaise 150-150, 100 sawal, 300-300), wo us waqt ka record hai. Asli ginti ye section hai aur About screen (Questions Available) mein apne aap dikhti hai.
 - Cricket mein men's cricket 2000 se 2010, WWE mein Roman Reigns, The Rock, John Cena, Stone Cold, Triple H aur The Undertaker ke naye sawal hain. Food mein naye sawal sirf Indian khane ke hain.
 
 - **Cricket mein 50 naye sawal (350 → 400):** 14 Easy + 18 Medium + 18 Hard. Ye Australia, England, South Africa, West Indies, Pakistan, New Zealand aur Sri Lanka ke 2000 ke baad ke team aur player records par hain (jaise Test/ODI runs aur wickets, badi partnerships, Ashes, World Cup, T20 World Cup aur Champions Trophy ke record). Naye sawalon ke options mein ( ) ya [ ] hint nahi hai. Facts web se verify kiye gaye aur purane sawalon ke saath duplicate check hua. Ye ginti Cricket ki pichhli ginti se upar maani jaye. About screen mein ginti apne aap update hoti hai.
 
 - **Cricket mein 50 aur naye sawal (400 → 450):** 14 Easy + 18 Medium + 18 Hard. Ye sirf 2000 ke baad ke Test cricket records par hain, sab teams aur players ke liye (jaise Test runs, shatak, wickets, wicketkeeper dismissals, captaincy ke record, badi partnerships, badi chases aur calendar year ke record). Options mein ( ) ya [ ] hint nahi hai. Facts web se verify kiye gaye aur purane sawalon ke saath duplicate check hua. About screen mein ginti apne aap update hoti hai.
+
+- **Cricket mein 50 aur naye sawal (450 → 500):** 14 Easy + 18 Medium + 18 Hard. Ye ODI cricket ke records par hain: team totals aur chases, badi partnerships, sabse tez milestones, bowling figures, wicketkeeping aur fielding, aur Australia, England, South Africa, West Indies, Pakistan, New Zealand aur Sri Lanka ke players/teams ke record, 2026 ke naye records ke saath. Options mein ( ) ya [ ] hint nahi hai. Facts web se verify kiye gaye (Wikipedia ODI records Nov 2026 tak; 2026 ke matches Yahoo Sports aur Outlook India se cross-check) aur purane sawalon ke saath duplicate check hua. About screen mein ginti apne aap update hoti hai.
 
 - **Grammar mein 49 naye sawal (201 → 250):** 14 Easy + 17 Medium + 18 Hard. Topics: articles, plural, adjective order, gerund aur infinitive (remember, forget, can't help, worth), passive, question tags, mixed conditional, subject-verb agreement, linking words, confusing words (effect/affect, lose/loose, lie/lay) aur Indian English ki aam galtiyon par sentence correction. Har sawal mein options ke ( ) ya [ ] hint nahi hai. Rules web se verify kiye gaye aur purane sawalon ke saath duplicate check hua. About screen mein ginti apne aap update hoti hai.
 

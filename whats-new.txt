@@ -1,4 +1,8 @@
 window.WN_TXT=(function(){/*
+## v3.7 | 15 Nov 2026
+New:
++ 50 new Cricket questions on ODI records: team totals, chases, partnerships, bowling, wicketkeeping and fastest milestones, including the latest 2026 records.
+
 ## v3.6 | 12 Nov 2026
 New:
 + 50 new Word questions, from everyday words to advanced exam words.
